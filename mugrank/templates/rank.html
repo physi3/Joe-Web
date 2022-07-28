@@ -1,0 +1,36 @@
+{% extends "listpage.html" %} {% load static %} {% block headextras %}
+<link rel="stylesheet" href={% static "/mugrank/rankpage.css" %}> {% endblock headextras %} {% block content %}
+<div class="cards">
+    <form method="post" style="grid-area: cardOne;">
+        {% csrf_token %}
+        <input type="hidden" name="mugOneID" value={{mugOne.id}} />
+        <input type="hidden" name="mugTwoID" value={{mugTwo.id}} />
+        <input type="hidden" name="winner" value=0 />
+        <div class="card" onclick="javascript:this.parentNode.submit();">
+            {% with '/mugimages/'|add:mugOne.image_path as mugOneImg %}
+            <image src={% static mugOneImg %} class="card-image"></image>
+            {% endwith %}
+            <div class="card-stats">
+                <div class="name">{{mugOne.name}}</div>
+                <div class="elo">{{mugOne.elo}}</div>
+            </div>
+        </div>
+    </form>
+
+    <form method="post" style="grid-area: cardTwo;">
+        {% csrf_token %}
+        <input type="hidden" name="mugOneID" value={{mugOne.id}} />
+        <input type="hidden" name="mugTwoID" value={{mugTwo.id}} />
+        <input type="hidden" name="winner" value=1 />
+        <div class="card" onclick="javascript:this.parentNode.submit();">
+            {% with '/mugimages/'|add:mugTwo.image_path as mugTwoImg %}
+            <image src={% static mugTwoImg %} class="card-image"></image>
+            {% endwith %}
+            <div class="card-stats">
+                <div class="name">{{mugTwo.name}}</div>
+                <div class="elo">{{mugTwo.elo}}</div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock content %}

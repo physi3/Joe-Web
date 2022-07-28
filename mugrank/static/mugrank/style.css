@@ -1,0 +1,21 @@
+body {
+    margin: 0;
+    background: rgb(142, 228, 175);
+    background: linear-gradient(0deg, rgba(142, 228, 175, 1) 0%, rgba(92, 219, 149, 1) 100%);
+    background-size: cover;
+    width: 100%;
+}
+
+.footer {
+    grid-area: footer;
+    justify-content: center;
+    margin: auto;
+}
+
+.footer h2 {
+    color: rgb(21, 22, 22);
+}
+
+.profilepage {
+    display: grid;
+}

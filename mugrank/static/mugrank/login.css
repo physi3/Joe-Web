@@ -1,0 +1,41 @@
+.login {
+    width: 40%;
+    height: 30%;
+    justify-content: center;
+    display: flex;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+}
+
+.loginform {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr;
+    grid-template-areas: ". ." ". ." "loginbutton loginbutton" "errors errors";
+}
+
+.loginform input {
+    margin: 5px;
+    border: 0;
+}
+
+.loginform .errors {
+    grid-area: errors;
+    font-family: 'Roboto Condensed', sans-serif;
+    color: rgb(247, 12, 12);
+    text-align: center;
+}
+
+.loginform label {
+    text-align: center;
+    margin: auto;
+    font-family: 'Roboto';
+}
+
+body {
+    height: 100vh;
+}

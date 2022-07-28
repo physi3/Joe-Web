@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Profile</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300&family=Roboto+Mono:wght@100&family=Roboto:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href={% static "/mugrank/style.css" %}>
+    <link rel="stylesheet" href={% static "/mugrank/profile.css" %}>
+</head>
+
+<body>
+    <div class="profilebody">
+        <div class="header">
+            <h1>Welcome {{user.username}}</h1>
+        </div>
+        <div class="lists">
+            <h2>Your Lists</h2>
+            <table>
+                {% for list in muglists %}
+                <tr>
+                    <td>{{list.name}}</td>
+                    <td><a href="/mugrank/rank/{{list.id}}/">Rank</a></td>
+                    <td><a href="/mugrank/view/{{list.id}}/">View</a></td>
+                </tr>
+                {% empty %}
+                <p>There are no lists associated with this user.</p>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,17 @@
+<h1>Add Mug</h1>
+
+{% if invalid %}
+<p style="color:red">Invalid Form</p>
+{{ errors }} {% endif %} {% if successful %}
+<p style="color:rgb(14, 145, 14)">Valid Mug Created</p>
+{% endif %}
+
+<div style="display: flex;">
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <table>
+            {{ form.as_table }}
+        </table>
+        <input type="submit" value="Submit">
+    </form>
+</div>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Login</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300&family=Roboto+Mono:wght@100&family=Roboto:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href={% static "/mugrank/style.css" %}>
+    <link rel="stylesheet" href={% static "/mugrank/login.css" %}>
+</head>
+
+<body>
+    <div class="login">
+
+        <form method="post" , class="loginform">
+            {% csrf_token %}
+            <td>{{ form.username.label_tag }}</td>
+            <td>{{ form.username }}</td>
+            <td>{{ form.password.label_tag }}</td>
+            <td>{{ form.password }}</td>
+            <input type="submit" value="Login" , style="grid-area:loginbutton">
+            <div class="errors">
+                {% if form.errors %}
+                <p>Your username and password didn't match. Please try again.</p>
+                {% endif %} {% if next %} {% if user.is_authenticated %}
+                <p>Your account doesn't have access to this page. To proceed, please login with an account that has access.</p>
+                {% else %}
+                <p>Please login to see this page.</p>
+                {% endif %} {% endif %}
+            </div>
+
+
+            <input type="hidden" name="next" value="{{ next }}">
+        </form>
+
+    </div>
+</body>
+
+</html>

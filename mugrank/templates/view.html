@@ -1,0 +1,21 @@
+{% extends "listpage.html" %} {% load static %} {% block headextras %}
+<link rel="stylesheet" href={% static "/mugrank/viewpage.css" %}> {% endblock headextras %} {% block content %}
+<div class="viewbody">
+    <div class="mugs">
+        <h2>{{mugList.name}}</h2>
+        <table>
+            {% for mug in orderedMugs %}
+            <tr>
+                <td>{{mug.name}} {% with '/mugimages/'|add:mug.image_path as mugimg %}
+                    <img src={% static mugimg %}></img>
+                    {% endwith %}
+                </td>
+                <td>{{mug.elo}}</td>
+            </tr>
+            {% empty %}
+            <p>There are no mugs in this list.</p>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+{% endblock content %}

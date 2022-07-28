@@ -1,0 +1,73 @@
+.profilebody {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 0.4fr 8fr;
+    grid-template-areas: "header header header" ". . ." " . lists .";
+}
+
+.header {
+    grid-area: header;
+    display: grid;
+    justify-content: center;
+    grid-template-columns: 1fr 1fr 1fr;
+    margin: auto;
+    padding-top: 25px;
+    text-align: center;
+}
+
+.header h1 {
+    grid-area: title;
+    font-family: 'Roboto', sans-serif;
+    background-image: linear-gradient(45deg, rgba(5, 72, 107, 1) 0%, rgb(42, 128, 173) 100%);
+    color: transparent;
+    background-clip: text;
+    -webkit-background-clip: text;
+    font-size: 3em;
+    margin: auto;
+}
+
+.lists {
+    grid-area: lists;
+}
+
+.lists h2 {
+    width: 100%;
+    text-align: center;
+    font-family: 'Roboto', sans-serif;
+    background-image: linear-gradient(45deg, rgba(5, 72, 107, 1) 0%, rgb(42, 128, 173) 100%);
+    color: transparent;
+    background-clip: text;
+    -webkit-background-clip: text;
+    font-size: 2em;
+    margin: auto;
+    padding-bottom: 20px;
+}
+
+.lists table {
+    width: 100%;
+}
+
+.lists table tr {
+    color: rgb(5, 61, 92);
+    font-family: 'Roboto Condensed', sans-serif;
+}
+
+.lists table tr:nth-child(even) {
+    color: rgb(18, 80, 114);
+}
+
+.lists table tr a:link {
+    color: inherit;
+}
+
+.lists p {
+    color: rgb(240, 15, 15);
+    font-family: 'Roboto Condensed', sans-serif;
+    text-align: center;
+}
+
+@media only screen and (orientation: portrait) {
+    .profilebody {
+        grid-template-columns: 0fr 1fr 0fr;
+    }
+}

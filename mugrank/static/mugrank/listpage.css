@@ -1,0 +1,48 @@
+.listpage {
+    display: grid;
+    grid-template-areas: "header" "content" "footer";
+}
+
+.header {
+    grid-area: header;
+    display: grid;
+    justify-content: center;
+    grid-template-columns: 2fr 1fr 1.5fr 1fr 1fr 1fr;
+    grid-template-areas: ". profile title rank view .";
+    margin: auto;
+    padding-top: 25px;
+    text-align: center;
+}
+
+.header h1 {
+    grid-area: title;
+    font-family: 'Roboto', sans-serif;
+    background-image: linear-gradient(45deg, rgba(5, 72, 107, 1) 0%, rgb(42, 128, 173) 100%);
+    color: transparent;
+    background-clip: text;
+    -webkit-background-clip: text;
+    font-size: 3em;
+    margin: auto;
+}
+
+.header a {
+    font-family: 'Roboto', sans-serif;
+    background-image: linear-gradient(45deg, rgba(5, 72, 107, 1) 0%, rgb(42, 128, 173) 100%);
+    color: transparent;
+    background-clip: text;
+    -webkit-background-clip: text;
+    font-size: 1.5em;
+    margin: auto;
+    transition: 0.2s;
+}
+
+.header a:hover {
+    transform: scale(1.2);
+}
+
+@media only screen and (orientation: portrait) {
+    .header {
+        grid-template-columns: 1.5fr 1fr 0.5fr 1fr 0.5fr 1fr 0.5fr 1fr 0.5fr;
+        grid-template-areas: ". profile . title . rank . view .";
+    }
+}

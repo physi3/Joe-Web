@@ -1,0 +1,70 @@
+.card {
+    --size: 25vw;
+    display: grid;
+    grid-template-columns: var(--size);
+    grid-template-areas: "image" "stats";
+    border-radius: calc(var(--size)/22);
+    background: #EDF5E1;
+    box-shadow: calc(var(--size)/60) calc(var(--size)/60) calc(var(--size)/20) rgba(0, 0, 0, 0.9);
+    font-family: 'Roboto';
+    text-align: center;
+    width: fit-content;
+    transition: 0.2s;
+}
+
+.card-image {
+    grid-area: image;
+    border-radius: calc(var(--size)/22) calc(var(--size)/22) 0 0;
+    width: var(--size);
+}
+
+.card-stats {
+    grid-area: stats;
+    border-radius: 0 0 calc(var(--size)/22) calc(var(--size)/22);
+    background: #05486B;
+    color: #EDF5E1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.card-stats .elo {
+    font-size: 1em;
+    font-weight: 100;
+    text-transform: uppercase;
+    font-family: 'Roboto Mono', monospace;
+    padding-bottom: 7px;
+}
+
+.card-stats .name {
+    font-size: 150%;
+    font-weight: 500;
+    padding-top: 7px;
+    padding-bottom: 5px;
+    font-family: 'Roboto Condensed', sans-serif;
+}
+
+.card:hover {
+    transform: scale(1.1);
+    box-shadow: calc(var(--size)/60) calc(var(--size)/60) calc(var(--size)/20) rgba(0, 0, 0, 0.6);
+}
+
+.cards {
+    display: grid;
+    grid-template-rows: 1fr 5fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    grid-template-areas: " . . . . ." " . cardOne . cardTwo ." " . . . . .";
+}
+
+@media only screen and (orientation: portrait) {
+    .card {
+        --size: 55vw;
+    }
+    .cards {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-rows: 0.2fr 2fr 0.3fr 2fr 0.2fr;
+        grid-template-areas: " . . ." " . cardOne ." " . . . " " . cardTwo ." " . . . ";
+    }
+}

@@ -1,0 +1,18 @@
+{% extends "listpage.html" %} {% load static %} {% block headextras %}
+<link rel="stylesheet" href={% static "/mugrank/viewpage.css" %}> {% endblock headextras %} {% block content %}
+<div class="viewbody">
+    <div class="mugs">
+        <h2>{{mugList.name}}</h2>
+        <table>
+            {% for user, contributions in contribDict %}
+            <tr>
+                <td>{{user.first_name}}</td>
+                <td>{{contributions}}</td>
+            </tr>
+            {% empty %}
+            <p>There are no contributions to this list.</p>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+{% endblock content %}
