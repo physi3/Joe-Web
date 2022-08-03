@@ -8,7 +8,7 @@ import json
 def pullmain(request):
     response = {}
     body_unicode = request.body.decode('utf-8')
-    if body_unicode and 'push' in json.loads(body_unicode)['hook']['events']:
+    if body_unicode:
         g = git.cmd.Git("./")
         response['results'] = g.pull()
         response['success'] = True
