@@ -21,7 +21,7 @@ def expectedScore(request):
         'twoScore':mugTwo.expectedScore(mugOne),
         })
 
-@login_required
+@login_required(login_url="/mugrank/login/")
 def showRankPage(request, listID):
     if (request.method == 'POST'):
         mugOne = Mug.objects.get(id=request.POST.get("mugOneID"))
@@ -46,14 +46,14 @@ def showRankPage(request, listID):
     (mugOne, mugTwo) = listuser.findMugsToRate()
     return render(request, "rank.html", {'mugOne':mugOne, 'mugTwo':mugTwo, 'listID':listID})
 
-@login_required
+@login_required(login_url="/mugrank/login/")
 def showViewPage(request, listID):
     mugList = List.objects.get(id=listID)
     orderedMugs = Mug.objects.filter(list__exact=mugList).order_by('-elo')
 
     return render(request, "view.html", {'listID': listID,'mugList':mugList, 'orderedMugs':orderedMugs})
 
-@login_required
+@login_required(login_url="/mugrank/login/")
 def showContributionsPage(request, listID):
     mugList = List.objects.get(id=listID)
     contributors = ListUser.objects.filter(list__exact=mugList)
@@ -62,14 +62,13 @@ def showContributionsPage(request, listID):
 
     return render(request, "contributions.html", {'listID': listID,'contribDict':contributionsDict})
 
-
-@login_required
+@login_required(login_url="/mugrank/login/")
 def profile(request):
     listusers = ListUser.objects.filter(user__exact=request.user)
     muglists = [lu.list for lu in listusers]
     return render(request, "profile.html", {'muglists':muglists})
 
-@login_required
+@login_required(login_url="/mugrank/login/")
 def addMug(request):
     invalid = False
     successful = False
