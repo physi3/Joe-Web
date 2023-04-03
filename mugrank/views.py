@@ -9,6 +9,8 @@ from .forms import *
 
 from django.shortcuts import redirect
 
+import requests
+
 def index(request):
     return redirect('profile/')
 
@@ -103,3 +105,49 @@ def addMug(request):
     newform = MugCreateForm()
     
     return render(request, "addmug.html", {'form':newform, 'successful': successful,'invalid':invalid, 'errors': form.errors if invalid else []})
+
+
+@login_required(login_url="/mugrank/login/")
+def newList(request):
+    invalid = False
+    successful = False
+
+    if request.method == "POST":
+        form = ListCreateForm(request.POST)
+        if form.is_valid():
+            #Process Data
+            successful = True
+
+            newList = List(
+                name = form.cleaned_data['list_name'],
+            )
+
+            newList.save()
+
+            for jsonMug in form.cleaned_data['json']["mugs"]:
+                newMug = Mug(
+                    name = jsonMug["name"],
+                    list = newList,
+                )
+
+                newMug.save()
+
+                image_url = jsonMug["image"]
+                response = requests.get(image_url)
+
+                #ext = image.name.split('.')[-1]
+                with open(f'mugrank/static/mugimages/{newMug.id}.jpg', 'wb+') as f:
+                    f.write(response.content)
+                
+                newMug.image_path = f'{newMug.id}.jpg'
+                
+                newMug.save()
+
+        else:
+            invalid = True
+            pass
+    
+    #Create blank form
+    newform = ListCreateForm()
+    
+    return render(request, "newlist.html", {'form':newform, 'successful': successful,'invalid':invalid, 'errors': form.errors if invalid else []})

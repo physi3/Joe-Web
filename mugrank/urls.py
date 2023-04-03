@@ -11,4 +11,5 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(template_name="login.html", next_page="/mugrank/profile")),
     path('profile/', views.profile),
     path('addmug/', views.addMug),
+    path('newlist/', views.newList),
 ]
