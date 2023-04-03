@@ -20,4 +20,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('git/', include('gitcontrol.urls')),
     path('mugrank/', include('mugrank.urls')),
+    path('politicians/', include('politicians.urls')),
 ]
