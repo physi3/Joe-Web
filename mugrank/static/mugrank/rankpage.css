@@ -1,5 +1,5 @@
 .card {
-    --size: 25vw;
+    --size: 20vw;
     display: grid;
     grid-template-columns: var(--size);
     grid-template-areas: "image" "stats";
@@ -16,7 +16,7 @@
     grid-area: image;
     border-radius: calc(var(--size)/22) calc(var(--size)/22) 0 0;
     width: var(--size);
-    height: var(--size);
+    height: var(--size)*1.5;
     object-fit: cover;
 }
 
@@ -36,13 +36,13 @@
     font-weight: 100;
     text-transform: uppercase;
     font-family: 'Roboto Mono', monospace;
-    padding-bottom: 7px;
+    padding-bottom: 20px;
 }
 
 .card-stats .name {
     font-size: 150%;
     font-weight: 500;
-    padding-top: 7px;
+    padding-top: 15px;
     padding-bottom: 5px;
     font-family: 'Roboto Condensed', sans-serif;
 }
