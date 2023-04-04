@@ -15,10 +15,14 @@
 
 .card-image {
     grid-area: image;
-    border-radius: calc(var(--size)/22) calc(var(--size)/22) 0 0;
+    border-radius: calc(var(--size)/22);
     width: var(--size);
     height: var(--size)*1.5;
     object-fit: cover;
+}
+
+.with-stats .card-image {
+    border-radius: calc(var(--size)/22) calc(var(--size)/22) 0 0;
 }
 
 .card-stats {
@@ -30,6 +34,11 @@
     align-items: center;
     justify-content: center;
     flex-direction: column;
+    display: none;
+}
+
+.with-stats .card-stats {
+    display: block;
 }
 
 .card-stats .elo {
