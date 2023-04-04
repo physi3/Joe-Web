@@ -46,7 +46,8 @@ def showRankPage(request, listID):
 
     listuser = ListUser.objects.filter(user__exact=request.user).get(list__id=listID)
     (mugOne, mugTwo) = listuser.findMugsToRate()
-    return render(request, "rank.html", {'mugOne':mugOne, 'mugTwo':mugTwo, 'listID':listID})
+    ctx = {'mugOne':mugOne, 'mugTwo':mugTwo, 'listID':listID, 'showStats':List.objects.get(pk=listID).showStats}
+    return render(request, "rank.html", ctx)
 
 @login_required(login_url="/mugrank/login/")
 def showViewPage(request, listID):
