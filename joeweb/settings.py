@@ -30,7 +30,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = environ.get('DEBUG')
+if (DEBUG := environ.get('DEBUG')):
+    DEBUG = DEBUG.lower() in ("true", "1", "t")
 
 ALLOWED_HOSTS = [
     'joemarriage.ddns.net',
