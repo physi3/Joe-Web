@@ -15,8 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-
 urlpatterns = [
+    path('', include('joewebapp.urls')),
     path('admin/', admin.site.urls),
     path('git/', include('gitcontrol.urls')),
     path('mugrank/', include('mugrank.urls')),
