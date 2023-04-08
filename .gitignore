@@ -137,3 +137,6 @@ GitHub.sublime-settings
 
 # Database
 db.sqlite3
+
+# Media
+mugrank/static/mugimages/

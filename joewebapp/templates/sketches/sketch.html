@@ -1,0 +1,10 @@
+{% extends "subpage.html" %} {% load static %} {% block head %}
+<link rel="stylesheet" href={% static "/sketch.css" %}>
+
+<script src="{% static 'sketches/p5.js' %}"></script> {% endblock %} {% block title%} {{sketch}} {% endblock %} {% block nav %}
+<a href="/sketches/">🠜 Back to Sketches</a> {% endblock %} {% block body %}
+
+<div id="sketch-holder">
+    {% block scripts %} {% endblock %}
+</div>
+{% endblock %}
