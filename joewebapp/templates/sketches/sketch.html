@@ -1,10 +1,14 @@
 {% extends "subpage.html" %} {% load static %} {% block head %}
 <link rel="stylesheet" href={% static "/sketch.css" %}>
 
-<script src="{% static 'sketches/p5.js' %}"></script> {% endblock %} {% block title%} {{sketch}} {% endblock %} {% block nav %}
+<script src="{% static 'sketches/p5.js' %}"></script>
+<script src="{% static 'sketches/sketches.js' %}"></script>
+{% endblock %} {% block title%} {{sketch}} {% endblock %} {% block nav %}
 <a href="/sketches/">🠜 Back to Sketches</a> {% endblock %} {% block body %}
 
-<div id="sketch-holder">
+<div class="page-content">
     {% block scripts %} {% endblock %}
+    <div id="sketch-holder"></div>
+    <div id="input-holder"></div>
 </div>
 {% endblock %}

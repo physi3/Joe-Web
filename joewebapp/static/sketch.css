@@ -1,6 +1,19 @@
-#sketch-holder {
+.page-content {
     display: flex;
     flex-direction: column;
     align-items: center;
     margin: 1em;
+}
+
+#input-holder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 1em;
+}
+
+#input-holder label {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
 }

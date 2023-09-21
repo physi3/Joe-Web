@@ -15,10 +15,12 @@
     grid-template-rows: 15em 1fr;
     cursor: pointer;
     transition: 350ms;
+    box-shadow: black 0 0 0.5em 0px;
 }
 
 .sketch-card:hover {
     transform: scale(1.05);
+    box-shadow: rgba(0, 0, 0, 0.4) 0.5em 0.5em 0.85em 0px;
 }
 
 .sketch-card .card-img {

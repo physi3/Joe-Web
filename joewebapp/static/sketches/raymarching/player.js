@@ -1,7 +1,7 @@
 class Player extends Raycaster {
     constructor(width, fov) {
         super(createVector(200, 200), fov / width, fov);
-        this.speed = 3;
+        this.speed = 200;
         this.rotSpeed = 0.05;
 
         this.sight = [];
@@ -17,9 +17,9 @@ class Player extends Raycaster {
 
         if (keyIsPressed) {
             if (keyIsDown(UP_ARROW) || keyIsDown(87)) {
-                player.move(this.speed);
+                player.move(this.frameDistance());
             } else if (keyIsDown(DOWN_ARROW) || keyIsDown(83)) {
-                player.move(-this.speed);
+                player.move(-this.frameDistance());
             }
             if (keyIsDown(LEFT_ARROW) || keyIsDown(65)) {
                 player.rotation -= this.rotSpeed;
@@ -29,6 +29,11 @@ class Player extends Raycaster {
             }
         }
     }
+
+    frameDistance() {
+        return this.speed * deltaTime / 1000;
+    }
+
     draw() {
         push();
         strokeWeight(5);
