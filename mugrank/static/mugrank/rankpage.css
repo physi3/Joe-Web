@@ -4,7 +4,7 @@
     grid-template-columns: var(--size);
     grid-template-areas: "image" "stats";
     border-radius: calc(var(--size)/22);
-    background: #EDF5E1;
+    background: #ffffff;
     box-shadow: calc(var(--size)/60) calc(var(--size)/60) calc(var(--size)/20) rgba(0, 0, 0, 0.9);
     font-family: 'Roboto';
     text-align: center;
