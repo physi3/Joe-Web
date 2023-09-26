@@ -1,0 +1,93 @@
+#logo-section {
+    background: radial-gradient(circle, rgba(12, 12, 12, 0.99) 0%, #161616 100%);
+    position: sticky;
+    top: -1px;
+    z-index: 1;
+}
+
+.page-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    background-color: rgba(0, 0, 0, 0.12);
+    padding: 2em 0 2em 0;
+    align-items: center;
+}
+
+.page-row.dark {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.page-row p {
+    width: 50%;
+    padding: 1em;
+    text-align: center;
+}
+
+h2 {
+    font-size: 3em;
+    transition: 360ms;
+    text-align: center;
+}
+
+#mug-mash h2 {
+    background-image: linear-gradient(45deg, rgba(142, 228, 175, 1) 0%, rgba(92, 219, 149, 1) 100%);
+    color: transparent;
+    background-clip: text;
+    -webkit-background-clip: text;
+    margin: auto;
+}
+
+#mug-mash h2:hover {
+    transform: scale(1.2);
+}
+
+h2 a:link,
+h2 a:visited,
+h2 a:hover,
+h2 a:active {
+    text-decoration: none;
+    color: var(--offwhite);
+}
+
+#mug-mash h2 a:link,
+#mug-mash h2 a:visited,
+#mug-mash h2 a:hover,
+#mug-mash h2 a:active {
+    color: transparent;
+}
+
+#sketches-row h2:hover {
+    transform: scale(1.2);
+}
+
+.svg-link {
+    cursor: pointer;
+    margin: 1em;
+}
+
+.svg-link path {
+    fill: rgb(196, 196, 196);
+}
+
+.svg-link:hover path {
+    fill: white;
+}
+
+img.svg-link {
+    filter: brightness(76.86%);
+}
+
+img.svg-link:hover {
+    filter: brightness(100%);
+}
+
+@media (orientation: portrait) {
+    .page-row {
+        flex-direction: column;
+    }
+    .page-row p {
+        width: auto;
+        margin: 1em;
+    }
+}
