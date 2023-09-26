@@ -1,0 +1,19 @@
+{
+    "sketches": [{
+        "name": "Ray Marching",
+        "imagePath": "sketches/sketch-images/RayMarching.png",
+        "templateName": "raymarching"
+    }, {
+        "name": "Doppler Effect",
+        "imagePath": "sketches/sketch-images/Doppler.png",
+        "templateName": "doppler"
+    }, {
+        "name": "Mandelbrot",
+        "imagePath": "sketches/sketch-images/Mandelbrot.png",
+        "templateName": "mandelbrot"
+    }, {
+        "name": "Marching Squares",
+        "imagePath": "sketches/sketch-images/MarchingSquares.png",
+        "templateName": "marchingsquares"
+    }]
+}
