@@ -1,7 +1,7 @@
 .profilebody {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 1fr 0.4fr 8fr;
+    grid-template-rows: 6em 1em 1fr;
     grid-template-areas: "header header header" ". . ." " . lists .";
 }
 
@@ -28,6 +28,9 @@
 
 .lists {
     grid-area: lists;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .lists h2 {
@@ -44,12 +47,16 @@
 }
 
 .lists table {
-    width: 100%;
+    width: 90%;
+    padding: 15px;
+    border-radius: 10px;
+    background: rgb(256, 256, 256, 0.5);
 }
 
 .lists table tr {
     color: rgb(5, 61, 92);
     font-family: 'Roboto Condensed', sans-serif;
+    font-size: 17px;
 }
 
 .lists table tr:nth-child(even) {
