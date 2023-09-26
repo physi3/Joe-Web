@@ -35,7 +35,6 @@ h2 {
     color: transparent;
     background-clip: text;
     -webkit-background-clip: text;
-    margin: auto;
 }
 
 #mug-mash h2:hover {
