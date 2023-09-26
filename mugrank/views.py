@@ -46,7 +46,7 @@ def showRankPage(request, listID):
 
     listuser = ListUser.objects.filter(user__exact=request.user).get(list__id=listID)
     (mugOne, mugTwo) = listuser.findMugsToRate()
-    ctx = {'mugOne':mugOne, 'mugTwo':mugTwo, 'listID':listID, 'showStats':List.objects.get(pk=listID).showStats}
+    ctx = {'mugOne':mugOne, 'mugTwo':mugTwo, 'list':List.objects.get(pk=listID), 'listID':listID, 'showStats':List.objects.get(pk=listID).showStats}
     return render(request, "rank.html", ctx)
 
 @login_required(login_url="/mugrank/login/")
@@ -63,7 +63,7 @@ def showContributionsPage(request, listID):
     contributionsDict = [(user.user, user.getContributions()) for user in contributors]
     contributionsDict.sort(key=lambda x: -x[1])
 
-    return render(request, "contributions.html", {'listID': listID,'contribDict':contributionsDict})
+    return render(request, "contributions.html", {'listID': listID,'contribDict':contributionsDict,'mugList':mugList})
 
 @login_required(login_url="/mugrank/login/")
 def profile(request):
