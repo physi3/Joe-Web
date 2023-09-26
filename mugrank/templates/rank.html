@@ -1,5 +1,5 @@
 {% extends "listpage.html" %} {% load static %} {% block headextras %}
-<link rel="stylesheet" href={% static "/mugrank/rankpage.css" %}> {% endblock headextras %} {% block content %}
+<link rel="stylesheet" href={% static "/mugrank/rankpage.css" %}> {% endblock headextras %} {% block listname %}{{list.name}}{% endblock listname %} {% block content %}
 <div class="cards">
     <form method="post" style="grid-area: cardOne;">
         {% csrf_token %}

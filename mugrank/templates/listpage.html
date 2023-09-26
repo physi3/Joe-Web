@@ -6,22 +6,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>MugMash</title>
+    <title>Mug Mash</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300&family=Roboto+Mono:wght@100&family=Roboto:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href={% static "/mugrank/style.css" %}>
     <link rel="stylesheet" href={% static "/mugrank/listpage.css" %}> {% block headextras %}{% endblock headextras %}
+    <link rel="shortcut icon" type="image/png" href={% static "/mugrank/favicon.ico " %} />
 </head>
 
 <body>
     <div class="listpage">
         <div class="header">
-            <a href="/mugrank/profile/" style="grid-area: profile;">profile</a>
-            <h1>Mug Mash</h1>
-            <a href="/mugrank/view/{{listID}}/" style="grid-area: view;">view</a>
-            <a href="/mugrank/rank/{{listID}}/" style="grid-area: rank;">rank</a>
+            <a href="/mugrank/profile/" style="grid-area: profile;">My Lists</a>
+            <h1>{% block listname %}{% endblock listname %}</h1>
+            <a href="/mugrank/view/{{listID}}/" style="grid-area: view;">View</a>
+            <a href="/mugrank/rank/{{listID}}/" style="grid-area: rank;">Rank</a>
+            <a href="/mugrank/contributions/{{listID}}/" style="grid-area: contributions;">Users</a>
         </div>
         <div>
             {% block content %} {% endblock content %}

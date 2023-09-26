@@ -7,8 +7,8 @@
     grid-area: header;
     display: grid;
     justify-content: center;
-    grid-template-columns: 2fr 1fr 1.5fr 1fr 1fr 1fr;
-    grid-template-areas: ". profile title rank view .";
+    grid-template-columns: 3fr 1fr 1.5fr 1fr 1fr 1fr 1fr;
+    grid-template-areas: ". profile title rank view contributions .";
     margin: auto;
     padding-top: 25px;
     text-align: center;
@@ -34,6 +34,7 @@
     font-size: 1.5em;
     margin: auto;
     transition: 0.2s;
+    text-transform: lowercase;
 }
 
 .header a:hover {
@@ -42,7 +43,7 @@
 
 @media only screen and (orientation: portrait) {
     .header {
-        grid-template-columns: 1.5fr 1fr 0.5fr 1fr 0.5fr 1fr 0.5fr 1fr 0.5fr;
-        grid-template-areas: ". profile . title . rank . view .";
+        grid-template-columns: 3.5fr 1fr 0.5fr 1fr 0.5fr 1fr 0.5fr 1fr 0.5fr 1fr 0.5fr;
+        grid-template-areas: ". profile . title . rank . view . contributions .";
     }
 }

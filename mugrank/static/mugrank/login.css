@@ -1,13 +1,22 @@
+h1 {
+    width: 100%;
+    text-align: center;
+    font-family: 'Roboto', sans-serif;
+    background-image: linear-gradient(45deg, rgba(5, 72, 107, 1) 0%, rgb(42, 128, 173) 100%);
+    color: transparent;
+    background-clip: text;
+    -webkit-background-clip: text;
+    font-size: 3em;
+    margin: auto;
+    padding-top: 60px;
+    padding-bottom: 60px;
+}
+
 .login {
-    width: 40%;
-    height: 30%;
+    max-width: 400px;
     justify-content: center;
     display: flex;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    flex-direction: column;
     margin: auto;
 }
 
@@ -16,11 +25,19 @@
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1fr 1fr 1fr;
     grid-template-areas: ". ." ". ." "loginbutton loginbutton" "errors errors";
+    border-radius: 15px;
+    padding: 15px;
+    background: rgb(256, 256, 256, 0.5);
+    height: 200px;
+    margin: 10px;
 }
 
 .loginform input {
     margin: 5px;
-    border: 0;
+    border: 1px;
+    border-radius: 5px;
+    border-style: solid;
+    border-color: rgb(0, 0, 0, 0.1);
 }
 
 .loginform .errors {
