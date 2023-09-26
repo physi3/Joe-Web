@@ -81,6 +81,10 @@ img.svg-link:hover {
     filter: brightness(100%);
 }
 
+.itch-iframe {
+    width: 552px;
+}
+
 @media (orientation: portrait) {
     .page-row {
         flex-direction: column;
@@ -88,5 +92,8 @@ img.svg-link:hover {
     .page-row p {
         width: auto;
         margin: 1em;
+    }
+    .itch-iframe {
+        width: 60%;
     }
 }
