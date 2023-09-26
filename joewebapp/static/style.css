@@ -1,7 +1,7 @@
 html {
     background-color: #161616;
     --primary: #8484dc;
-    --offwhite: #d8d8e4;
+    --offwhite: #eeeeee;
     font-family: Rubik;
     color: var(--offwhite);
 }
