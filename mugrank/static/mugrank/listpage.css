@@ -43,7 +43,8 @@
 
 @media only screen and (orientation: portrait) {
     .header {
-        grid-template-columns: 3.5fr 1fr 0.5fr 1fr 0.5fr 1fr 0.5fr 1fr 0.5fr 1fr 0.5fr;
-        grid-template-areas: ". profile . title . rank . view . contributions .";
+        grid-template-columns: 0.5fr 1fr 0.5fr 1fr 0.5fr 1fr 0.5fr;
+        grid-template-rows: 1fr 1fr 1fr;
+        grid-template-areas: ". . . title . rank ." ". profile . title . view . " ". . . title . contributions .";
     }
 }
