@@ -9,13 +9,13 @@
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
-    background-color: rgba(0, 0, 0, 0.12);
+    background-color: rgba(0, 0, 0, 0.22);
     padding: 2em 0 2em 0;
     align-items: center;
 }
 
 .page-row.dark {
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: rgba(0, 0, 0, 0.38);
 }
 
 .page-row p {
@@ -35,7 +35,6 @@ h2 {
     color: transparent;
     background-clip: text;
     -webkit-background-clip: text;
-    margin: auto;
 }
 
 #mug-mash h2:hover {
