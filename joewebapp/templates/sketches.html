@@ -5,7 +5,7 @@
 <div class="sketches-container">
     {% for sketch in sketches %}
     <div class="sketch-card" onclick="location='{{ sketch.name }}'">
-        <div class="card-img" style="background-image: url('{{ sketch.image.url }}');">
+        <div class="card-img" style="background-image: url('{% static sketch.imagePath %}');">
         </div>
         <p>{{ sketch.name }}</p>
     </div>

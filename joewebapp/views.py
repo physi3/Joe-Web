@@ -1,14 +1,28 @@
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
-from .models import Sketch
+from django.templatetags.static import static
+from json import loads as loadJson
 
 def index(request):
     return render(request, "index.html")
 
+
+def getSketchesJSON():
+    with open("joewebapp/"+static('sketches.json')) as f:
+        return loadJson(f.read())
+
 def sketches(request):
-    ctx = {"sketches" : Sketch.objects.all()}
+    sketchesJSON = getSketchesJSON()
+    ctx = {"sketches" : sketchesJSON["sketches"]}
     return render(request, "sketches.html", ctx)
 
 def sketchView(request, sketch):
     ctx = {"sketch":sketch}
-    return render(request, f"sketches/{Sketch.objects.get(name=sketch).templateName}.html", ctx)
+    print(sketch)
+    sketchesJSON = getSketchesJSON()["sketches"]
+    correctSketchObj = None
+    for sketchObj in sketchesJSON:
+        if sketchObj['name'] == sketch:
+            correctSketchObj = sketchObj
+
+    return render(request, f"sketches/{correctSketchObj['templateName']}.html", ctx)
