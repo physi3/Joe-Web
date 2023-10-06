@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'gitcontrol',
     'mugrank',
     'joewebapp',
+    'statusdisplay',
 ]
 
 MIDDLEWARE = [

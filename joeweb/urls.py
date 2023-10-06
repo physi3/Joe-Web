@@ -24,6 +24,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('git/', include('gitcontrol.urls')),
     path('mugrank/', include('mugrank.urls')),
+    path('statusdisplay/', include('statusdisplay.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
