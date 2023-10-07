@@ -35,6 +35,6 @@ def getStatus(request):
                             )
             status.save()
 
-            return JsonResponse({'success':True, 'user':str(user), 'message':request.POST['message']})
+            return JsonResponse({'success':True})
     except BaseException as error:
         return JsonResponse({'success':False, 'reason':f"{type(error).__name__}: {error}"})
