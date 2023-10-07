@@ -35,8 +35,9 @@ if (DEBUG := environ.get('DEBUG')):
 
 ALLOWED_HOSTS = [
     'joemarriage.ddns.net',
-    'www.joemarriage.xyz',
+    'www.joemarriage.com',
     'localhost',
+    'home.joemarriage.com'
 ]
 
 if (DEBUG):
