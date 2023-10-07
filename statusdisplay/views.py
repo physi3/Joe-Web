@@ -17,21 +17,24 @@ load_dotenv(dotenv_path)
 @csrf.csrf_exempt
 @http.require_http_methods(["GET", "POST"])
 def getStatus(request):
-    if request.method == "GET":
-        queryUser = User.objects.get(name=request.GET["user"])
-        latestStatus = Status.objects.filter(user=queryUser).order_by("-createTime")
-        return JsonResponse({'queryUser':str(queryUser), 'status':model_to_dict(latestStatus[0])})
-    
-    elif request.method == "POST":
-        if (request.POST['key'] != environ.get('KEY')):
-            return JsonResponse({'success':False, 'reason':'Incorrect key.'})
-        user = User.objects.get(name=request.POST["user"])
-        message = request.POST.getlist('message')
-        time = timezone.now()
+    try:
+        if request.method == "GET":
+            queryUser = User.objects.get(name=request.GET["user"])
+            latestStatus = Status.objects.filter(user=queryUser).order_by("-createTime")
+            return JsonResponse({'successs':True, 'queryUser':str(queryUser), 'status':model_to_dict(latestStatus[0])})
+        
+        elif request.method == "POST":
+            if (request.POST['key'] != environ.get('KEY')):
+                raise Exception("Incorrect key passed.")
+            user = User.objects.get(name=request.POST["user"])
+            message = request.POST.getlist('message')
+            time = timezone.now()
 
-        status = Status(user=user, createTime=time,
-                        lineOne = message[0], lineTwo = message[1], lineThree = message[2], lineFour = message[3]
-                        )
-        status.save()
+            status = Status(user=user, createTime=time,
+                            lineOne = message[0], lineTwo = message[1], lineThree = message[2], lineFour = message[3]
+                            )
+            status.save()
 
-        return JsonResponse({'user':str(user), 'message':request.POST['message']})
+            return JsonResponse({'success':True})
+    except BaseException as error:
+        return JsonResponse({'success':False, 'reason':f"{type(error).__name__}: {error}"})
