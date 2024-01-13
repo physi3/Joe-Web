@@ -8,6 +8,8 @@ let sceneX = 400;
 let sceneW = 400;
 let sceneH = 400;
 
+let drawingRectangle = false;
+
 function setup() {
     createCanvas(800, 400).parent('sketch-holder');
 
@@ -37,6 +39,13 @@ function draw() {
     player.draw();
 
     drawScene();
+
+    if (drawingRectangle) {
+        var rect = c[c.length - 1];
+        var newSize = createVector(Math.abs(rect.pos.x - mouseX), Math.abs(rect.pos.y - mouseY));
+        console.log(newSize);
+        rect.size = newSize;
+    }
 }
 
 function drawScene() {
@@ -54,4 +63,13 @@ function drawScene() {
         o += increment;
     }
     pop();
+}
+
+function mousePressed() {
+    c.push(new Rectangle(createVector(mouseX, mouseY), 0, 0))
+    drawingRectangle = true;
+}
+
+function mouseReleased() {
+    drawingRectangle = false;
 }
