@@ -15,5 +15,9 @@
         "name": "Marching Squares",
         "imagePath": "sketches/sketch-images/MarchingSquares.png",
         "templateName": "marchingsquares"
+    }, {
+        "name": "Circle Packing",
+        "imagePath": "sketches/sketch-images/CirclePacking.png",
+        "templateName": "circlepacking"
     }]
 }

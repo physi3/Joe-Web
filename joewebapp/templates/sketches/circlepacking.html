@@ -1,0 +1,8 @@
+{% extends "sketches/sketch.html" %} {% block scripts %} {% load static %}
+<script src="{% static 'sketches/circlepacking/sketch.js' %}"></script>
+<script>
+    function preload(){
+        img = loadImage("{% static 'sketches/circlepacking/images/TransparentProfileName.png' %}")
+    }
+</script>
+{% endblock %}
