@@ -19,7 +19,7 @@ function mandelSetup(start, end, w) {
 }
 
 function setup() {
-    createCanvas(600, 600).parent("sketch-holder");
+    sketchesCreateCanvas(600, 600);
     rectMode(CORNERS);
     noFill();
 

@@ -11,7 +11,7 @@ let sceneH = 400;
 let drawingRectangle = false;
 
 function setup() {
-    createCanvas(800, 400).parent('sketch-holder');
+    sketchesCreateCanvas(800, 400);
 
     c = [
         new Circle(createVector(100, 150), 20),
