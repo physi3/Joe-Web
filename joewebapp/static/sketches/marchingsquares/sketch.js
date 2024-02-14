@@ -6,7 +6,7 @@ let thresholdSlide;
 let pointArr;
 
 function setup() {
-    createCanvas(600, 600).parent("sketch-holder");
+    sketchesCreateCanvas(600, 600);
     noiseSpace = new PerlinSpace(0.005);
 
     pointArr = createArray(noiseSpace);
