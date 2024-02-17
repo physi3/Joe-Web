@@ -1,5 +1,5 @@
 html {
-    background-color: #161616;
+    background-color: #07080D;
     --primary: #8484dc;
     --offwhite: #eeeeee;
     font-family: Rubik;
@@ -75,7 +75,7 @@ h1 {
     align-items: center;
     justify-content: space-between;
     margin-top: 0;
-    background-color: #121212;
+    background-color: #03040a;
 }
 
 .top-nav h2 {

@@ -9,7 +9,7 @@
     height: 20em;
     margin: 1em;
     border-radius: 1em;
-    background-color: #111;
+    background-color: #080a12;
     display: grid;
     grid-template-areas: "image" "title";
     grid-template-rows: 15em 1fr;
