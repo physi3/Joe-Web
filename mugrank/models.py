@@ -1,10 +1,17 @@
 from pyexpat import model
 from django.db import models
 from django.contrib.auth.models import User
+from django.templatetags.static import static
+
+import tmdbsimple as tmdb
 
 class List(models.Model):
     name = models.CharField(max_length=100)
     showStats = models.BooleanField(default=True)
+    filmList = models.BooleanField(default=False)
+
+    def display_name(self):
+        return f"{self.name}{' (🎥)' if (self.filmList) else ''}"
 
     def __str__(self):
         return self.name
@@ -23,8 +30,25 @@ class Mug(models.Model):
     def updateRatings(self, score, other):
         self.elo += round(self.K * (score - self.expectedScore(other)))
 
+    def image_url(self):
+        return static(f"/mugimages/{self.image_path}")
+
     def __str__(self):
         return self.name
+
+class FilmMug(Mug):
+    tmdb_id = models.IntegerField()
+    letterboxd_slug = models.CharField(max_length=100, blank=True)
+
+    def updatePosterPath(self):
+        movie = tmdb.Movies(self.tmdb_id)
+        self.image_path = movie.info()['poster_path']
+
+    def image_url(self):
+        sizes = ['w92', 'w154', 'w185', 'w342', 'w500', 'w780', 'original']
+        size = sizes[5]
+        return f"https://image.tmdb.org/t/p/{size}{self.image_path}"
+
 
 class ListUser(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

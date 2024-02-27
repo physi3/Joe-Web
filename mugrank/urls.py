@@ -12,4 +12,5 @@ urlpatterns = [
     path('profile/', views.profile),
     path('addmug/', views.addMug),
     path('newlist/', views.newList),
+    path('newletterboxd/', views.letterboxdList),
 ]

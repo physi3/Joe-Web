@@ -4,12 +4,13 @@ from django.http import HttpResponse, JsonResponse
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 
-from mugrank.models import Mug, MugRankRecord, ListUser, List
+from mugrank.models import Mug, MugRankRecord, ListUser, List, FilmMug
 from .forms import *
 
 from django.shortcuts import redirect
 
 import requests
+from . import letterboxdExtension as Letterboxd
 
 def index(request):
     return redirect('profile/')
@@ -44,15 +45,24 @@ def showRankPage(request, listID):
         mugOne.save()
         mugTwo.save()
 
+    mugList = List.objects.get(pk=listID)
     listuser = ListUser.objects.filter(user__exact=request.user).get(list__id=listID)
     (mugOne, mugTwo) = listuser.findMugsToRate()
-    ctx = {'mugOne':mugOne, 'mugTwo':mugTwo, 'list':List.objects.get(pk=listID), 'listID':listID, 'showStats':List.objects.get(pk=listID).showStats}
+
+    if (mugList.filmList):
+        mugOne = mugOne.filmmug
+        mugTwo = mugTwo.filmmug
+
+    ctx = {'mugOne':mugOne, 'mugTwo':mugTwo, 'list':mugList, 'listID':listID, 'showStats':List.objects.get(pk=listID).showStats}
     return render(request, "rank.html", ctx)
 
 @login_required(login_url="/mugrank/login/")
 def showViewPage(request, listID):
     mugList = List.objects.get(id=listID)
     orderedMugs = Mug.objects.filter(list__exact=mugList).order_by('-elo')
+
+    if (mugList.filmList):
+        orderedMugs = [mug.filmmug for mug in orderedMugs]
 
     return render(request, "view.html", {'listID': listID,'mugList':mugList, 'orderedMugs':orderedMugs})
 
@@ -107,6 +117,34 @@ def addMug(request):
     
     return render(request, "addmug.html", {'form':newform, 'successful': successful,'invalid':invalid, 'errors': form.errors if invalid else []})
 
+@login_required(login_url="/mugrank/login/")
+def letterboxdList(request):
+    listURL = request.GET.get('list_url', None)
+    if not listURL:
+        return HttpResponse("Please supply a list_url.")
+
+    filmList = Letterboxd.LetterboxdListToTMDBList(listURL, True, True)
+    listName = next(filmList)
+
+    newList = List(
+        name = listName,
+    )
+    newList.save()
+
+    mugCount = 0
+    for film in filmList:
+        newMug = FilmMug(
+            name = f"{film[0]['title']} ({film[0]['release_date'][:4]})",
+            list = newList,
+            tmdb_id = int(film[0]['id']),
+            letterboxd_slug = film[1],
+        )
+
+        newMug.updatePosterPath()
+        newMug.save()
+        mugCount += 1
+
+    return HttpResponse(f"Created new film list with {mugCount} films.")
 
 @login_required(login_url="/mugrank/login/")
 def newList(request):
