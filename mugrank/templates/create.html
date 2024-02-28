@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{% block title %}Create New ...{% endblock %}</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300&family=Roboto+Mono:wght@100&family=Roboto:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href={% static "/mugrank/style.css" %}>
+    <link rel="stylesheet" href={% static "/mugrank/create.css" %}>
+    <link rel="shortcut icon" type="image/png" href={% static "/mugrank/favicon.ico " %} />
+</head>
+
+<body>
+    <div class="createbody">
+        <h3><a href="../../profile/">Return to Profile</a></h3>
+        <form class="createform" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <h2>{% block header %}Create New ...{% endblock %}</h2>
+            {{ form.as_p }}
+            <input type="submit" value="Submit">
+
+            <div class="errors">
+                {% if invalid %}
+                <p style="color:red">Invalid Form</p>
+                {{ errors }} {% endif %} {% if successful %}
+                <p style="color:rgb(14, 145, 14)">{{ successfulMessage }}</p>
+                {% endif %}
+            </div>
+        </form>
+        <div class="buttons">
+            {% block buttons %}
+                <a class="button" href="#">Create</a>
+            {% endblock %}
+        </div>
+    </div>
+</body>
+
+</html>

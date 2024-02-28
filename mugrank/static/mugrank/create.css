@@ -1,0 +1,92 @@
+.createbody {
+    margin: 1em auto 1em auto;
+    max-width: 600px;
+}
+
+.createform {
+    display: flex;
+    flex-direction: column;
+    border-radius: 15px;
+    padding: 15px;
+    background: rgb(256, 256, 256, 0.5);
+    margin: 10px;
+}
+.createform p {
+    margin: 5px;
+    display: flex;
+    flex-direction: row;
+}
+
+.createform input[type=submit] {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border: 1px;
+    margin: 5px;
+
+    border-radius: 5px;
+    border-style: solid;
+    border-color: rgb(0, 0, 0, 0.1);
+}
+
+.createform p input,
+.createform p textarea,
+.createbody p select
+ {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border: 1px;
+
+    width: 60%;
+
+    border-radius: 5px;
+    border-style: solid;
+    border-color: rgb(0, 0, 0, 0.1);
+}
+
+.createform p textarea {
+    resize: vertical;
+}
+
+.createform .errors {
+    grid-area: errors;
+    font-family: 'Roboto Condensed', sans-serif;
+    color: rgb(247, 12, 12);
+    text-align: center;
+}
+
+.createform .errors p {
+    display: block;
+}
+
+.createform label {
+    text-align: center;
+    margin: auto;
+    font-family: 'Roboto';
+}
+
+h2, h3 {
+    width: 100%;
+    text-align: center;
+    font-family: 'Roboto', sans-serif;
+    background-image: linear-gradient(45deg, rgba(5, 72, 107, 1) 0%, rgb(42, 128, 173) 100%);
+    color: transparent;
+    background-clip: text;
+    -webkit-background-clip: text;
+    font-size: 2em;
+    margin: auto;
+    padding-bottom: 10px;
+}
+
+h3 {
+    font-size: 1.6em;
+    background-image: linear-gradient(45deg, rgb(9, 42, 59) 0%, rgb(21, 74, 102) 100%);
+}
+
+a, a:hover, a:visited, a:active {
+    color: inherit;
+    text-decoration: none;
+}
+
+.button, .button:hover, .button:visited, .button:active {
+    color: white;
+}

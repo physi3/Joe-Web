@@ -10,6 +10,8 @@ from .forms import *
 from django.shortcuts import redirect
 
 import requests
+import hashlib
+from os import environ
 from . import letterboxdExtension as Letterboxd
 
 def index(request):
@@ -79,15 +81,20 @@ def showContributionsPage(request, listID):
 def profile(request):
     listusers = ListUser.objects.filter(user__exact=request.user)
     muglists = [lu.list for lu in listusers]
-    return render(request, "profile.html", {'muglists':muglists})
+
+    message = request.GET.get("message")
+    message = message if message is not None else ""
+
+    return render(request, "profile.html", {'muglists':muglists, 'message':message})
 
 @login_required(login_url="/mugrank/login/")
-def addMug(request):
+def createMug(request):
     invalid = False
     successful = False
+    successfulMessage = "Valid 🎥 List Created"
 
     if request.method == "POST":
-        form = MugCreateForm(request.POST, request.FILES)
+        form = MugCreateForm(request.POST, request.FILES, requesting_user = request.user)
         if form.is_valid():
             #Process Data
             successful = True
@@ -113,9 +120,9 @@ def addMug(request):
             pass
     
     #Create blank form
-    newform = MugCreateForm()
+    newform = MugCreateForm(requesting_user = request.user)
     
-    return render(request, "addmug.html", {'form':newform, 'successful': successful,'invalid':invalid, 'errors': form.errors if invalid else []})
+    return render(request, "createmug.html", {'form':newform, 'successful': successful,'invalid':invalid, 'errors': form.errors if invalid else [], 'successfulMessage' : successfulMessage})
 
 @login_required(login_url="/mugrank/login/")
 def letterboxdList(request):
@@ -128,8 +135,17 @@ def letterboxdList(request):
 
     newList = List(
         name = listName,
+        showStats = False,
+        filmList = True,
     )
     newList.save()
+
+    listUser = ListUser(
+        list = newList,
+        user = request.user,
+    )
+
+    listUser.save()
 
     mugCount = 0
     for film in filmList:
@@ -147,9 +163,67 @@ def letterboxdList(request):
     return HttpResponse(f"Created new film list with {mugCount} films.")
 
 @login_required(login_url="/mugrank/login/")
-def newList(request):
+def createLetterboxdList(request):
     invalid = False
     successful = False
+    successfulMessage = "Valid 🎥 List Created"
+
+    if request.method == "POST":
+        form = LetterboxdCreateForm(request.POST)
+        if form.is_valid():
+            #Process Data
+            successful = True
+
+            listURL = form.cleaned_data['letterboxd_url']
+
+            if not listURL:
+                return HttpResponse("Please supply a list_url.")
+
+            filmList = Letterboxd.LetterboxdListToTMDBList(listURL, True, True)
+            listName = next(filmList)
+
+            newList = List(
+                name = listName,
+                showStats = False,
+                filmList = True,
+            )
+            newList.save()
+
+            listUser = ListUser(
+                list = newList,
+                user = request.user,
+            )
+
+            listUser.save()
+
+            mugCount = 0
+            for film in filmList:
+                newMug = FilmMug(
+                    name = f"{film[0]['title']} ({film[0]['release_date'][:4]})",
+                    list = newList,
+                    tmdb_id = int(film[0]['id']),
+                    letterboxd_slug = film[1],
+                )
+
+                newMug.updatePosterPath()
+                newMug.save()
+                mugCount += 1
+            successfulMessage = f"Valid 🎥 List Created with {mugCount} films"
+
+        else:
+            invalid = True
+            pass
+    
+    #Create blank form
+    newform = LetterboxdCreateForm()
+    
+    return render(request, "createletterboxdlist.html", {'form':newform, 'successful': successful,'invalid':invalid, 'errors': form.errors if invalid else [], 'successfulMessage' : successfulMessage})
+
+@login_required(login_url="/mugrank/login/")
+def createList(request):
+    invalid = False
+    successful = False
+    successfulMessage = "Valid List Created"
 
     if request.method == "POST":
         form = ListCreateForm(request.POST)
@@ -162,6 +236,13 @@ def newList(request):
             )
 
             newList.save()
+
+            listUser = ListUser(
+                list = newList,
+                user = request.user,
+            )
+
+            listUser.save()
 
             for jsonMug in form.cleaned_data['json']["mugs"]:
                 newMug = Mug(
@@ -187,6 +268,50 @@ def newList(request):
             pass
     
     #Create blank form
-    newform = ListCreateForm()
+    newform = ListCreateForm(initial={'json': {"mugs":[]}})
     
-    return render(request, "newlist.html", {'form':newform, 'successful': successful,'invalid':invalid, 'errors': form.errors if invalid else []})
+    return render(request, "createlist.html", {'form':newform, 'successful': successful,'invalid':invalid, 'errors': form.errors if invalid else [], 'successfulMessage' : successfulMessage})
+
+def listHash(listID):
+    hashed = hashlib.md5(f"{environ.get('SECRET_SALT')}{listID}".encode())
+    return hashed.hexdigest()[:5]
+
+@login_required(login_url="/mugrank/login/")
+def createListInvite(request):
+    invalid = False
+    successful = False
+    successfulMessage = ""
+
+    if request.method == "POST":
+        form = InviteCreateForm(request.POST, request.FILES, requesting_user = request.user)
+        if form.is_valid():
+            #Process Data
+            successful = True
+            listID = form.cleaned_data["list"].id
+            
+            successfulMessage = request.build_absolute_uri(f"/mugrank/invite/{listHash(listID)}_{listID}")
+        else:
+            invalid = True
+
+    #Create blank form
+    newform = InviteCreateForm(requesting_user = request.user)
+    
+    return render(request, "createmug.html", {'form':newform, 'successful': successful,'invalid':invalid, 'errors': form.errors if invalid else [], 'successfulMessage' : successfulMessage})
+
+@login_required(login_url="/mugrank/login/")
+def acceptInvite(request, invitation):
+    (hash, id) = invitation.split("_")
+    if (listHash(id) == hash and (mugList := List.objects.get(id=id))):
+        if ListUser.objects.filter(user=request.user, list=mugList).exists():
+            return redirect("../profile/?message=You're already part of this list.")
+        else:
+            newListUser = ListUser(
+                user = request.user,
+                list = mugList,
+            )
+            newListUser.save()
+
+            return redirect(f"../profile/?message=You've been added to '{mugList.name}'.")
+    else:
+        return redirect("../profile/?message=This invite is invalid.")
+    
