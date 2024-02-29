@@ -6,9 +6,8 @@
         <table>
             {% for mug in orderedMugs %}
             <tr>
-                <td>{{mug.name}} {% with '/mugimages/'|add:mug.image_path as mugimg %}
-                    <img src={% static mugimg %}></img>
-                    {% endwith %}
+                <td>{{mug.name}}
+                    <img src={{mug.image_url}}></img>
                 </td>
                 <td>{{mug.elo}}</td>
             </tr>

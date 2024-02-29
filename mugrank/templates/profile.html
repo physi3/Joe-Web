@@ -26,7 +26,7 @@
             <table>
                 {% for list in muglists %}
                 <tr>
-                    <td>{{list.name}}</td>
+                    <td>{{list.display_name}}</td>
                     <td><a href="/mugrank/rank/{{list.id}}/">Rank</a></td>
                     <td><a href="/mugrank/view/{{list.id}}/">View</a></td>
                 </tr>
@@ -35,6 +35,12 @@
                 {% endfor %}
             </table>
         </div>
+        <div class="buttons" style="grid-area: buttons;">
+            <a class="button" href="../new/list/">Create List</a>
+            <a class="button" href="../new/mug/">Create Mug</a>
+            <a class="button" href="../new/listuser/">Add User to List</a>
+        </div>
+        <p class="message" style="grid-area: message;">{{ message }}</p>
     </div>
 </body>
 

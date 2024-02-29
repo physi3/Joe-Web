@@ -7,9 +7,7 @@
         <input type="hidden" name="mugTwoID" value={{mugTwo.id}} />
         <input type="hidden" name="winner" value=0 />
         <div class="card{% if showStats %} with-stats{% endif %}" onclick="javascript:this.parentNode.submit();">
-            {% with '/mugimages/'|add:mugOne.image_path as mugOneImg %}
-            <image src={% static mugOneImg %} class="card-image"></image>
-            {% endwith %}
+            <image src={{mugOne.image_url}} class="card-image"></image>
             <div class="card-stats">
                 <div class="name">{{mugOne.name}}</div>
                 <div class="elo">{{mugOne.elo}}</div>
@@ -23,14 +21,11 @@
         <input type="hidden" name="mugTwoID" value={{mugTwo.id}} />
         <input type="hidden" name="winner" value=1 />
         <div class="card{% if showStats %} with-stats{% endif %}" onclick="javascript:this.parentNode.submit();">
-            {% with '/mugimages/'|add:mugTwo.image_path as mugTwoImg %}
-            <image src={% static mugTwoImg %} class="card-image"></image>
-            {% endwith %} {% if showStats %}
+            <image src={{mugTwo.image_url}} class="card-image"></image>
             <div class="card-stats">
                 <div class="name">{{mugTwo.name}}</div>
                 <div class="elo">{{mugTwo.elo}}</div>
             </div>
-            {% endif %}
         </div>
     </form>
 </div>

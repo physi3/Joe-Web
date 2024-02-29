@@ -1,8 +1,8 @@
 .profilebody {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 600px 1fr;
     grid-template-rows: 6em 1em 1fr;
-    grid-template-areas: "header header header" ". . ." " . lists .";
+    grid-template-areas: "header header header" ". . ." " . lists ." " . buttons ." ". message .";
 }
 
 .header {
@@ -70,6 +70,13 @@
 .lists p {
     color: rgb(240, 15, 15);
     font-family: 'Roboto Condensed', sans-serif;
+    text-align: center;
+}
+
+.message {
+    color: rgb(5, 61, 92);
+    font-family: 'Roboto Condensed', sans-serif;
+    font-size: 17px;
     text-align: center;
 }
 
