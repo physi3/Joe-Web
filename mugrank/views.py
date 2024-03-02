@@ -91,7 +91,7 @@ def profile(request):
 def createMug(request):
     invalid = False
     successful = False
-    successfulMessage = "Valid 🎥 List Created"
+    successfulMessage = "Valid Mug Created"
 
     if request.method == "POST":
         form = MugCreateForm(request.POST, request.FILES, requesting_user = request.user)
@@ -125,44 +125,6 @@ def createMug(request):
     return render(request, "createmug.html", {'form':newform, 'successful': successful,'invalid':invalid, 'errors': form.errors if invalid else [], 'successfulMessage' : successfulMessage})
 
 @login_required(login_url="/mugrank/login/")
-def letterboxdList(request):
-    listURL = request.GET.get('list_url', None)
-    if not listURL:
-        return HttpResponse("Please supply a list_url.")
-
-    filmList = Letterboxd.LetterboxdListToTMDBList(listURL, True, True)
-    listName = next(filmList)
-
-    newList = List(
-        name = listName,
-        showStats = False,
-        filmList = True,
-    )
-    newList.save()
-
-    listUser = ListUser(
-        list = newList,
-        user = request.user,
-    )
-
-    listUser.save()
-
-    mugCount = 0
-    for film in filmList:
-        newMug = FilmMug(
-            name = f"{film[0]['title']} ({film[0]['release_date'][:4]})",
-            list = newList,
-            tmdb_id = int(film[0]['id']),
-            letterboxd_slug = film[1],
-        )
-
-        newMug.updatePosterPath()
-        newMug.save()
-        mugCount += 1
-
-    return HttpResponse(f"Created new film list with {mugCount} films.")
-
-@login_required(login_url="/mugrank/login/")
 def createLetterboxdList(request):
     invalid = False
     successful = False
@@ -181,6 +143,7 @@ def createLetterboxdList(request):
 
             filmList = Letterboxd.LetterboxdListToTMDBList(listURL, True, True)
             listName = next(filmList)
+            listName = listName if listName else "Unnamed Letterboxd List"
 
             newList = List(
                 name = listName,

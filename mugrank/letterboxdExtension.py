@@ -11,7 +11,10 @@ def LetterboxdListToTMDBList(listURL, withLetterboxdSlugs = False, listNameFirst
 
     if (listNameFirst):
         titleElement = letterboxdSoup.find('div', class_='list-title-intro')
-        yield titleElement.find('h1', class_='title-1').text
+        if (titleElement):
+            yield titleElement.find('h1', class_='title-1').text
+        else:
+            yield None
 
     filmElements = letterboxdSoup.find_all('li', class_='poster-container')
     for filmElement in filmElements:
