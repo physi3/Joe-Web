@@ -5,8 +5,8 @@ import tmdbsimple as tmdb
 # Replace with your TMDB API key
 tmdb.API_KEY = 'ba28fa72da38f40b03d5aad5d0b4040f'
 
-def LetterboxdListToTMDBList(listURL, withLetterboxdSlugs = False, listNameFirst = False):
-    letterboxdResponse = requests.get(listURL)
+def LetterboxdListToTMDBList(listURL, withLetterboxdSlugs = False, listNameFirst = False, page = 1):
+    letterboxdResponse = requests.get(f"{listURL}/page/{page}/")
     letterboxdSoup = BeautifulSoup(letterboxdResponse.content, 'html.parser')
 
     if (listNameFirst):
@@ -33,11 +33,20 @@ def LetterboxdListToTMDBList(listURL, withLetterboxdSlugs = False, listNameFirst
             filmsWithName = [film for film in filmsWithName if film['release_date']]
             filmsWithName = sorted(filmsWithName, key = lambda film: abs(releaseYear - int(film['release_date'][:4])))
 
-        if (withLetterboxdSlugs):
+        if len(filmsWithName) == 0:
+            continue
+        elif (withLetterboxdSlugs):
             yield (filmsWithName[0], filmSlug)
         else:
             yield filmsWithName[0]
-        
+    
+    if (IsPaginated(letterboxdSoup) and filmElements):
+        for film in LetterboxdListToTMDBList(listURL, withLetterboxdSlugs, False, page + 1):
+            yield film
+
+def IsPaginated(letterboxdSoup):
+    paginationElement = letterboxdSoup.find('div', class_='pagination')
+    return paginationElement != None
 
 def GetLetterboxdFilmYear(letterboxdSlug):
     letterboxdResponse = requests.get(f"https://letterboxd.com/film/{letterboxdSlug}")
