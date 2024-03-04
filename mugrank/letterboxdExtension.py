@@ -1,9 +1,10 @@
 import requests
 from bs4 import BeautifulSoup
 import tmdbsimple as tmdb
+import os
 
 # Replace with your TMDB API key
-tmdb.API_KEY = 'ba28fa72da38f40b03d5aad5d0b4040f'
+tmdb.API_KEY = os.getenv('TMDB_KEY')
 
 def LetterboxdListToTMDBList(listURL, withLetterboxdSlugs = False, listNameFirst = False, page = 1):
     letterboxdResponse = requests.get(f"{listURL}/page/{page}/")
@@ -32,6 +33,9 @@ def LetterboxdListToTMDBList(listURL, withLetterboxdSlugs = False, listNameFirst
 
             filmsWithName = [film for film in filmsWithName if film['release_date']]
             filmsWithName = sorted(filmsWithName, key = lambda film: abs(releaseYear - int(film['release_date'][:4])))
+
+            if len(filmsWithName) != 0 and (abs(releaseYear - int(filmsWithName[0]['release_date'][:4])) >= 3):
+                continue  
 
         if len(filmsWithName) == 0:
             continue

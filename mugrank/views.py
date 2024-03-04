@@ -162,7 +162,7 @@ def createLetterboxdList(request):
             mugCount = 0
             for film in filmList:
                 newMug = FilmMug(
-                    name = f"{film[0]['title']} ({film[0]['release_date'][:4]})",
+                    name = film[0]['title'] + f" ({film[0]['release_date'][:4]})" if film[0]['release_date'] else "",
                     list = newList,
                     tmdb_id = int(film[0]['id']),
                     letterboxd_slug = film[1],
