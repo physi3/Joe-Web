@@ -7,7 +7,11 @@
 <a href="/sketches/">🠜 Back to Sketches</a> {% endblock %} {% block body %}
 
 <div class="page-content">
-    {% block scripts %} {% endblock %}
+    {% block scripts %}
+    {% for script in sketch.scripts %}
+    <script src="{% static 'sketches/' %}{{script}}"></script>
+    {% endfor %}
+    {% endblock %}
     <div id="sketch-holder"></div>
     <div id="input-holder"></div>
 </div>

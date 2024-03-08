@@ -17,12 +17,10 @@ def sketches(request):
     return render(request, "sketches.html", ctx)
 
 def sketchView(request, sketch):
-    
-    print(sketch)
     sketchesJSON = getSketchesJSON()["sketches"]
     correctSketchObj = None
     for sketchObj in sketchesJSON:
-        if sketchObj['templateName'] == sketch:
+        if sketchObj['urlName'] == sketch:
             correctSketchObj = sketchObj
     ctx = {"sketch":correctSketchObj}
 
