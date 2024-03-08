@@ -19,5 +19,9 @@
         "name": "Circle Packing",
         "imagePath": "sketches/sketch-images/CirclePacking.png",
         "templateName": "circlepacking"
+    }, {
+        "name": "Fractal Tree",
+        "imagePath": "sketches/sketch-images/FractalTree.png",
+        "templateName": "fractaltree"
     }]
 }
