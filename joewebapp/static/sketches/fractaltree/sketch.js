@@ -5,7 +5,6 @@ function setup() {
   sketchesCreateCanvas(1000, 700);
   angleMode(DEGREES); // Set angle mode to degrees
   newRandomSeed = random(0, 2000)
-  //noLoop(); // Draw the tree once
 }
 
 function draw() {
