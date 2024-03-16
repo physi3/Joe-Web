@@ -16,12 +16,27 @@ def sketches(request):
     ctx = {"sketches" : sketchesJSON["sketches"]}
     return render(request, "sketches.html", ctx)
 
-def sketchView(request, sketch):
+def getSketch(sketchName):
     sketchesJSON = getSketchesJSON()["sketches"]
     correctSketchObj = None
     for sketchObj in sketchesJSON:
-        if sketchObj['urlName'] == sketch:
+        if sketchObj['urlName'] == sketchName:
             correctSketchObj = sketchObj
-    ctx = {"sketch":correctSketchObj}
+    return correctSketchObj
 
-    return render(request, f"sketches/{correctSketchObj['templateName']}.html", ctx)
+def sketchView(request, sketch):
+    sketchObj = getSketch(sketch)
+    ctx = {"sketch":sketchObj}
+
+    return render(request, f"sketches/{sketchObj['templateName']}.html", ctx)
+
+def sourceView(request, sketch):
+    sketchObj = getSketch(sketch)
+    source = []
+    for script in sketchObj["scripts"]:
+        with open("joewebapp"+static("sketches/"+script)) as file:
+            source.append(file.read())
+
+    ctx = {"sketch":sketchObj, "source":source}
+
+    return render(request, f"sketches/source.html", ctx)

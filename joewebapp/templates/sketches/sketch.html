@@ -8,11 +8,13 @@
 
 <div class="page-content">
     {% block scripts %}
-    {% for script in sketch.scripts %}
-    <script src="{% static 'sketches/' %}{{script}}"></script>
-    {% endfor %}
+        {% for script in sketch.scripts %}
+        <script src="{% static 'sketches/' %}{{script}}"></script>
+        {% endfor %}
     {% endblock %}
     <div id="sketch-holder"></div>
     <div id="input-holder"></div>
+    <div ><a id="view-source" href="source/">View Source</a></div>
+    
 </div>
 {% endblock %}
