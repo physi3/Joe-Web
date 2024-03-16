@@ -1,14 +1,20 @@
 {% extends "subpage.html" %} {% load static %} {% block head %}
 <link rel="stylesheet" href={% static "/sketch.css" %}>
 
-<script src="{% static 'sketches/p5.js' %}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.js"></script>
 <script src="{% static 'sketches/sketches.js' %}"></script>
 {% endblock %} {% block title%} {{sketch.name}} {% endblock %} {% block nav %}
 <a href="/sketches/">🠜 Back to Sketches</a> {% endblock %} {% block body %}
 
 <div class="page-content">
-    {% block scripts %} {% endblock %}
+    {% block scripts %}
+        {% for script in sketch.scripts %}
+        <script src="{% static 'sketches/' %}{{script}}"></script>
+        {% endfor %}
+    {% endblock %}
     <div id="sketch-holder"></div>
     <div id="input-holder"></div>
+    <div ><a id="view-source" href="source/">View Source</a></div>
+    
 </div>
 {% endblock %}

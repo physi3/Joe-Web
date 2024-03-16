@@ -7,11 +7,6 @@ let waveSpeed; // Pixels per Second
 
 let sourcePos;
 
-/*
-let cursorSpeed = 40; // Pixels per Second
-let cursorPos = 0;
-*/
-
 function setup() {
     sketchesCreateCanvas(400, 400);
     noFill();
@@ -31,7 +26,6 @@ function draw() {
     frequency = frequencySlider.value();
     waveSpeed = waveSpeedSlider.value();
 
-    //cursorPos += cursorSpeed * deltaTime / 1000;
     let sourceDelta = createVector(mouseX, mouseY).sub(sourcePos);
     sourceDelta.limit(waveSpeed * deltaTime / 1000)
     sourcePos.add(sourceDelta);

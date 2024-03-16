@@ -12,8 +12,6 @@ function setup() {
       }
     }
   }
-  
-
 }
 
 function draw() {
@@ -83,7 +81,6 @@ class Circle{
   
   display(){
     stroke(this.colour)
-    //fill(this.colour)
     noFill()
     circle(this.pos.x, this.pos.y, this.r * 2);
   }

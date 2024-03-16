@@ -2,22 +2,38 @@
     "sketches": [{
         "name": "Ray Marching",
         "imagePath": "sketches/sketch-images/RayMarching.png",
-        "templateName": "raymarching"
+        "urlName": "raymarching",
+        "templateName": "sketch",
+        "scripts": ["raymarching/sketch.js", "raymarching/object.js", "raymarching/ray.js", "raymarching/raycaster.js", "raymarching/player.js"]
     }, {
         "name": "Doppler Effect",
         "imagePath": "sketches/sketch-images/Doppler.png",
-        "templateName": "doppler"
+        "urlName": "doppler",
+        "templateName": "sketch",
+        "scripts": ["doppler/sketch.js"]
     }, {
         "name": "Mandelbrot",
         "imagePath": "sketches/sketch-images/Mandelbrot.png",
-        "templateName": "mandelbrot"
+        "urlName": "mandelbrot",
+        "templateName": "sketch",
+        "scripts": ["mandelbrot/complex.js", "mandelbrot/complexPlane.js", "mandelbrot/sketch.js"]
     }, {
         "name": "Marching Squares",
         "imagePath": "sketches/sketch-images/MarchingSquares.png",
-        "templateName": "marchingsquares"
+        "urlName": "marchingsquares",
+        "templateName": "sketch",
+        "scripts": ["marchingsquares/sketch.js", "marchingsquares/noise.js", "marchingsquares/marching.js"]
     }, {
         "name": "Circle Packing",
         "imagePath": "sketches/sketch-images/CirclePacking.png",
-        "templateName": "circlepacking"
+        "urlName": "circlepacking",
+        "templateName": "circlepacking",
+        "scripts": ["circlepacking/sketch.js"]
+    }, {
+        "name": "Fractal Tree",
+        "imagePath": "sketches/sketch-images/FractalTree.png",
+        "urlName": "fractaltree",
+        "templateName": "sketch",
+        "scripts": ["fractaltree/sketch.js"]
     }]
 }
