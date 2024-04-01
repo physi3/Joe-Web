@@ -2,6 +2,11 @@ import requests
 from bs4 import BeautifulSoup
 import tmdbsimple as tmdb
 import os
+from os.path import join, dirname
+from dotenv import load_dotenv
+
+dotenv_path = join(dirname(__file__), '.env')
+load_dotenv(dotenv_path)
 
 # Replace with your TMDB API key
 tmdb.API_KEY = os.getenv('TMDB_KEY')
