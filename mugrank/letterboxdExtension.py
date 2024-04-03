@@ -68,5 +68,5 @@ def GetLetterboxdFilmYear(letterboxdSlug):
 def GetTMDBPoster(tmdbFilm, size="original"):
     sizes = ['w92', 'w154', 'w185', 'w342', 'w500', 'w780', 'original']
     if (size not in sizes):
-        raise Exception("Size given is not valid")
+        raise ValueError(f"Invalid size specified. Valid sizes are: {', '.join(sizes)}")
     return f"image.tmdb.org/t/p/{size}{tmdbFilm['poster_path']}"
