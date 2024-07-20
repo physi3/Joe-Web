@@ -4,7 +4,7 @@ from django.http import HttpResponse, JsonResponse
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 
-from mugrank.models import Mug, MugRankRecord, ListUser, List, FilmMug
+from mugrank.models import Mug, MugRankRecord, ListUser, List, FilmMug, FilmList
 from .forms import *
 
 from django.shortcuts import redirect
@@ -141,14 +141,13 @@ def createLetterboxdList(request):
             if not listURL:
                 return HttpResponse("Please supply a list_url.")
 
-            filmList = Letterboxd.LetterboxdListToTMDBList(listURL, True, True)
-            listName = next(filmList)
-            listName = listName if listName else "Unnamed Letterboxd List"
+            filmList = Letterboxd.LetterboxdList.FromURL(listURL)
 
-            newList = List(
-                name = listName,
+            newList = FilmList(
+                name = filmList.name,
                 showStats = False,
                 filmList = True,
+                letterboxdLID = filmList.id
             )
             newList.save()
 
@@ -160,15 +159,14 @@ def createLetterboxdList(request):
             listUser.save()
 
             mugCount = 0
-            for film in filmList:
+            for film in filmList.GetMovies():
                 newMug = FilmMug(
-                    name = film[0]['title'] + f" ({film[0]['release_date'][:4]})" if film[0]['release_date'] else "",
+                    name = film.name,
                     list = newList,
-                    tmdb_id = int(film[0]['id']),
-                    letterboxd_slug = film[1],
+                    letterboxd_slug = film.slug,
+                    poster_format_str = film.poster.formatURL
                 )
 
-                newMug.updatePosterPath()
                 newMug.save()
                 mugCount += 1
             successfulMessage = f"Valid 🎥 List Created with {mugCount} films"
