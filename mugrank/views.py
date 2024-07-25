@@ -4,7 +4,7 @@ from django.http import HttpResponse, JsonResponse
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 
-from mugrank.models import Mug, MugRankRecord, ListUser, List, FilmMug
+from mugrank.models import Mug, MugRankRecord, ListUser, List, FilmMug, FilmList
 from .forms import *
 
 from django.shortcuts import redirect
@@ -59,14 +59,14 @@ def showRankPage(request, listID):
     return render(request, "rank.html", ctx)
 
 @login_required(login_url="/mugrank/login/")
-def showViewPage(request, listID):
+def showViewPage(request, listID, updateMsg = ""):
     mugList = List.objects.get(id=listID)
     orderedMugs = Mug.objects.filter(list__exact=mugList).order_by('-elo')
 
     if (mugList.filmList):
         orderedMugs = [mug.filmmug for mug in orderedMugs]
 
-    return render(request, "view.html", {'listID': listID,'mugList':mugList, 'orderedMugs':orderedMugs})
+    return render(request, "view.html", {'listID': listID,'mugList':mugList, 'orderedMugs':orderedMugs, 'updateMsg':updateMsg})
 
 @login_required(login_url="/mugrank/login/")
 def showContributionsPage(request, listID):
@@ -141,14 +141,13 @@ def createLetterboxdList(request):
             if not listURL:
                 return HttpResponse("Please supply a list_url.")
 
-            filmList = Letterboxd.LetterboxdListToTMDBList(listURL, True, True)
-            listName = next(filmList)
-            listName = listName if listName else "Unnamed Letterboxd List"
+            filmList = Letterboxd.LetterboxdList.FromURL(listURL)
 
-            newList = List(
-                name = listName,
+            newList = FilmList(
+                name = filmList.name,
                 showStats = False,
                 filmList = True,
+                letterboxdLID = filmList.id
             )
             newList.save()
 
@@ -160,15 +159,14 @@ def createLetterboxdList(request):
             listUser.save()
 
             mugCount = 0
-            for film in filmList:
+            for film in filmList.GetMovies():
                 newMug = FilmMug(
-                    name = film[0]['title'] + f" ({film[0]['release_date'][:4]})" if film[0]['release_date'] else "",
+                    name = film.name,
                     list = newList,
-                    tmdb_id = int(film[0]['id']),
-                    letterboxd_slug = film[1],
+                    letterboxd_slug = film.slug,
+                    poster_format_str = film.poster.formatURL
                 )
 
-                newMug.updatePosterPath()
                 newMug.save()
                 mugCount += 1
             successfulMessage = f"Valid 🎥 List Created with {mugCount} films"
@@ -277,4 +275,24 @@ def acceptInvite(request, invitation):
             return redirect(f"../profile/?message=You've been added to '{mugList.name}'.")
     else:
         return redirect("../profile/?message=This invite is invalid.")
+
+@login_required(login_url="/mugrank/login/")
+def updateList(request, listID):
+    list = List.objects.get(id=listID)
+    if list.filmList:
+        list = list.filmlist
+    added, removed = list.update()
+
+    msgParts = []
+
+    if added != 0:
+        msgParts.append(f"added {added} {'mug' if added == 1 else 'mugs'}")
+    if removed != 0:
+        msgParts.append(f"removed {removed} {'mug' if removed == 1 else 'mugs'}")
     
+    updateMsg = ", ".join(msgParts)
+
+    if updateMsg:
+        updateMsg = updateMsg[0].upper() + updateMsg[1:] + '.'
+
+    return showViewPage(request, listID, updateMsg=updateMsg)

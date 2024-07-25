@@ -2,8 +2,7 @@ from pyexpat import model
 from django.db import models
 from django.contrib.auth.models import User
 from django.templatetags.static import static
-
-import tmdbsimple as tmdb
+from . import letterboxdExtension as Letterboxd
 
 class List(models.Model):
     name = models.CharField(max_length=100)
@@ -15,6 +14,33 @@ class List(models.Model):
 
     def __str__(self):
         return self.name
+
+    def update(self):
+        return (0, 0)
+
+class FilmList(List):
+    letterboxdLID = models.CharField(max_length=100, default="")
+
+    def update(self):
+        filmMugs = FilmMug.objects.filter(list=self)
+        slugs = [m.letterboxd_slug for m in filmMugs]
+        slugsToAdd, slugsToRemove = Letterboxd.LetterboxdList.FromLID(self.letterboxdLID).FindDifference(slugs)
+        
+        for slug in slugsToRemove:
+            filmMugs.get(letterboxd_slug=slug).delete()
+
+        filmsToAddList = Letterboxd.LetterboxdList(slugsToAdd)
+
+        for film in filmsToAddList.GetMovies():
+            mug = FilmMug(
+                name = film.name,
+                list = self,
+                letterboxd_slug = film.slug,
+                poster_format_str = film.poster.formatURL
+            )
+            mug.save()
+        
+        return (len(slugsToAdd), len(slugsToRemove))
 
 class Mug(models.Model):
     K = 32
@@ -40,25 +66,16 @@ class Mug(models.Model):
         return self.name
 
 class FilmMug(Mug):
-    tmdb_id = models.IntegerField()
+    poster_format_str = models.CharField(max_length=100)
     letterboxd_slug = models.CharField(max_length=100, blank=True)
 
-    def updatePosterPath(self):
-        movie = tmdb.Movies(self.tmdb_id)
-        if (path := movie.info()['poster_path']):
-            self.image_path = path
-        else:
-            self.image_path = "None"
-
     def large_image_url(self):
-        sizes = ['w92', 'w154', 'w185', 'w342', 'w500', 'w780', 'original']
-        size = sizes[5]
-        return f"https://image.tmdb.org/t/p/{size}{self.image_path}"
+        width = 1000
+        return self.poster_format_str.format(width = width, height = width * 1.5)
     
     def small_image_url(self):
-        sizes = ['w92', 'w154', 'w185', 'w342', 'w500', 'w780', 'original']
-        size = sizes[0]
-        return f"https://image.tmdb.org/t/p/{size}{self.image_path}"
+        width = 230
+        return self.poster_format_str.format(width = width, height = width * 1.5)
 
 
 class ListUser(models.Model):
