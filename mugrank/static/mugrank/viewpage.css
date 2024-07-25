@@ -67,6 +67,12 @@
     text-align: center;
 }
 
+p.updatemsg {
+    color: rgb(18, 80, 114);
+    margin: 0;
+    margin-bottom: 1em;
+}
+
 @media only screen and (orientation: portrait) {
     .viewbody {
         grid-template-columns: 0fr 1fr 0fr;

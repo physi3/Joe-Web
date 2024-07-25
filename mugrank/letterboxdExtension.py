@@ -4,7 +4,7 @@ import json
 from bs4 import BeautifulSoup
 
 class LetterboxdList:
-    def __init__(self, slugs, id, name):
+    def __init__(self, slugs, id = None, name = None):
         self.slugs = list(slugs)
         self.id = id
         self.name = name
@@ -27,6 +27,11 @@ class LetterboxdList:
         movieSlugs = set([x.slug for x in self.movies])
         return movieSlugs == set(self.slugs)
     
+    def FindDifference(self, slugs):
+        mySlugs = set(self.slugs)
+        theirSlugs = set(slugs)
+        return (mySlugs - theirSlugs, theirSlugs - mySlugs)
+
     @classmethod
     def FromLID(cls, lid):
         return cls.FromURL(f"https://boxd.it/{lid}")

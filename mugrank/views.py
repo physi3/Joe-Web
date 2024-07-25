@@ -59,14 +59,14 @@ def showRankPage(request, listID):
     return render(request, "rank.html", ctx)
 
 @login_required(login_url="/mugrank/login/")
-def showViewPage(request, listID):
+def showViewPage(request, listID, updateMsg = ""):
     mugList = List.objects.get(id=listID)
     orderedMugs = Mug.objects.filter(list__exact=mugList).order_by('-elo')
 
     if (mugList.filmList):
         orderedMugs = [mug.filmmug for mug in orderedMugs]
 
-    return render(request, "view.html", {'listID': listID,'mugList':mugList, 'orderedMugs':orderedMugs})
+    return render(request, "view.html", {'listID': listID,'mugList':mugList, 'orderedMugs':orderedMugs, 'updateMsg':updateMsg})
 
 @login_required(login_url="/mugrank/login/")
 def showContributionsPage(request, listID):
@@ -275,4 +275,24 @@ def acceptInvite(request, invitation):
             return redirect(f"../profile/?message=You've been added to '{mugList.name}'.")
     else:
         return redirect("../profile/?message=This invite is invalid.")
+
+@login_required(login_url="/mugrank/login/")
+def updateList(request, listID):
+    list = List.objects.get(id=listID)
+    if list.filmList:
+        list = list.filmlist
+    added, removed = list.update()
+
+    msgParts = []
+
+    if added != 0:
+        msgParts.append(f"added {added} {'mug' if added == 1 else 'mugs'}")
+    if removed != 0:
+        msgParts.append(f"removed {removed} {'mug' if removed == 1 else 'mugs'}")
     
+    updateMsg = ", ".join(msgParts)
+
+    if updateMsg:
+        updateMsg = updateMsg[0].upper() + updateMsg[1:] + '.'
+
+    return showViewPage(request, listID, updateMsg=updateMsg)

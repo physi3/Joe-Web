@@ -15,4 +15,5 @@ urlpatterns = [
     path('new/letterboxd/', views.createLetterboxdList),
     path('new/listuser/', views.createListInvite),
     path('invite/<invitation>', views.acceptInvite),
+    path("update/<int:listID>/", views.updateList),
 ]

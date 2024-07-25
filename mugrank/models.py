@@ -2,8 +2,7 @@ from pyexpat import model
 from django.db import models
 from django.contrib.auth.models import User
 from django.templatetags.static import static
-
-import tmdbsimple as tmdb
+from . import letterboxdExtension as Letterboxd
 
 class List(models.Model):
     name = models.CharField(max_length=100)
@@ -17,10 +16,31 @@ class List(models.Model):
         return self.name
 
     def update(self):
-        return True
+        return (0, 0)
 
 class FilmList(List):
     letterboxdLID = models.CharField(max_length=100, default="")
+
+    def update(self):
+        filmMugs = FilmMug.objects.filter(list=self)
+        slugs = [m.letterboxd_slug for m in filmMugs]
+        slugsToAdd, slugsToRemove = Letterboxd.LetterboxdList.FromLID(self.letterboxdLID).FindDifference(slugs)
+        
+        for slug in slugsToRemove:
+            filmMugs.get(letterboxd_slug=slug).delete()
+
+        filmsToAddList = Letterboxd.LetterboxdList(slugsToAdd)
+
+        for film in filmsToAddList.GetMovies():
+            mug = FilmMug(
+                name = film.name,
+                list = self,
+                letterboxd_slug = film.slug,
+                poster_format_str = film.poster.formatURL
+            )
+            mug.save()
+        
+        return (len(slugsToAdd), len(slugsToRemove))
 
 class Mug(models.Model):
     K = 32

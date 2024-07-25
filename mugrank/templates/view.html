@@ -3,6 +3,7 @@
 <div class="viewbody">
     <div class="mugs">
         <h2>{{mugList.name}}</h2>
+        <p class="updatemsg">{{updateMsg}}</p>
         <table>
             {% for mug in orderedMugs %}
             <tr>
@@ -15,6 +16,9 @@
             <p>There are no mugs in this list.</p>
             {% endfor %}
         </table>
+        <div class="buttons">
+            <a class="button" href='/mugrank/update/{{listID}}/'>Update List</a>
+        </div>
     </div>
 </div>
 {% endblock content %}
