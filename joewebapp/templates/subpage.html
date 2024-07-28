@@ -20,6 +20,7 @@
 </head>
 
 <body>
+    <div class="mouse-tracer" gradient="rgba(132,132,220,0.15) 0%, transparent 80%"></div>
     <div class="top-nav small-logo">
         {% include "logo.html" with onclick="location='/'" %}
         <h2>{% block title %} Page Name {% endblock %}</h2>
@@ -28,4 +29,5 @@
     </div>
 
     {% block body %} {% endblock %}
+    <script src={% static "/mousetrace.js" %}></script>
 </body>
