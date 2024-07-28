@@ -9,13 +9,25 @@
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
-    background-color: rgba(0, 0, 0, 0.22);
+    
     padding: 2em 0 2em 0;
     align-items: center;
+    margin: 1em;
+    background-color: rgba(0, 0, 0, 0.15);
+
+    border-radius: 1em;
+    border-top: rgba(255, 255, 255, 0.04) solid 1px;
+
+    transition: 0.1s ease-out;
 }
 
-.page-row.dark {
-    background-color: rgba(0, 0, 0, 0.30);
+.page-row:hover {
+    background-color: rgba(0, 0, 0, 0.4);
+    border-top: rgba(255, 255, 255, 0.2) solid 1px;
+}
+
+.page-row.dark:hover {
+    background-color: rgba(0, 0, 0, 0.5);
 }
 
 .page-row p {
@@ -35,6 +47,7 @@ h2 {
     color: transparent;
     background-clip: text;
     -webkit-background-clip: text;
+    font-family: Rubik;
 }
 
 #mug-mash h2:hover {

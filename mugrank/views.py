@@ -294,5 +294,7 @@ def updateList(request, listID):
 
     if updateMsg:
         updateMsg = updateMsg[0].upper() + updateMsg[1:] + '.'
+    else:
+        updateMsg = 'No changes made.'
 
     return showViewPage(request, listID, updateMsg=updateMsg)

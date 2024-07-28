@@ -1,7 +1,6 @@
 {% extends "subpage.html" %} {% load static %} {% block title%} Sketches {% endblock %}{% block head %}
 <link rel="stylesheet" href={% static "/sketches.css" %}> {% endblock %} {% block body %}
 
-
 <div class="sketches-container">
     {% for sketch in sketches %}
     <div class="sketch-card" onclick="location='{{ sketch.urlName }}'">
