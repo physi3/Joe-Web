@@ -17,8 +17,12 @@
     grid-area: image;
     border-radius: calc(var(--size)/22);
     width: var(--size);
-    height: calc(var(--size)*1.5);
     background-size: cover;
+}
+
+.card-image img {
+    width: inherit;
+    visibility: hidden;
 }
 
 .with-stats .card-image {
