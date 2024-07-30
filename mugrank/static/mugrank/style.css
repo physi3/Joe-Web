@@ -24,13 +24,11 @@ body {
 .button {
     background-image: linear-gradient(45deg, rgba(5, 72, 107, 1) 0%, rgb(42, 128, 173) 100%);
     min-width: 150px;
-
     border-radius: 5px;
     color: white;
-
     text-align: center;
     padding: 1em 0.4em 1em 0.4em;
-    margin: 0 0.5em 0 0.5em;
+    margin: 0 0.5em 0.5em 0.5em;
     font-family: 'Roboto', sans-serif;
 }
 
@@ -39,6 +37,7 @@ body {
     flex-direction: row;
     justify-content: space-evenly;
     padding: 1em;
+    flex-wrap: wrap;
 }
 
 .buttons a {
