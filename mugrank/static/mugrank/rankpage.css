@@ -2,10 +2,11 @@
     --size: 20vw;
     display: grid;
     grid-template-columns: var(--size);
-    grid-template-areas: "image" "stats";
+    grid-template-areas: "image" "stats-overlap" "stats";
+    grid-template-rows: auto calc(var(--size)/22) auto;
     border-radius: calc(var(--size)/22);
     background: #ffffff;
-    box-shadow: calc(var(--size)/60) calc(var(--size)/60) calc(var(--size)/20) rgba(0, 0, 0, 0.9);
+    box-shadow: calc(var(--size)/30) calc(var(--size)/30) calc(var(--size)/60) rgba(0, 0, 0, 0.2);
     font-family: 'Roboto';
     text-align: center;
     width: fit-content;
@@ -18,6 +19,7 @@
     border-radius: calc(var(--size)/22);
     width: var(--size);
     background-size: cover;
+    grid-area: image / image / stats-overlap / stats-overlap;
 }
 
 .card-image img {
@@ -31,14 +33,15 @@
 
 .card-stats {
     grid-area: stats;
-    border-radius: 0 0 calc(var(--size)/22) calc(var(--size)/22);
-    background: #05486B;
-    color: #EDF5E1;
+    border-radius: calc(var(--size)/22);
+    background: linear-gradient(0deg, rgb(232, 246, 255) 0%, white 100%);
+    color: rgb(15, 37, 52);
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
     display: none;
+    grid-area: stats-overlap / stats-overlap / stats /stats;
 }
 
 .with-stats .card-stats {
@@ -47,7 +50,7 @@
 
 .card-stats .elo {
     font-size: 1em;
-    font-weight: 100;
+    font-weight: 300;
     text-transform: uppercase;
     font-family: 'Roboto Mono', monospace;
     padding-bottom: 20px;
@@ -56,14 +59,17 @@
 .card-stats .name {
     font-size: 150%;
     font-weight: 500;
-    padding-top: 15px;
-    padding-bottom: 5px;
+    padding: 15px 5px 5px 5px;
     font-family: 'Roboto Condensed', sans-serif;
 }
 
 .card:hover {
     transform: scale(1.1);
-    box-shadow: calc(var(--size)/60) calc(var(--size)/60) calc(var(--size)/20) rgba(0, 0, 0, 0.6);
+    box-shadow: calc(var(--size)/20) calc(var(--size)/20) calc(var(--size)/60) rgba(0, 0, 0, 0.1);
+}
+
+.card:hover {
+    border-top: white;
 }
 
 .cards {
