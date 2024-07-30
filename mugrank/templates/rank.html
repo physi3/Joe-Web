@@ -7,7 +7,9 @@
         <input type="hidden" name="mugTwoID" value={{mugTwo.id}} />
         <input type="hidden" name="winner" value=0 />
         <div class="card{% if showStats %} with-stats{% endif %}" onclick="javascript:this.parentNode.submit();">
-            <div style='background-image: url("{{mugOne.large_image_url}}"), url("{{mugOne.small_image_url}}")' class="card-image"></div>
+            <div style='background-image: url("{{mugOne.large_image_url}}"), url("{{mugOne.small_image_url}}")' class="card-image">
+                <img src="{{mugOne.small_image_url}}" />
+            </div>
             <div class="card-stats">
                 <div class="name">{{mugOne.name}}</div>
                 <div class="elo">{{mugOne.elo}}</div>
@@ -21,7 +23,9 @@
         <input type="hidden" name="mugTwoID" value={{mugTwo.id}} />
         <input type="hidden" name="winner" value=1 />
         <div class="card{% if showStats %} with-stats{% endif %}" onclick="javascript:this.parentNode.submit();">
-            <div style='background-image: url("{{mugTwo.large_image_url}}"), url("{{mugTwo.small_image_url}}")' class="card-image"></div>
+            <div style='background-image: url("{{mugTwo.large_image_url}}"), url("{{mugTwo.small_image_url}}")' class="card-image">
+                <img src="{{mugTwo.small_image_url}}" />
+            </div>
             <div class="card-stats">
                 <div class="name">{{mugTwo.name}}</div>
                 <div class="elo">{{mugTwo.elo}}</div>

@@ -9,15 +9,12 @@
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
-    
     padding: 2em 0 2em 0;
     align-items: center;
     margin: 1em;
     background-color: rgba(0, 0, 0, 0.15);
-
     border-radius: 1em;
     border-top: rgba(255, 255, 255, 0.04) solid 1px;
-
     transition: 0.1s ease-out;
 }
 
@@ -40,6 +37,7 @@ h2 {
     font-size: 3em;
     transition: 360ms;
     text-align: center;
+    margin: 0.65em;
 }
 
 #mug-mash h2 {
