@@ -2,5 +2,6 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path("status/", views.getStatus)
+    path("status/", views.statusView),
+    path("status/<str:queryUser>/", views.getLatestStatus),
 ]

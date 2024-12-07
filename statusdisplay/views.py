@@ -16,13 +16,11 @@ load_dotenv(dotenv_path)
 # Create your views here.
 @csrf.csrf_exempt
 @http.require_http_methods(["GET", "POST"])
-def getStatus(request):
+def statusView(request):
     try:
         if request.method == "GET":
-            queryUser = User.objects.get(name=request.GET["user"])
-            latestStatus = Status.objects.filter(user=queryUser).order_by("-createTime")
-            return JsonResponse({'successs':True, 'queryUser':str(queryUser), 'status':model_to_dict(latestStatus[0])})
-        
+            return getLatestStatus(request, request.GET["user"])
+            
         elif request.method == "POST":
             if (request.POST['key'] != environ.get('KEY')):
                 raise Exception("Incorrect key passed.")
@@ -38,3 +36,8 @@ def getStatus(request):
             return JsonResponse({'success':True})
     except BaseException as error:
         return JsonResponse({'success':False, 'reason':f"{type(error).__name__}: {error}"})
+    
+def getLatestStatus(request, queryUser):
+    queryUserID = User.objects.get(name=queryUser)
+    latestStatus = Status.objects.filter(user=queryUserID).order_by("-createTime")
+    return JsonResponse({'successs':True, 'queryUser':str(queryUserID), 'status':model_to_dict(latestStatus[0])})
