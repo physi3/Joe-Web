@@ -46,8 +46,11 @@ def getLatestStatus(request, queryUser) -> JsonResponse:
 
 @csrf.csrf_exempt
 def getDisplayID(request, displayName) :
-    display = Display.objects.get(name=displayName)
-    return JsonResponse({'success':True, 'displayID':display.id})
+    try:
+        display = Display.objects.get(name=displayName)
+        return JsonResponse({'success':True, 'displayID':display.id})
+    except BaseException as error:
+        return JsonResponse({'success':False, 'reason':f"{type(error).__name__}: {error}"})
 
 @http.require_http_methods(["GET"])
 @csrf.csrf_exempt
