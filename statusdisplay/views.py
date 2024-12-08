@@ -36,7 +36,8 @@ def statusView(request):
             return JsonResponse({'success':True})
     except BaseException as error:
         return JsonResponse({'success':False, 'reason':f"{type(error).__name__}: {error}"})
-    
+
+@csrf.csrf_exempt
 def getLatestStatus(request, queryUser):
     queryUserID = User.objects.get(name=queryUser)
     latestStatus = Status.objects.filter(user=queryUserID).order_by("-createTime")
