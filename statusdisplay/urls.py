@@ -6,4 +6,5 @@ urlpatterns = [
     path("status/<str:queryUser>/", views.getLatestStatus),
     path("displayCheck/", views.displayCheck),
     path("getDisplayID/<str:displayName>/", views.getDisplayID),
+    path("toggleBacklight/", views.toggleBacklight),
 ]

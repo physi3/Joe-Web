@@ -45,12 +45,27 @@ def getLatestStatus(request, queryUser) -> JsonResponse:
     return JsonResponse({'successs':True, 'queryUser':str(queryUserID), 'status':model_to_dict(latestStatus[0])})
 
 @csrf.csrf_exempt
-def getDisplayID(request, displayName) :
+def getDisplayID(request, displayName):
     try:
         display = Display.objects.get(name=displayName)
         return JsonResponse({'success':True, 'displayID':display.id})
     except BaseException as error:
         return JsonResponse({'success':False, 'reason':f"{type(error).__name__}: {error}"})
+
+@csrf.csrf_exempt
+@http.require_http_methods(["POST"])
+def toggleBacklight(request):
+    try:
+        if (request.POST['key'] != environ.get('KEY')):
+            raise Exception("Incorrect key passed.")
+
+        display = Display.objects.get(id=int(request.POST['displayID']))
+        display.backlight = not display.backlight
+        display.save()
+        return JsonResponse({'success':True, 'state':display.backlight})
+    except BaseException as error:
+        return JsonResponse({'success':False, 'reason':f"{type(error).__name__}: {error}"})
+
 
 @http.require_http_methods(["GET"])
 @csrf.csrf_exempt
