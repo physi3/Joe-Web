@@ -22,3 +22,12 @@ class Status(models.Model):
 
     def __str__(self):
         return f"{self.user} - {self.createTime.strftime('%d %b %Y, %I:%M%p')}"
+
+class Display(models.Model):
+    name = models.CharField(max_length=32)
+    targetUser = models.ForeignKey(User, on_delete=models.RESTRICT)
+    backlight = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"{self.name}"
+    
