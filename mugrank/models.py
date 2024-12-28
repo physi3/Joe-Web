@@ -1,7 +1,7 @@
 from pyexpat import model
 from django.db import models
 from django.contrib.auth.models import User
-from django.templatetags.static import static
+from django.conf import settings
 from . import letterboxdExtension as Letterboxd
 
 class List(models.Model):
@@ -57,10 +57,10 @@ class Mug(models.Model):
         self.elo += round(self.K * (score - self.expectedScore(other)))
 
     def large_image_url(self):
-        return static(f"/mugimages/{self.image_path}")
+        return f'{settings.MEDIA_URL}mugimages/{self.image_path}'
 
     def small_image_url(self):
-        return static(f"/mugimages/{self.image_path}")
+        return f'{settings.MEDIA_URL}mugimages/{self.image_path}'
     
     def __str__(self):
         return self.name

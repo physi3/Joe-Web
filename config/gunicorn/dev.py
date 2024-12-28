@@ -1,3 +1,8 @@
+import os
+
+# Set the Django DEBUG environment variable
+os.environ['GUNICORN_DEBUG'] = 'True'
+
 # Bind to a specific IP address and port
 bind = "0.0.0.0:8080"
 
