@@ -10,7 +10,7 @@ timeout = 30
 # Log settings
 accesslog = "-"  # Log to stdout
 errorlog = "-"   # Log errors to stderr
-loglevel = "debug"  # Set log level (debug, info, warning, error, critical)
+loglevel = "info"  # Set log level (debug, info, warning, error, critical)
 
 wsgi_app = "joeweb.wsgi:application"
 
