@@ -138,5 +138,8 @@ GitHub.sublime-settings
 # Database
 db.sqlite3
 
+# Collected Static
+staticfiles/
+
 # Media
-mugrank/static/mugimages/
+mediafiles/
