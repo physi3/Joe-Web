@@ -37,7 +37,8 @@ ALLOWED_HOSTS = [
     'joemarriage.ddns.net',
     'www.joemarriage.com',
     'localhost',
-    'home.joemarriage.com'
+    'home.joemarriage.com',
+    'joemarriage.com',
 ]
 
 if (DEBUG):
