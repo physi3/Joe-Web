@@ -9,6 +9,9 @@ from .forms import *
 
 from django.shortcuts import redirect
 
+import os
+from django.conf import settings
+
 import requests
 import hashlib
 from os import environ
@@ -108,7 +111,8 @@ def createMug(request):
 
             image = form.cleaned_data['image_file']
             ext = image.name.split('.')[-1]
-            with open(f'mugrank/static/mugimages/{newMug.id}.{ext}', 'wb+') as f:
+            file_path = os.path.join(settings.MEDIA_ROOT, 'mugimages', f'{newMug.id}.{ext}')
+            with open(file_path, 'wb+') as f:
                 for chunk in image.chunks():
                     f.write(chunk)
             
@@ -217,7 +221,8 @@ def createList(request):
                 response = requests.get(image_url)
 
                 #ext = image.name.split('.')[-1]
-                with open(f'mugrank/static/mugimages/{newMug.id}.jpg', 'wb+') as f:
+                file_path = os.path.join(settings.MEDIA_ROOT, 'mugimages', f'{newMug.id}.jpg')
+                with open(file_path, 'wb+') as f:
                     f.write(response.content)
                 
                 newMug.image_path = f'{newMug.id}.jpg'

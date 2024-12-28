@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
-from os import environ
+from os import environ, getenv
 from os.path import join, dirname
 from dotenv import load_dotenv
 
@@ -30,14 +30,20 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-if (DEBUG := environ.get('DEBUG')):
-    DEBUG = DEBUG.lower() in ("true", "1", "t")
+if (ENV_DEBUG := environ.get('DEBUG')):
+    ENV_DEBUG = ENV_DEBUG.lower() in ("true", "1", "t")
+
+GUNICORN_DEBUG = getenv('GUNICORN_DEBUG', 'False') == 'True'
+
+# If either are true
+DEBUG = ENV_DEBUG or GUNICORN_DEBUG
 
 ALLOWED_HOSTS = [
     'joemarriage.ddns.net',
     'www.joemarriage.com',
     'localhost',
-    'home.joemarriage.com'
+    'home.joemarriage.com',
+    'joemarriage.com',
 ]
 
 if (DEBUG):
@@ -136,17 +142,19 @@ USE_TZ = True
 
 import os.path
 
-STATIC_ROOT = ''
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 STATIC_URL = '/static/'
 
-STATICFILES_DIRS = ( os.path.join('static'), )
+STATICFILES_DIRS = [
+    
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-MEDIA_ROOT = os.path.abspath('media/')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'mediafiles')
 
 MEDIA_URL = '/media/'
