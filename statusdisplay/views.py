@@ -1,11 +1,12 @@
 from django.shortcuts import render
 
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, StreamingHttpResponse
 from django.views.decorators import csrf, http
 from statusdisplay.models import User, Status, Display
 from django.forms.models import model_to_dict
 from django.utils import timezone
 
+import asyncio
 from os.path import join, dirname
 from os import environ
 from dotenv import load_dotenv
@@ -73,22 +74,47 @@ def displayCheck(request):
     response = {'success' : False}
     try:
         getDict = json.loads(request.body)
-
-        displayID = getDict["displayID"]
-        displayStatus = getDict["displayStatus"]
-
-        display = Display.objects.get(id=displayID)
-        
-        latestStatus = Status.objects.filter(user=display.targetUser).order_by("-createTime")[0]
-
-        if displayStatus["statusID"] != latestStatus.id:
-            response['status'] = model_to_dict(latestStatus)
-        
-        if displayStatus["backlight"] != display.backlight:
-            response['backlight'] = display.backlight
+        response.update(getDisplayDBDiff(getDict))
 
         response['success'] = True
         return JsonResponse(response)
     except BaseException as error:
         response['reason'] = f"{type(error).__name__}: {error}"
         return JsonResponse(response)
+
+def getDisplayDBDiff(displayInfo):
+    response = {'changed': False}
+    displayID = displayInfo["displayID"]
+    displayStatus = displayInfo["displayStatus"]
+
+    display = Display.objects.get(id=displayID)
+    
+    latestStatus = Status.objects.filter(user=display.targetUser).order_by("-createTime")[0]
+
+    if displayStatus["statusID"] != latestStatus.id:
+        response['status'] = model_to_dict(latestStatus)
+        response['status'].pop("createTime")
+        response['changed'] = True
+    
+    if displayStatus["backlight"] != display.backlight:
+        response['backlight'] = display.backlight
+        response['changed'] = True
+    return response
+
+
+async def displayCheckAsync(request):
+    displayState = json.loads(request.body)
+    async def displayStream():
+        while True:
+            displayDiff = await asyncio.to_thread(getDisplayDBDiff, displayState)
+            if displayDiff['changed']:
+                yield f"update: {json.dumps(displayDiff)}\n"
+                if "status" in displayDiff:
+                    displayState['displayStatus']['statusID'] = displayDiff['status']['id']
+                if "backlight" in displayDiff:
+                    displayState['displayStatus']['backlight'] = displayDiff['backlight']
+            await asyncio.sleep(1)
+    
+    response = StreamingHttpResponse(displayStream(), content_type='text/event-stream')
+    response['Cache-Control'] = 'no-cache'
+    return response
