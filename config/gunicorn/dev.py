@@ -9,6 +9,9 @@ bind = "0.0.0.0:8080"
 # Number of worker processes (adjust based on your server's CPU cores)
 workers = 2
 
+# Worker class (Uvicorn)
+worker_class = "uvicorn.workers.UvicornWorker"
+
 # Timeout in seconds (default: 30)
 timeout = 30
 
@@ -17,7 +20,7 @@ accesslog = "-"  # Log to stdout
 errorlog = "-"   # Log errors to stderr
 loglevel = "debug"  # Set log level (debug, info, warning, error, critical)
 
-wsgi_app = "joeweb.wsgi:application"
+asgi_app = "joeweb.asgi:application"
 
 daemon = False
 
