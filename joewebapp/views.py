@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.templatetags.static import static
 from json import loads as loadJson
+from .models import *
 
 def index(request):
     return render(request, "index.html")
@@ -40,3 +41,23 @@ def sourceView(request, sketch):
     ctx = {"sketch":sketchObj, "source":source}
 
     return render(request, f"sketches/source.html", ctx)
+
+def auth(request, service):
+    body = {}
+
+    if request.user.is_authenticated:
+        user = request.user
+        body["username"] = user.username
+    else:
+        return JsonResponse({"error": "Not logged in"}, status=401)
+
+    try:
+        serviceObject = Service.objects.get(name__iexact=service)
+        body["service"] = serviceObject.name
+        
+    except Service.DoesNotExist:
+        return JsonResponse({"error": "Invalid service"}, status=400)
+
+    body["authorized"] = user.is_superuser or UserServiceAccess.objects.filter(user=request.user, service=serviceObject).exists()
+    statusCode = 200 if body["authorized"] else 403
+    return JsonResponse(body, status = statusCode)
