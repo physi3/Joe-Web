@@ -15,7 +15,7 @@ accesslog = "-"  # Log to stdout
 errorlog = "-"   # Log errors to stderr
 loglevel = "info"  # Set log level (debug, info, warning, error, critical)
 
-asgi_app = "joeweb.asgi:application"
+wsgi_app = "joeweb.asgi:application"
 
 daemon = False
 
