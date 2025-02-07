@@ -1,12 +1,12 @@
 from django.shortcuts import render
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
+from django.contrib.auth.views import LoginView
 from django.templatetags.static import static
 from json import loads as loadJson
 from .models import *
 
 def index(request):
     return render(request, "index.html")
-
 
 def getSketchesJSON():
     with open("joewebapp/"+static('sketches.json')) as f:
@@ -41,6 +41,15 @@ def sourceView(request, sketch):
     ctx = {"sketch":sketchObj, "source":source}
 
     return render(request, f"sketches/source.html", ctx)
+
+class JoeLoginView(LoginView):
+    def get_redirect_url(self):
+        next_url = self.request.GET.get('next', None)
+        
+        if next_url:
+            return next_url
+        
+        return super().get_redirect_url()  # Fallback to default URL
 
 def auth(request, service):
     body = {}
