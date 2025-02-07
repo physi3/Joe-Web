@@ -17,3 +17,4 @@ soupsieve==2.6
 sqlparse==0.5.2
 tzdata==2024.2
 urllib3==1.26.20
+uvicorn==0.34.0

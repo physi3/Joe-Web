@@ -93,6 +93,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'joeweb.wsgi.application'
+ASGI_APPLICATION = 'joeweb.asgi.application'
 
 
 # Database
