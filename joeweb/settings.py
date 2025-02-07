@@ -41,7 +41,6 @@ DEBUG = ENV_DEBUG or GUNICORN_DEBUG
 ALLOWED_HOSTS = [
     'www.joemarriage.com',
     'home.joemarriage.com',
-    'auth.joemarriage.com',
     'joemarriage.com',
 ]
 
