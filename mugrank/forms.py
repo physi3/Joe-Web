@@ -15,6 +15,15 @@ class ListCreateForm(forms.Form):
     list_name = forms.CharField(label="List Name",max_length=100)
     json = forms.JSONField(label="List JSON")
 
+class ListExtendForm(forms.Form):
+    list = forms.ModelChoiceField(List.objects, required=True, label="Mug List")
+    json = forms.JSONField(label="List JSON")
+
+    def __init__(self, *args, **kwargs):
+        req_user = kwargs.pop('requesting_user')
+        super().__init__(*args, **kwargs)
+        self.fields['list'].queryset = List.objects.filter(id__in=ListUser.objects.filter(user=req_user).values("list"))
+
 class LetterboxdCreateForm(forms.Form):
     letterboxd_url = forms.CharField(label="Letterboxd URL",max_length=100)
 

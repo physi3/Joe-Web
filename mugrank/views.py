@@ -238,6 +238,50 @@ def createList(request):
     
     return render(request, "createlist.html", {'form':newform, 'successful': successful,'invalid':invalid, 'errors': form.errors if invalid else [], 'successfulMessage' : successfulMessage})
 
+@login_required(login_url="/mugrank/login/")
+def extendList(request):
+    invalid = False
+    successful = False
+    successfulMessage = "List Successfully Extended"
+
+    if request.method == "POST":
+        form = ListExtendForm(request.POST, requesting_user = request.user)
+        if form.is_valid():
+            #Process Data
+            successful = True
+
+            extend_list = form.cleaned_data['list']
+
+            for jsonMug in form.cleaned_data['json']["mugs"]:
+                newMug = Mug(
+                    name = jsonMug["name"],
+                    list = extend_list,
+                )
+
+                newMug.save()
+
+                image_url = jsonMug["image"]
+                response = requests.get(image_url)
+
+                #ext = image.name.split('.')[-1]
+                file_path = os.path.join(settings.MEDIA_ROOT, 'mugimages', f'{newMug.id}.jpg')
+                with open(file_path, 'wb+') as f:
+                    f.write(response.content)
+                
+                newMug.image_path = f'{newMug.id}.jpg'
+                
+                newMug.save()
+
+        else:
+            invalid = True
+            pass
+    
+    #Create blank form
+    newform = ListExtendForm(requesting_user = request.user, initial={'json': {"mugs":[]}})
+    
+    return render(request, "createlist.html", {'form':newform, 'successful': successful,'invalid':invalid, 'errors': form.errors if invalid else [], 'successfulMessage' : successfulMessage})
+
+
 def listHash(listID):
     hashed = hashlib.md5(f"{environ.get('SECRET_SALT')}{listID}".encode())
     return hashed.hexdigest()[:5]

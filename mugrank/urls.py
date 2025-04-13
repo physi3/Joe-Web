@@ -12,6 +12,7 @@ urlpatterns = [
     path('profile/', views.profile),
     path('new/mug/', views.createMug),
     path('new/list/', views.createList),
+    path('new/extendlist/', views.extendList),
     path('new/letterboxd/', views.createLetterboxdList),
     path('new/listuser/', views.createListInvite),
     path('invite/<invitation>', views.acceptInvite),
