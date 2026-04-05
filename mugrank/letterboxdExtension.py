@@ -56,11 +56,11 @@ class LetterboxdList:
             if (urlElement):
                 listID = urlElement.find('input')['value'].split("/")[-1]
 
-        filmElements = letterboxdSoup.find_all('li', class_='poster-container')
-
+        filmElements = letterboxdSoup.find_all('li', class_='posteritem')
+        
         def GetSlugGenerator():
             for filmElement in filmElements:
-                filmSlug = filmElement.find('div', class_='film-poster')['data-film-slug']
+                filmSlug = filmElement.find('div', class_='react-component')['data-item-slug']
                 yield filmSlug
             
             paginationElement = letterboxdSoup.find('div', class_='pagination')
@@ -123,3 +123,9 @@ class LetterboxdPoster:
         durl[-2] = "{height:.0f}"
         durl[-4] = "{width:.0f}"
         return "-".join(durl)
+
+if __name__ == "__main__":
+    list = LetterboxdList.FromURL("https://letterboxd.com/physi/list/movies-named-crash/")
+    print(list.name)
+    for movie in list.GetMovies():
+        print(movie.name)

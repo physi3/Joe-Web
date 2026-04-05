@@ -8,12 +8,13 @@ GitPython==3.1.27
 gunicorn==23.0.0
 idna==3.10
 packaging==24.2
-Pillow==11.0.0
+Pillow
 python-dotenv==0.20.0
-regex==2024.5.15
+regex
 requests==2.28.2
 smmap==5.0.1
 soupsieve==2.6
 sqlparse==0.5.2
 tzdata==2024.2
 urllib3==1.26.20
+legacy-cgi

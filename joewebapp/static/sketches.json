@@ -4,36 +4,42 @@
         "imagePath": "sketches/sketch-images/RayMarching.png",
         "urlName": "raymarching",
         "templateName": "sketch",
-        "scripts": ["raymarching/sketch.js", "raymarching/object.js", "raymarching/ray.js", "raymarching/raycaster.js", "raymarching/player.js"]
+        "scripts": ["raymarching/sketch.js", "raymarching/object.js", "raymarching/ray.js", "raymarching/raycaster.js", "raymarching/player.js"],
+        "libraries": []
     }, {
         "name": "Doppler Effect",
         "imagePath": "sketches/sketch-images/Doppler.png",
         "urlName": "doppler",
         "templateName": "sketch",
-        "scripts": ["doppler/sketch.js"]
+        "scripts": ["doppler/sketch.js"],
+        "libraries": []
     }, {
         "name": "Mandelbrot",
         "imagePath": "sketches/sketch-images/Mandelbrot.png",
         "urlName": "mandelbrot",
         "templateName": "sketch",
-        "scripts": ["mandelbrot/complex.js", "mandelbrot/complexPlane.js", "mandelbrot/sketch.js"]
+        "scripts": ["mandelbrot/complex.js", "mandelbrot/complexPlane.js", "mandelbrot/sketch.js"],
+        "libraries": []
     }, {
         "name": "Marching Squares",
         "imagePath": "sketches/sketch-images/MarchingSquares.png",
         "urlName": "marchingsquares",
         "templateName": "sketch",
-        "scripts": ["marchingsquares/sketch.js", "marchingsquares/noise.js", "marchingsquares/marching.js"]
+        "scripts": ["marchingsquares/sketch.js", "marchingsquares/noise.js", "marchingsquares/marching.js"],
+        "libraries": []
     }, {
         "name": "Circle Packing",
         "imagePath": "sketches/sketch-images/CirclePacking.png",
         "urlName": "circlepacking",
         "templateName": "circlepacking",
-        "scripts": ["circlepacking/sketch.js"]
+        "scripts": ["circlepacking/sketch.js"],
+        "libraries": []
     }, {
         "name": "Fractal Tree",
         "imagePath": "sketches/sketch-images/FractalTree.png",
         "urlName": "fractaltree",
         "templateName": "sketch",
-        "scripts": ["fractaltree/sketch.js"]
+        "scripts": ["fractaltree/sketch.js"],
+        "libraries": []
     }]
 }
