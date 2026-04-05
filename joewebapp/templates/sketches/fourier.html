@@ -1,0 +1,16 @@
+{% extends "sketches/sketch.html" %} {% block scripts %} {% load static %}
+
+{% for script in sketch.scripts %}
+<script src="{% static 'sketches/' %}{{script}}"></script>
+{% endfor %}
+
+{% for library in sketch.libraries %}
+<script src="{{ library }}"></script>
+{% endfor %}
+
+<script>
+    function preload(){
+        fourierJSON = loadJSON("{% static 'sketches/fourier/coefficients.json' %}")
+    }
+</script>
+{% endblock %}

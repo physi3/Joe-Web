@@ -41,5 +41,12 @@
         "templateName": "sketch",
         "scripts": ["fractaltree/sketch.js"],
         "libraries": []
+    }, {
+        "name": "Fourier Series",
+        "imagePath": "sketches/sketch-images/Fourier.png",
+        "urlName": "fourier",
+        "templateName": "fourier",
+        "scripts": ["fourier/sketch.js"],
+        "libraries": ["https://cdnjs.cloudflare.com/ajax/libs/mathjs/14.8.1/math.min.js"]
     }]
 }
