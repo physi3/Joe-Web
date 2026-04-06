@@ -91,6 +91,7 @@ h1 {
 
 .top-nav h2 {
     font-size: 3em;
+    font-weight: 500;
     text-align: center;
     margin: 0.5em 1em 0.5em 1em;
 }
@@ -116,8 +117,13 @@ h1 {
 }
 
 @media (orientation: portrait) {
-    .top-nav {
+    .top-nav-collapsable {
         flex-direction: column;
         padding-bottom: 20px;
+    }
+
+    .top-nav-collapsable > h2 {
+        margin-top: 0;
+        margin-bottom: 0;
     }
 }

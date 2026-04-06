@@ -1,0 +1,34 @@
+{% extends "subpage.html" %}
+{% load static %}
+{% block title%} Login {% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href={% static "/auth/auth.css" %}>
+<link rel="stylesheet" href={% static "/auth/login.css" %}>
+{% endblock %}
+
+{% block body %}
+<div class="login">
+    <form method="post" , class="loginform">
+        {% csrf_token %}
+        <td>{{ form.username.label_tag }}</td>
+        <td>{{ form.username }}</td>
+        <td>{{ form.password.label_tag }}</td>
+        <td>{{ form.password }}</td>
+        <input type="submit" value="Login" , style="grid-area:loginbutton">
+        <div class="errors">
+            {% if form.errors %}
+            <p>Your username and password didn't match. Please try again.</p>
+            {% endif %} {% if next %} {% if user.is_authenticated %}
+            <p>Your account doesn't have access to this page. To proceed, please login with an account that has access.</p>
+            {% else %}
+            <p>Please login to see this page.</p>
+            {% endif %} {% endif %}
+        </div>
+
+
+        <input type="hidden" name="next" value="{{ next }}">
+    </form>
+
+</div>
+{% endblock %}

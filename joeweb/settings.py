@@ -39,15 +39,19 @@ GUNICORN_DEBUG = getenv('GUNICORN_DEBUG', 'False') == 'True'
 DEBUG = ENV_DEBUG or GUNICORN_DEBUG
 
 ALLOWED_HOSTS = [
-    'joemarriage.ddns.net',
     'www.joemarriage.com',
-    'localhost',
     'home.joemarriage.com',
     'joemarriage.com',
 ]
 
+MAIN_DOMAIN = ".joemarriage.com" 
+
 if (DEBUG):
     ALLOWED_HOSTS.append('*')
+    MAIN_DOMAIN = None
+
+SESSION_COOKIE_DOMAIN = MAIN_DOMAIN
+CSRF_COOKIE_DOMAIN = MAIN_DOMAIN
 
 # Application definition
 

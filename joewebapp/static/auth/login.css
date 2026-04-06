@@ -1,0 +1,44 @@
+.login {
+    max-width: 400px;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+}
+
+.loginform {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: repeat(3, 50px);
+    grid-template-areas: ". ." ". ." "loginbutton loginbutton" "errors errors";
+    border-radius: 15px;
+    padding: 15px;
+    background: rgba(3, 4, 10, 0.8);
+    margin: 10px;
+    margin-top: 2em;
+}
+
+.loginform input {
+    margin: 5px;
+    border: 1px;
+    border-radius: 5px;
+    border-style: solid;
+    border-color: rgb(0, 0, 0, 0.5);
+}
+
+.loginform .errors {
+    grid-area: errors;
+    font-family: 'Roboto Condensed', sans-serif;
+    color: rgb(247, 12, 12);
+    text-align: center;
+}
+
+.loginform label {
+    text-align: center;
+    margin: auto;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    height: 100vh;
+}
