@@ -8,29 +8,74 @@ let fourierJSON;
 function setup() {
   sketchesCreateCanvas(800, 500);
 
-  Fourier.scale = 200;
-  fourier = createFourier(Fourier.JSONCoef("britain"), 100, false);
+  let fourierClasses = {
+    "britain" : new FourierClass(Fourier.JSONCoef("britain"), 100, false),
+    "ukraine" : new FourierClass(Fourier.JSONCoef("ukraine"), 100, false),
+    "linear": new FourierClass(Fourier.LinearCoef, 100),
+    "step": new FourierClass(Fourier.StepCoef, 100),
+    "ellipse": new FourierClass(Fourier.EllipseCoef, 100),
+    "fish": new FourierClass(Fourier.FishCoef, 100)
+  };
 
-  tSlide = createSlider(0, 1, 0, 0.001);
+  let currentFourierClass = fourierClasses["britain"];
+
+  Fourier.scale = 200;
+  let initalJ = 100;
+  fourier = currentFourierClass.createFourier(initalJ);
+
+  tSlide = createSlider(0, 1, 0, 0);
+  tSlide.label("");
+  tSlide.size(350);
+  tSlide.id("tSlide");
+
+  dropdown = createSelect();
+
+  jInput = createInput(initalJ, "number");
+  jInput.label("Number of coefficients:");
+
+  dropdown.option("Britain", "britain");
+  dropdown.option("Ukraine", "ukraine");
+  dropdown.option("Linear", "linear");
+  dropdown.option("Step", "step");
+  
+  dropdown.label("Function:")
+  dropdown.changed(() => {
+    currentFourierClass = fourierClasses[dropdown.value()];
+    fourier = currentFourierClass.createFourier(parseInt(jInput.value()));
+  });
+
+  jInput.changed(() => {
+    fourier = currentFourierClass.createFourier(parseInt(jInput.value()));
+  });
+
   axes = new Axes(createVector(100, 250), 300);
 }
 
-function createFourier(coefficientFunction, K, real = true) {
-  let last = real ? new RealFourierParent(-300, 300) : new ComplexFourierParent();
+class FourierClass {
 
-  for (let k = 0; k < K; k++) {
-    for (let s = -1; s <= 1; s += 2) {
-      let coeff = coefficientFunction(s * k);
-      if (math.abs(coeff) < 0.00001)
-        continue;
-      last = new FourierComponent(coeff, s * k, last);
-
-      if (k == 0)
-        break;
-    }
+  constructor(coefficientFunction, maxK, real = true) {
+    this.coefficientFunction = coefficientFunction;
+    this.maxK = maxK;
+    this.real = real;
   }
 
-  return last;
+  createFourier(K) {
+    let last = this.real ? new RealFourierParent(-300, 300) : new ComplexFourierParent();
+
+    for (let k = 0; k < K; k++) {
+      for (let s = -1; s <= 1; s += 2) {
+        let coeff = this.coefficientFunction(s * k);
+        if (math.abs(coeff) < 0.00001)
+          continue;
+        last = new FourierComponent(coeff, s * k, last);
+
+        if (k == 0)
+          break;
+      }
+    }
+
+    return last;
+  }
 }
 
 function draw() {
@@ -128,6 +173,7 @@ class FourierComponent {
     this.coefficentPolar = this.coefficient.toPolar();
     this.frequency = frequency;
     this.parent = parent;
+    this.cache = {};
   }
   
   center(t) {
@@ -135,11 +181,16 @@ class FourierComponent {
   }
 
   end(t) {
+    if (this.cache.hasOwnProperty(t))
+      return this.cache[t];
+
     let angle = this.coefficentPolar.phi + this.frequency * t * Math.PI * 2;
-    return createVector(
+    let end = createVector(
       this.coefficentPolar.r * Math.cos(angle),
       this.coefficentPolar.r * Math.sin(angle)
     ).add(this.center(t));
+    this.cache[t] = end;
+    return end;
   }
 
   draw(t) {

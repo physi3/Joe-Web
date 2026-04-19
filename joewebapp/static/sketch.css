@@ -18,6 +18,11 @@
     align-items: stretch;
 }
 
+
+#input-holder label span {
+    padding-right: 0.75em;
+}
+
 #view-source {
     background-color: rgba(0, 0, 0, 0.6);
     padding: 0.6em;

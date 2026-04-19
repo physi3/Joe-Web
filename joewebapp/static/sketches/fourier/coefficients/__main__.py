@@ -1,4 +1,5 @@
-from .britain import britain
+from .country import country
 
-print("Calculating Fourier coefficients for Britain...")
-britain.save('britain', 'coefficients.json')
+print('Saving coefficients for Ukraine and Britain...')
+country.save('ukraine', 'ukraine.geojson', 'coefficients.json')
+country.save('britain', 'britain.geojson', 'coefficients.json')
