@@ -15,6 +15,12 @@ def save_coefficients_discrete(arr, name, filename = 'coefficients.json'):
 
     coeffs = np.fft.fft(arr) / len(arr)
     fourier_coefficients = {k: [coeffs[k].real, coeffs[k].imag] for k in range(-len(arr)//2, len(arr)//2)}
+    save_coefficients(fourier_coefficients, name, filename)
+
+def save_coefficients(fourier_coefficients, name, filename = 'coefficients.json', include_constant = True):
+    if not include_constant:
+        fourier_coefficients[0] = [0, 0]
+    
     out = {
         "coefficients": fourier_coefficients
         }
@@ -31,20 +37,6 @@ def save_coefficients_discrete(arr, name, filename = 'coefficients.json'):
     with open(filename, 'w') as f:
         json.dump(data, f, indent=4)
 
-def save_coefficients(func, J, name, filename = 'coefficients.json'):
+def save_coefficients_continuous(func, J, name, filename = 'coefficients.json', include_constant = True):
     fourier_coefficients = {k:fourier_coefficient(func, k) for k in range(-J, J+1)}
-    out = {
-        "coefficients": fourier_coefficients
-        }
-    
-    with open(filename, 'r') as f:
-        data = json.load(f)
-    
-    if data.get(name) is not None:
-        print(f"Overwriting existing coefficients for {name}")
-        data[name]["coefficients"] = fourier_coefficients
-    else:
-        data[name] = out
-    
-    with open(filename, 'w') as f:
-        json.dump(data, f, indent=4)
+    save_coefficients(fourier_coefficients, name, filename, include_constant=include_constant)

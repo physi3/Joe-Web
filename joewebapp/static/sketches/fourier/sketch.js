@@ -11,6 +11,7 @@ function setup() {
   let fourierClasses = {
     "britain" : new FourierClass(Fourier.JSONCoef("britain"), 100, false),
     "ukraine" : new FourierClass(Fourier.JSONCoef("ukraine"), 100, false),
+    "treble": new FourierClass(Fourier.JSONCoef("treble"), 100, false),
     "linear": new FourierClass(Fourier.LinearCoef, 100),
     "step": new FourierClass(Fourier.StepCoef, 100),
     "ellipse": new FourierClass(Fourier.EllipseCoef, 100),
@@ -35,6 +36,7 @@ function setup() {
 
   dropdown.option("Britain", "britain");
   dropdown.option("Ukraine", "ukraine");
+  dropdown.option("Treble Clef", "treble");
   dropdown.option("Linear", "linear");
   dropdown.option("Step", "step");
   
