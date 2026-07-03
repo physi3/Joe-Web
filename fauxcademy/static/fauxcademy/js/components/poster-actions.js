@@ -19,9 +19,39 @@ function getCurrentTool() {
     return "select";
 }
 
+function openAddFilmModal() {
+    openModal(`
+            <h2>Add Film</h2>
+
+            <input id="film-search-input" type="text" placeholder="Search TMDB..." />
+
+            <div id="search-results" class="search-results"></div>
+
+            <button id="close-modal">Close</button>
+    `);
+}
+
+function openDeleteModal(filmId, filmTitle) {
+    openModal(`
+        <h2>Delete Film</h2>
+
+        <p>Are you sure you want to delete <strong>${filmTitle}</strong>?</p>
+
+        <div class="modal-actions">
+            <button onclick="deleteFilm(${filmId})" class="danger">
+                Delete
+            </button>
+
+            <button onclick="closeModal()">
+                Cancel
+            </button>
+        </div>
+    `);
+}
+
 function posterClicked(filmId, poster) {
     if (filmId === "add") {
-        openModal();
+        openAddFilmModal();
         return;
     }
 
@@ -39,6 +69,7 @@ function posterClicked(filmId, poster) {
 }
 
 function deleteFilm(filmId, poster) {
+    openDeleteModal(filmId, poster.dataset.filmTitle);
     poster.remove();
     console.log("Deleting film", filmId);
 }

@@ -6,6 +6,8 @@
     <meta charset="UTF-8">
     <title>{% block title %}Awards{% endblock %}</title>
 
+    {% csrf_token %}
+    <meta name="csrf-token" content="{{ csrf_token }}">
     <link rel="stylesheet" href="{% static 'fauxcademy/css/base.css' %}">
     {% block extra_css %}{% endblock %}
 
@@ -25,6 +27,14 @@
 
     </div>
 
+    <div id="modal" class="modal hidden">
+        <div class="modal-backdrop"></div>
+
+        <div class="modal-content" id="modal-content">
+            <!-- dynamic content goes here -->
+        </div>
+    </div>
+
     {% block outer-content %}{% endblock %}
 </body>
 
@@ -35,5 +45,7 @@ lucide.createIcons({
     }
 });
 </script>
+
+<script type="module" src="{% static 'fauxcademy/js/pages/base.js' %}"></script>
 
 </html>

@@ -2,12 +2,14 @@ from typing import Any, cast
 
 from django.http import JsonResponse
 from django.shortcuts import render
+from django.views.decorators.csrf import ensure_csrf_cookie
 from .models import Awards, EligibleFilm
 from .services.tmdbClient import MovieClient, PosterURL
 
 import json
 
 # Create your views here.
+@ensure_csrf_cookie
 def userList(request, username, listname):
     award = Awards.objects.filter(owner__username=username, name=listname)
 

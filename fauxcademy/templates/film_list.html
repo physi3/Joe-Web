@@ -66,19 +66,5 @@
 {% endblock %}
 
 {% block outer-content %}
-<div id="add-film-modal" class="modal hidden", id="add-film-modal">
-    <div class="modal-backdrop"></div>
-
-    <div class="modal-content">
-        <h2>Add Film</h2>
-
-        <input id="film-search-input" type="text" placeholder="Search TMDB..." />
-
-        <div id="search-results" class="search-results"></div>
-
-        <button id="close-modal">Close</button>
-    </div>
-</div>
-
 <script type="module" src="{% static 'fauxcademy/js/pages/film_list.js' %}"></script>
 {% endblock %}

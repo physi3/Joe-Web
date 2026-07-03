@@ -1,4 +1,5 @@
-const modal = document.getElementById("add-film-modal");
+const modal = document.getElementById("modal");
+const modalContent = document.getElementById("modal-content");
 const backdrop = document.querySelector(".modal-backdrop");
 const closeButton = document.getElementById("close-modal");
 
@@ -16,10 +17,12 @@ export function initModal() {
     }
 }
 
-export function openModal() {
+export function openModal(html) {
+    modalContent.innerHTML = html;
     modal?.classList.remove("hidden");
 }
 
 export function closeModal() {
     modal?.classList.add("hidden");
+    modalContent.innerHTML = "";
 }

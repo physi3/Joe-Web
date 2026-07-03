@@ -61,12 +61,30 @@ function getCookie(name) {
     return cookieValue;
 }
 
+function getCsrfToken() {
+    const metaTag = document.querySelector('meta[name="csrf-token"]');
+    if (metaTag?.content) {
+        return metaTag.content;
+    }
+
+    return getCookie("csrftoken");
+}
+
 async function addFilm(film) {
+    const csrfToken = getCsrfToken();
+
+    if (!csrfToken) {
+        console.error("CSRF token missing");
+        return;
+    }
+
     await fetch("add-film/", {
         method: "POST",
+        credentials: "same-origin",
         headers: {
             "Content-Type": "application/json",
-            "X-CSRFToken": getCookie("csrftoken"),
+            "X-CSRFToken": csrfToken,
+            "X-Requested-With": "XMLHttpRequest",
         },
         body: JSON.stringify(film),
     });
