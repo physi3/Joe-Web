@@ -18,3 +18,4 @@ sqlparse==0.5.2
 tzdata==2024.2
 urllib3==1.26.20
 legacy-cgi
+tmdbv3api

@@ -1,0 +1,39 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Awards{% endblock %}</title>
+
+    <link rel="stylesheet" href="{% static 'main.css' %}">
+    {% block extra_css %}{% endblock %}
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+    <div class="app-shell">
+
+        {% block sidebar %}
+        {% endblock %}
+
+        <main class="main-content">
+            {% block content %}{% endblock %}
+        </main>
+
+    </div>
+
+    {% block outer-content %}{% endblock %}
+</body>
+
+<script>
+lucide.createIcons({
+    attrs: {
+        'stroke-width': 1.5
+    }
+});
+</script>
+
+</html>

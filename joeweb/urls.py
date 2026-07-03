@@ -25,6 +25,7 @@ urlpatterns = [
     path('git/', include('gitcontrol.urls')),
     path('mugrank/', include('mugrank.urls')),
     path('statusdisplay/', include('statusdisplay.urls')),
+    path('fauxcademy/', include('fauxcademy.urls')),
 ]
 
 if settings.DEBUG:

@@ -1,0 +1,84 @@
+{% extends "list_base.html" %}
+
+{% load static %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'film_list.css' %}">
+{% endblock %}
+{% block title %}Films · {{ list.name }}{% endblock %}
+
+{% block content %}
+
+<h1 class="page-title">Films</h1>
+
+<div class="toolbar">
+    <button class="tool active" data-tool="select">
+        <i data-lucide="mouse-pointer-click"></i>
+    </button>
+
+    <button class="tool" data-tool="watched">
+        <i data-lucide="eye"></i>
+        <p>Watch/Unwatch</p>
+    </button>
+
+    <button class="tool" data-tool="delete">
+        <i data-lucide="trash-2"></i>
+        <p>Delete</p>
+    </button>
+</div>
+
+<div class="poster-grid">
+    {% for film in films %}
+        <div class="poster{% if film.unwatched %} unwatched{% endif %}" data-film-id="{{ film.tmdb_id }}">
+            <img src="{{ film.poster_url }}" alt="{{ film.title }}">
+
+            <div class="poster-overlay">
+                <div class="overlay-content">
+                    <div class="delete-overlay">
+                        <i data-lucide="trash-2"></i>
+                        <div class="film-title">{{ film.title }}</div>
+                    </div>
+
+                    <div class="watch-overlay">
+                        <i data-lucide="eye"></i>
+                        <div class="film-title">{{ film.title }}</div>
+                    </div>
+
+                    <div class="select-overlay">
+                        <i data-lucide="mouse-pointer-click"></i>
+                        <div class="film-title">{{ film.title }}</div>
+                    </div>
+
+                    <div class="unwatched-label">
+                        <i data-lucide="eye-off"></i>
+                        <p>Unwatched</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+
+    <div href="#" class="poster poster-add" data-film-id="add">
+        <span>+</span>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block outer-content %}
+<div id="add-film-modal" class="modal hidden", id="add-film-modal">
+    <div class="modal-backdrop"></div>
+
+    <div class="modal-content">
+        <h2>Add Film</h2>
+
+        <input id="film-search-input" type="text" placeholder="Search TMDB..." />
+
+        <div id="search-results" class="search-results"></div>
+
+        <button id="close-modal">Close</button>
+    </div>
+</div>
+
+<script src="{% static 'film_list.js' %}"></script>
+{% endblock %}
