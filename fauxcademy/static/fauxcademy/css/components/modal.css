@@ -1,0 +1,136 @@
+/* ===== Modal and search ===== */
+.modal {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    position: relative;
+    width: 520px;
+    background: #111114;
+    border: 1px solid rgba(201, 162, 74, 0.15);
+    border-radius: 10px;
+    padding: 18px;
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.6),
+        0 0 0 1px rgba(255, 255, 255, 0.03);
+    transform: translateY(-4px);
+}
+
+.modal-content h2 {
+    margin: 0 0 12px 0;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--gold);
+    letter-spacing: 0.3px;
+}
+
+.search-results {
+    margin-top: 12px;
+    max-height: 320px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.search-results::-webkit-scrollbar {
+    width: 6px;
+}
+
+.search-results::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+}
+
+.result {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 8px;
+    margin-top: 6px;
+    border-radius: 6px;
+    background: transparent;
+    transition: background 0.12s ease, transform 0.12s ease;
+}
+
+.result img {
+    width: 36px;
+    height: 54px;
+    object-fit: cover;
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+
+.result span {
+    font-size: 14px;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.result:hover {
+    background: rgba(201, 162, 74, 0.08);
+    transform: translateX(2px);
+}
+
+.result button {
+    margin-left: auto;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.12);
+    color: var(--muted);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.12s ease;
+}
+
+.result button:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+}
+
+#film-search-input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 6px;
+    color: var(--text);
+    outline: none;
+    transition: border 0.15s ease, background 0.15s ease;
+}
+
+#film-search-input:focus {
+    border-color: var(--gold);
+    background: rgba(201, 162, 74, 0.06);
+}
+
+#close-modal {
+    margin-top: 12px;
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.4);
+    cursor: pointer;
+    font-size: 12px;
+}
+
+#close-modal:hover {
+    color: var(--gold);
+}

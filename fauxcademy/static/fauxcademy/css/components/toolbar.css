@@ -1,0 +1,49 @@
+/* ===== Toolbar ===== */
+.toolbar {
+    display: flex;
+    width: fit-content;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.tool {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.08);
+    color: var(--muted);
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: 0.1s ease;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tool p {
+    padding-left: 8px;
+    display: none;
+}
+
+.tool.active p {
+    display: block;
+}
+
+.tool:hover {
+    border-color: var(--gold-soft);
+    color: var(--gold);
+}
+
+.tool.active {
+    border-color: var(--gold);
+    color: var(--gold);
+    background: rgba(201, 162, 74, 0.08);
+}
+
+.tool i {
+    width: 18px;
+    height: 18px;
+    stroke-width: 1.75;
+}

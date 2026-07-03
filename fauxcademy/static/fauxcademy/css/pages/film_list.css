@@ -1,22 +1,6 @@
-/* ===== Poster grid (Letterboxd-style) ===== */
-
-.poster-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 14px;
-}
-
-/* ===== Poster ===== */
-
-.poster {
-    aspect-ratio: 2 / 3;
-    overflow: hidden;
-    background: #1a1a1d;
-    border-radius: 7px;
-    border: 1px solid rgba(255,255,255,0.06);
-
-    cursor: pointer;
-}
+@import url("../components/toolbar.css");
+@import url("../components/poster.css");
+@import url("../components/modal.css");
 
 .poster img {
     width: 100%;

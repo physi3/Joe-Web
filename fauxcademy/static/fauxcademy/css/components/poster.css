@@ -1,0 +1,159 @@
+/* ===== Poster grid ===== */
+.poster-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 14px;
+}
+
+.poster {
+    aspect-ratio: 2 / 3;
+    overflow: hidden;
+    background: #1a1a1d;
+    border-radius: 7px;
+    border: 1px solid rgba(255,255,255,0.06);
+    cursor: pointer;
+    position: relative;
+}
+
+.poster img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.poster-add {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    background: transparent;
+    border: 2px dashed rgba(201, 162, 74, 0.25);
+    transition: 0.14s ease;
+}
+
+.poster-add span {
+    font-size: 3rem;
+    font-weight: 200;
+    color: var(--gold);
+    line-height: 1;
+    transition: transform 0.2s ease;
+}
+
+.poster-add:hover {
+    border-color: var(--gold);
+    background: rgba(201, 162, 74, 0.06);
+}
+
+.poster-add:hover span {
+    transform: scale(1.1);
+}
+
+.poster-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.85);
+    opacity: 0;
+    transition: opacity 0.15s ease;
+}
+
+.delete-overlay,
+.watch-overlay,
+.select-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 8px;
+    opacity: 0;
+}
+
+.poster.unwatched .poster-overlay {
+    background: rgba(0, 0, 0, 0.95);
+    opacity: 0.95;
+}
+
+.delete-overlay {
+    color: #ff4d4d;
+}
+
+.select-overlay {
+    color: var(--gold);
+}
+
+.watch-overlay {
+    color: #6FB6FF;
+}
+
+.film-title {
+    padding: 0 8px;
+}
+
+.overlay-content i {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.poster:hover .poster-overlay {
+    opacity: 1;
+}
+
+.unwatched-label {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    color: var(--muted);
+    opacity: 0;
+}
+
+.poster.unwatched .unwatched-label {
+    opacity: 1;
+}
+
+body.tool-delete .poster:hover:not(.poster-add) .delete-overlay {
+    opacity: 1;
+}
+
+body.tool-select .poster:hover:not(.poster-add) .select-overlay {
+    opacity: 1;
+}
+
+body.tool-watched .poster:hover:not(.poster-add) .watch-overlay {
+    opacity: 1;
+}
+
+body.tool-select .poster:hover:not(.poster-add) {
+    outline-offset: 2px;
+    transition: opacity 0.15s ease;
+    outline: 2px solid var(--gold);
+}
+
+body.tool-watched .poster:hover:not(.poster-add) {
+    outline-offset: 2px;
+    transition: opacity 0.15s ease;
+    outline: 2px solid #6FB6FF;
+}
+
+body.tool-delete .poster:hover:not(.poster-add) {
+    outline-offset: 2px;
+    transition: opacity 0.15s ease;
+    outline: 2px solid #ff4d4d;
+}

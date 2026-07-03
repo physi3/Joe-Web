@@ -3,7 +3,7 @@
 {% load static %}
 
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'film_list.css' %}">
+    <link rel="stylesheet" href="{% static 'fauxcademy/css/pages/film_list.css' %}">
 {% endblock %}
 {% block title %}Films · {{ list.name }}{% endblock %}
 
@@ -80,5 +80,5 @@
     </div>
 </div>
 
-<script src="{% static 'film_list.js' %}"></script>
+<script type="module" src="{% static 'fauxcademy/js/pages/film_list.js' %}"></script>
 {% endblock %}
