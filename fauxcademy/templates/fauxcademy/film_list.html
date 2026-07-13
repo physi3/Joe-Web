@@ -1,11 +1,11 @@
-{% extends "list_base.html" %}
+{% extends "fauxcademy/list_base.html" %}
 
 {% load static %}
 
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'fauxcademy/css/pages/film_list.css' %}">
 {% endblock %}
-{% block title %}Films · {{ list.name }}{% endblock %}
+{% block title %}Films · {{ award.name }}{% endblock %}
 
 {% block content %}
 
@@ -21,15 +21,17 @@
         <p>Watch/Unwatch</p>
     </button>
 
+    {% if is_admin %}
     <button class="tool" data-tool="delete">
         <i data-lucide="trash-2"></i>
         <p>Delete</p>
     </button>
+    {% endif %}
 </div>
 
 <div class="poster-grid">
     {% for film in films %}
-        <div class="poster{% if film.unwatched %} unwatched{% endif %}" data-film-id="{{ film.tmdb_id }}">
+        <div class="poster{% if film.unwatched %} unwatched{% endif %}" id="{{ film.tmdb_id }}-poster" data-film-id="{{ film.tmdb_id }}" data-film-title="{{ film.title }}">
             <img src="{{ film.poster_url }}" alt="{{ film.title }}">
 
             <div class="poster-overlay">
@@ -58,9 +60,11 @@
         </div>
     {% endfor %}
 
-    <div href="#" class="poster poster-add" data-film-id="add">
+    {% if is_admin %}
+    <div href="#" class="poster poster-add" data-film-id="add" >
         <span>+</span>
     </div>
+    {% endif %}
 </div>
 
 {% endblock %}

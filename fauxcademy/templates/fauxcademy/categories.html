@@ -1,0 +1,77 @@
+{% extends "fauxcademy/list_base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'fauxcademy/css/pages/categories.css' %}">
+{% endblock %}
+
+{% block title %}Categories · {{ award.name }}{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Categories</h1>
+
+<div class="category-list">
+    {% for category in categories %}
+    <a href="{% url 'category_detail' username=award.owner.username listname=award.slug slug=category.slug %}" class="category-card">
+
+        <div class="category-card-header">
+            <h2>{{ category.name }}</h2>
+            <span class="category-pill">{{ category.get_nominee_type_display }}</span>
+        </div>
+
+        {% if category.description %}
+            <p class="category-description">{{ category.description }}</p>
+        {% else %}
+            <p class="category-description muted">No description yet.</p>
+        {% endif %}
+
+
+        <div class="category-ballot-status">
+
+            {% if category.user_ballot %}
+
+                <div class="ballot-title">
+                    <i data-lucide="check-circle"></i>
+                    Your ballot
+                </div>
+
+                <ol class="ballot-ranking">
+                    {% if category.user_ballot.first_choice %}
+                        <li>
+                            <span class="medal">🥇</span>
+                            {{ category.user_ballot.first_choice }}
+                        </li>
+                    {% endif %}
+
+                    {% if category.user_ballot.second_choice %}
+                        <li>
+                            <span class="medal">🥈</span>
+                            {{ category.user_ballot.second_choice }}
+                        </li>
+                    {% endif %}
+
+                    {% if category.user_ballot.third_choice %}
+                        <li>
+                            <span class="medal">🥉</span>
+                            {{ category.user_ballot.third_choice }}
+                        </li>
+                    {% endif %}
+                </ol>
+
+            {% else %}
+
+                <div class="ballot-empty">
+                    <i data-lucide="mail-open"></i>
+                    <span>No ballot submitted yet</span>
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </a>
+    {% empty %}
+    <div class="empty-state">No categories have been added yet.</div>
+    {% endfor %}
+</div>
+{% endblock %}

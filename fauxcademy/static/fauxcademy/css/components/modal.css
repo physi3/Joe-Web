@@ -105,7 +105,8 @@
     color: var(--gold);
 }
 
-#film-search-input {
+#film-search-input,
+#person-search-input {
     width: 100%;
     box-sizing: border-box;
     padding: 10px 12px;
@@ -117,20 +118,44 @@
     transition: border 0.15s ease, background 0.15s ease;
 }
 
-#film-search-input:focus {
+#film-search-input:focus,
+#person-search-input:focus {
     border-color: var(--gold);
     background: rgba(201, 162, 74, 0.06);
 }
 
-#close-modal {
-    margin-top: 12px;
-    background: transparent;
-    border: none;
-    color: rgba(255, 255, 255, 0.4);
-    cursor: pointer;
-    font-size: 12px;
+.modal-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 16px;
 }
 
-#close-modal:hover {
+.modal-actions button,
+button[data-modal-close] {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: var(--text);
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.15s ease;
+}
+
+.modal-actions button:hover,
+button[data-modal-close]:hover {
+    border-color: var(--gold);
     color: var(--gold);
+}
+
+.modal-actions button.danger {
+    border-color: rgba(255, 77, 77, 0.8);
+    color: #ff4d4d;
+}
+
+.modal-actions button.danger:hover {
+    background: rgba(255, 77, 77, 0.08);
+    border-color: #ff4d4d;
+    color: #ff4d4d;
 }

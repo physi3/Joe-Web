@@ -13,6 +13,8 @@
     border: 1px solid rgba(255,255,255,0.06);
     cursor: pointer;
     position: relative;
+    transform: rotateY(0deg);
+    transition: transform 0.6s ease, opacity 0.15s ease;
 }
 
 .poster img {
@@ -142,18 +144,15 @@ body.tool-watched .poster:hover:not(.poster-add) .watch-overlay {
 
 body.tool-select .poster:hover:not(.poster-add) {
     outline-offset: 2px;
-    transition: opacity 0.15s ease;
     outline: 2px solid var(--gold);
 }
 
 body.tool-watched .poster:hover:not(.poster-add) {
     outline-offset: 2px;
-    transition: opacity 0.15s ease;
     outline: 2px solid #6FB6FF;
 }
 
 body.tool-delete .poster:hover:not(.poster-add) {
     outline-offset: 2px;
-    transition: opacity 0.15s ease;
     outline: 2px solid #ff4d4d;
 }

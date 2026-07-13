@@ -20,6 +20,16 @@ export function initModal() {
 export function openModal(html) {
     modalContent.innerHTML = html;
     modal?.classList.remove("hidden");
+
+    modalContent.querySelectorAll("[data-modal-close]").forEach(button => {
+        button.addEventListener("click", closeModal);
+    });
+
+    lucide.createIcons({
+        attrs: {
+            'stroke-width': 1.5
+        }
+    });
 }
 
 export function closeModal() {

@@ -1,0 +1,41 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    
+    <!-- dark background circle -->
+    <circle cx="32" cy="32" r="32" fill="#0b0b0d"></circle>
+
+    <!-- trophy -->
+    <path fill="#C9A24A" d="
+        M22 14
+        H42
+        V26
+        C42 33 38 38 34 39
+        V44
+        H38
+        V50
+        H26
+        V44
+        H30
+        V39
+        C26 38 22 33 22 26
+        V14
+        Z
+    "></path>
+
+    <!-- handles (kept chunky for visibility at small size) -->
+    <path fill="#C9A24A" d="
+        M22 18
+        C16 18 16 30 22 30
+        V26
+        C19 26 19 18 22 18
+        Z
+    "></path>
+
+    <path fill="#C9A24A" d="
+        M42 18
+        C48 18 48 30 42 30
+        V26
+        C45 26 45 18 42 18
+        Z
+    "></path>
+
+</svg>

@@ -1,0 +1,138 @@
+/* --- Page background (cinematic lighting) --- */
+body {
+    margin: 0;
+
+    background:
+        radial-gradient(circle at 20% 80%, rgba(201,162,74,0.12), transparent 45%),
+        radial-gradient(circle at 80% 70%, rgba(201,162,74,0.10), transparent 40%),
+        radial-gradient(circle at 50% 100%, rgba(255,255,255,0.04), transparent 60%),
+        #0b0b0d;
+
+    color: var(--text);
+}
+
+/* --- Hero layout --- */
+.hero {
+    min-height: calc(100vh - 80px);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    text-align: center;
+    padding: 2rem;
+}
+
+/* --- Content wrapper --- */
+.hero-content {
+    max-width: 760px;
+    position: relative;
+}
+
+/* --- Title --- */
+.hero h1 {
+    font-family: "Cinzel", serif;
+    font-weight: 500;
+
+    font-size: clamp(3.5rem, 8vw, 6rem);
+    letter-spacing: 0.08em;
+
+    color: var(--gold);
+
+    margin: 0;
+
+    text-shadow:
+        0 0 25px rgba(201,162,74,0.15);
+}
+
+/* --- subtle divider --- */
+.hero-divider {
+    width: 140px;
+    height: 2px;
+
+    margin: 2.2rem auto;
+
+    background: linear-gradient(
+        to right,
+        transparent,
+        rgba(201,162,74,0.8),
+        transparent
+    );
+
+    opacity: 0.7;
+}
+
+/* --- Tagline --- */
+.tagline {
+    margin: 1.5rem auto 3rem;
+
+    max-width: 560px;
+
+    font-size: 1.15rem;
+    line-height: 1.7;
+
+    color: var(--muted);
+
+    opacity: 0.9;
+}
+
+/* --- Buttons container --- */
+.hero-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+/* --- Base button --- */
+.btn {
+    display: inline-block;
+
+    padding: 0.9rem 1.8rem;
+
+    border-radius: 6px;
+
+    text-decoration: none;
+    font-weight: 500;
+
+    letter-spacing: 0.02em;
+
+    transition:
+        transform 0.15s ease,
+        background 0.15s ease,
+        border-color 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+/* --- hover lift --- */
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+/* --- primary (gold) --- */
+.btn-primary {
+    background: var(--gold);
+    color: #111;
+
+    box-shadow: 0 10px 30px rgba(201,162,74,0.12);
+}
+
+.btn-primary:hover {
+    filter: brightness(1.08);
+    box-shadow: 0 12px 40px rgba(201,162,74,0.18);
+}
+
+/* --- secondary --- */
+.btn-secondary {
+    background: transparent;
+
+    color: var(--text);
+
+    border: 1px solid rgba(255,255,255,0.15);
+}
+
+.btn-secondary:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+    box-shadow: 0 0 20px rgba(201,162,74,0.08);
+}

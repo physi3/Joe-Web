@@ -9,6 +9,7 @@
     {% csrf_token %}
     <meta name="csrf-token" content="{{ csrf_token }}">
     <link rel="stylesheet" href="{% static 'fauxcademy/css/base.css' %}">
+    <link rel="icon" href="{% static 'fauxcademy/favicon.svg' %}" type="image/svg+xml">
     {% block extra_css %}{% endblock %}
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">

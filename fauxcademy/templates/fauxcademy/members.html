@@ -1,0 +1,105 @@
+{% extends "fauxcademy/list_base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'fauxcademy/css/pages/members.css' %}">
+{% endblock %}
+
+{% block title %}Members · {{ award.name }}{% endblock %}
+
+{% block content %}
+
+<h1 class="page-title">Members</h1>
+
+<div class="toolbar">
+    {% if is_admin %}
+    <button class="tool" data-tool="invite">
+        <i data-lucide="user-plus"></i>
+        <span>Invite</span>
+    </button>
+    {% endif %}
+</div>
+
+<div class="members-grid">
+
+    {% for member in members %}
+    <div class="member-card {% if member.is_admin %}admin{% endif %}">
+        <div class="member-avatar">{{ member.user.username|slice:":1"|upper }}</div>
+
+        <div class="member-info">
+            <div class="member-name">{{ member.user.get_full_name|default:member.user.username }}</div>
+            <div class="member-role">{% if member.is_admin %}Administrator{% else %}Member{% endif %}</div>
+        </div>
+    </div>
+    {% endfor %}
+
+</div>
+
+<script type="module">
+    import { openModal, closeModal } from "{% static 'fauxcademy/js/components/modal.js' %}";
+    import { getCsrfToken } from "{% static 'fauxcademy/js/components/csrf.js' %}";
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const inviteButton = document.querySelector('[data-tool="invite"]');
+        if (!inviteButton) return;
+
+        inviteButton.addEventListener("click", () => {
+            openModal(`
+                <h2>Invite Member</h2>
+                <p>Send a username to invite them to this award.</p>
+
+                <form id="invite-form" class="invite-form">
+                    <label class="sr-only" for="invite-username">Username</label>
+                    <input id="invite-username" name="username" type="text" placeholder="Enter username" />
+                    <div id="invite-error" class="invite-error" role="alert"></div>
+
+                    <div class="modal-actions">
+                        <button type="submit">Send Invite</button>
+                        <button type="button" data-modal-close>Cancel</button>
+                    </div>
+                </form>
+            `);
+
+            const inviteForm = document.getElementById("invite-form");
+            if (!inviteForm) return;
+
+            inviteForm.addEventListener("submit", async (event) => {
+                event.preventDefault();
+                const usernameInput = document.getElementById("invite-username");
+                const username = usernameInput?.value?.trim();
+
+                if (!username) {
+                    usernameInput?.focus();
+                    return;
+                }
+
+                const csrfToken = getCsrfToken();
+                const errorBox = document.getElementById("invite-error");
+                if (errorBox) {
+                    errorBox.textContent = "";
+                }
+
+                const response = await fetch("{% url 'invite_user' username=award.owner.username listname=award.slug %}", {
+                    method: "POST",
+                    credentials: "same-origin",
+                    headers: {
+                        "X-CSRFToken": csrfToken,
+                        "X-Requested-With": "XMLHttpRequest",
+                    },
+                    body: new FormData(inviteForm),
+                });
+
+                const data = await response.json().catch(() => ({}));
+
+                if (response.ok) {
+                    closeModal();
+                    window.location.reload();
+                } else if (errorBox) {
+                    errorBox.textContent = data.error || "Unable to send invite.";
+                }
+            });
+        });
+    });
+</script>
+
+{% endblock %}

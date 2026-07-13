@@ -1,6 +1,7 @@
-from tmdbv3api import TMDb, Movie
+from tmdbv3api import Person, TMDb, Movie
 
 from django.conf import settings
+from django.templatetags.static import static
 
 _client = None
 
@@ -20,8 +21,18 @@ def MovieClient():
     Client()
     return Movie()
 
-def PosterURL(path, size="w500"):
+def PersonClient():
+    Client()
+    return Person()
+
+def PosterURL(path, size="w500", type="movie"):
     if not path:
-        return None
+        match type:
+            case "movie":
+                return static("fauxcademy/images/movie_generic.jpg")
+            case "person":
+                return static("fauxcademy/images/person_generic.jpg")
+            case _:
+                raise ValueError("Invalid type argument")
     client = Client()
     return f"{BASE_IMAGE_URL}{size}{path}"

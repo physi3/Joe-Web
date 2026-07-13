@@ -2,7 +2,20 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path("<str:username>/<str:listname>/", views.userList, name="user_list"),
-    path("<str:username>/<str:listname>/add-film/", views.addFilm, name="add_film"),
+    path("", views.index, name="index"),
+    path("login/", views.login_view, name="login"),
+    path("register/", views.register_view, name="register"),
     path("film-search/", views.filmSearch, name="film_search"),
+    path("person-search/", views.personSearch, name="person_search"),
+    path("<str:username>/", views.profile, name="profile"),
+    path("<str:username>/<str:listname>/", views.userList, name="user_list"),
+    path("<str:username>/<str:listname>/members/", views.members, name="members"),
+    path("<str:username>/<str:listname>/categories/", views.categories, name="categories"),
+    path("<str:username>/<str:listname>/categories/<slug:slug>/", views.category_detail, name="category_detail"),
+    path("<str:username>/<str:listname>/categories/<slug:slug>/add-nomination/", views.addNomination, name="add-nomination"),
+    path("<str:username>/<str:listname>/categories/<slug:slug>/vote/", views.castVote, name="cast-vote"),
+    path("<str:username>/<str:listname>/invite/", views.inviteUser, name="invite_user"),
+    path("<str:username>/<str:listname>/add-film/", views.addFilm, name="add_film"),
+    path("<str:username>/<str:listname>/remove-film/", views.removeFilm, name="remove_film"),
+    path("<str:username>/<str:listname>/watch-film/", views.watchFilm, name="watch_film"),
 ]

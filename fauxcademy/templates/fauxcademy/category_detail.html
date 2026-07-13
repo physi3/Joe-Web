@@ -1,0 +1,158 @@
+{% extends "fauxcademy/list_base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'fauxcademy/css/pages/categories.css' %}">
+{% endblock %}
+
+{% block title %}{{ category.name }} · {{ award.name }}{% endblock %}
+
+{% block content %}
+
+<script type="module" src="{% static 'fauxcademy/js/pages/nominations_list.js' %}"></script>
+
+<script id="category-data" type="application/json">
+{
+    "id": {{ category.id }},
+    "name": "{{ category.name|escapejs }}",
+    "nomineeType" : "{{ category.nominee_type|escapejs }}"
+}
+</script>
+
+<script>
+const posterContent = `{% for film in films %}
+    <div class="poster{% if film.unwatched %} unwatched{% endif %}"
+        id="{{ film.tmdb_id }}-poster"
+        data-film-id="{{ film.tmdb_id }}"
+        data-film-title="{{ film.title }}">
+
+        <img src="{{ film.poster_url }}" alt="{{ film.title }}">
+
+        <div class="poster-overlay">
+            <div class="select-overlay">
+                <i data-lucide="mouse-pointer-click"></i>
+                <div class="film-title">{{ film.title }}</div>
+            </div>
+        </div>
+
+    </div>
+{% endfor %}`
+</script>
+
+<a class="tool return" href="{% url 'categories' username=award.owner.username listname=award.slug %}">
+    <i data-lucide="arrow-big-left"></i>
+    <span>Return to Categories</span>
+</a>
+
+<div class="category-detail">
+    <div class="category-card detail-card">
+        <div class="category-card-header">
+            <h2>{{ category.name }}</h2>
+            <span class="category-pill">{{ category.get_nominee_type_display }}</span>
+        </div>
+
+        {% if category.description %}
+            <p class="category-description">{{ category.description }}</p>
+        {% else %}
+            <p class="category-description muted">No description yet.</p>
+        {% endif %}
+
+        <div class="category-ballot-status">
+
+            {% if user_ballot %}
+
+                <div class="ballot-title">
+                    <i data-lucide="check-circle"></i>
+                    Your ballot
+                </div>
+
+                <ol class="ballot-ranking">
+                    {% if user_ballot.first_choice %}
+                        <li>
+                            <span class="medal">🥇</span>
+                            {{ user_ballot.first_choice }}
+                        </li>
+                    {% endif %}
+
+                    {% if user_ballot.second_choice %}
+                        <li>
+                            <span class="medal">🥈</span>
+                            {{ user_ballot.second_choice }}
+                        </li>
+                    {% endif %}
+
+                    {% if user_ballot.third_choice %}
+                        <li>
+                            <span class="medal">🥉</span>
+                            {{ user_ballot.third_choice }}
+                        </li>
+                    {% endif %}
+                </ol>
+
+            {% else %}
+
+                <div class="ballot-empty">
+                    <i data-lucide="mail-open"></i>
+                    <span>No ballot submitted yet</span>
+                </div>
+
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+
+<div class="poster-grid">
+    {% for nominee in nominees %}
+    <div class="poster-card{% if nominee.unwatched %} unwatched{% endif %}" id="poster-card-{{ nominee.id }}">
+        <div class="poster" id="{{ nominee.id }}-poster" data-id="{{ nominee.id }}" data-title="{{ nominee.title }}" data-film-title="{{ nominee.film_title }}" data-person-name="{{ nominee.person_name }}" data-person-role="{{ nominee.person_role }}" >
+            <img src="{{ nominee.poster_url }}" alt="{{ nominee.title }}">
+
+            <div class="poster-overlay">
+                <div class="overlay-content">
+                    <div class="select-overlay">
+                        <i data-lucide="mouse-pointer-click"></i>
+                        <div class="nominee-title">{{ nominee.title }}</div>
+                    </div>
+
+                    <div class="unwatched-label">
+                        <i data-lucide="eye-off"></i>
+                        <p>Unwatched</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="poster-rank-buttons">
+            <button
+                {% if nominee.unwatched %}disabled{% endif %}
+                class="vote-button first-button{% if first_choice == nominee.id %} selected{% endif %}"
+                data-nomination-id="{{ nominee.id }}"
+                data-choice="1">
+                1st
+            </button>
+            <button
+                {% if nominee.unwatched %}disabled{% endif %}
+                class="vote-button second-button{% if second_choice == nominee.id %} selected{% endif %}"
+                data-nomination-id="{{ nominee.id }}"
+                data-choice="2">
+                2nd
+            </button>
+            <button
+                {% if nominee.unwatched %}disabled{% endif %}
+                class="vote-button third-button{% if third_choice == nominee.id %} selected{% endif %}"
+                data-nomination-id="{{ nominee.id }}"
+                data-choice="3">
+                3rd
+            </button>
+        </div>
+    </div>
+    {% endfor %}
+
+    {% if is_admin %}
+    <div href="#" id="poster-add" class="poster poster-add" data-film-id="add">
+        <span>+</span>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

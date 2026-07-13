@@ -1,4 +1,6 @@
-import { openModal } from "./modal.js";
+import { openModal, closeModal } from "./modal.js";
+import { initFilmSearch } from "./film-search.js";
+import { getCsrfToken } from "./csrf.js";
 
 export function initPosterActions() {
     document.querySelectorAll(".poster").forEach(poster => {
@@ -19,6 +21,79 @@ function getCurrentTool() {
     return "select";
 }
 
+async function deleteFilm(filmId) {
+    const csrfToken = getCsrfToken();
+
+    if (!csrfToken) {
+        console.error("CSRF token missing");
+        return;
+    }
+
+    let response = await fetch("remove-film/", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrfToken,
+            "X-Requested-With": "XMLHttpRequest",
+        },
+        body: JSON.stringify({ tmdb_id: filmId }),
+    });
+
+    if (!response.ok) {
+        console.error("Failed to delete film", response.status, response.statusText);
+        return;
+    }
+
+    let poster = document.getElementById(`${filmId}-poster`);
+    if (poster) {
+        poster.remove();
+    }
+}
+
+async function markWatched(filmId, poster) {
+    const csrfToken = getCsrfToken();
+    if (!csrfToken) {
+        console.error("CSRF token missing");
+        return;
+    }
+
+    const isUnwatched = poster.classList.toggle("unwatched");
+    const watched = !isUnwatched;
+
+    const response = await fetch("watch-film/", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrfToken,
+            "X-Requested-With": "XMLHttpRequest",
+        },
+        body: JSON.stringify({
+            tmdb_id: filmId,
+            watched,
+        }),
+    });
+
+    console.log(await response.json());
+
+    if (!response.ok) {
+        poster.classList.toggle("unwatched");
+        let errorText = response.statusText;
+
+        try {
+            const data = await response.json();
+            if (data?.error) {
+                errorText = data.error;
+            }
+        } catch {
+            console.error("Failed to parse error response as JSON");
+        }
+
+        console.error("Failed to update watched status:", errorText);
+    }
+}
+
 function openAddFilmModal() {
     openModal(`
             <h2>Add Film</h2>
@@ -27,8 +102,12 @@ function openAddFilmModal() {
 
             <div id="search-results" class="search-results"></div>
 
-            <button id="close-modal">Close</button>
+            <button type="button" data-modal-close>
+                Close
+            </button>
     `);
+
+    initFilmSearch();
 }
 
 function openDeleteModal(filmId, filmTitle) {
@@ -38,15 +117,23 @@ function openDeleteModal(filmId, filmTitle) {
         <p>Are you sure you want to delete <strong>${filmTitle}</strong>?</p>
 
         <div class="modal-actions">
-            <button onclick="deleteFilm(${filmId})" class="danger">
+            <button type="button" id="delete-confirm-btn" class="danger">
                 Delete
             </button>
 
-            <button onclick="closeModal()">
+            <button type="button" data-modal-close>
                 Cancel
             </button>
         </div>
     `);
+
+    const deleteButton = document.getElementById("delete-confirm-btn");
+    if (deleteButton) {
+        deleteButton.addEventListener("click", () => {
+            deleteFilm(filmId);
+            closeModal();
+        });
+    }
 }
 
 function posterClicked(filmId, poster) {
@@ -57,7 +144,7 @@ function posterClicked(filmId, poster) {
 
     switch (getCurrentTool()) {
         case "delete":
-            deleteFilm(filmId, poster);
+            openDeleteModal(filmId, poster.dataset.filmTitle);
             break;
         case "watched":
             markWatched(filmId, poster);
@@ -66,15 +153,4 @@ function posterClicked(filmId, poster) {
             
             break;
     }
-}
-
-function deleteFilm(filmId, poster) {
-    openDeleteModal(filmId, poster.dataset.filmTitle);
-    poster.remove();
-    console.log("Deleting film", filmId);
-}
-
-function markWatched(filmId, poster) {
-    poster.classList.toggle("unwatched")
-    console.log("Marking film as watched", filmId);
 }

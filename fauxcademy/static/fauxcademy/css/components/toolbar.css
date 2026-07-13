@@ -31,6 +31,11 @@
     display: block;
 }
 
+.tool em {
+    width: 1.75em;
+}
+
+
 .tool:hover {
     border-color: var(--gold-soft);
     color: var(--gold);

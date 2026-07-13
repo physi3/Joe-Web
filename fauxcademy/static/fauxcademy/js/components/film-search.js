@@ -1,11 +1,16 @@
-const input = document.getElementById("film-search-input");
-const results = document.getElementById("search-results");
-let debounceTimer;
+import { getCsrfToken } from "./csrf.js";
 
-export function initSearch() {
+export let input, results, debounceTimer;
+
+export function initFilmSearch() {
+    input = document.getElementById("film-search-input");
+    results = document.getElementById("search-results");
+
     if (!input || !results) {
         return;
     }
+
+    console.log("Initializing film search...");
 
     input.addEventListener("input", () => {
         clearTimeout(debounceTimer);
@@ -22,7 +27,7 @@ export function initSearch() {
     });
 }
 
-function renderResults(films) {
+export function renderResults(films) {
     results.innerHTML = "";
 
     films.forEach(film => {
@@ -41,33 +46,6 @@ function renderResults(films) {
 
         results.appendChild(div);
     });
-}
-
-function getCookie(name) {
-    let cookieValue = null;
-
-    if (document.cookie && document.cookie !== "") {
-        const cookies = document.cookie.split(";");
-
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + "=")) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-
-    return cookieValue;
-}
-
-function getCsrfToken() {
-    const metaTag = document.querySelector('meta[name="csrf-token"]');
-    if (metaTag?.content) {
-        return metaTag.content;
-    }
-
-    return getCookie("csrftoken");
 }
 
 async function addFilm(film) {

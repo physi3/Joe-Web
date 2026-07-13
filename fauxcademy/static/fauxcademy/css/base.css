@@ -1,4 +1,5 @@
 @import url("components/modal.css");
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&display=swap');
 
 /* ===== Base Theme ===== */
 
@@ -39,6 +40,7 @@ body {
 
 .sidebar-title {
     font-size: 18px;
+    font-family: "Cinzel", serif;
     margin-bottom: 20px;
     color: var(--gold);
     letter-spacing: 0.5px;
@@ -50,14 +52,44 @@ body {
     gap: 12px;
 }
 
+.category-link {
+    margin-left: 2em;
+}
+
 .sidebar-nav a {
     color: var(--muted);
     text-decoration: none;
     font-size: 14px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
 }
 
 .sidebar-nav a:hover {
     color: var(--gold);
+    background: rgba(201, 162, 74, 0.10);
+    transform: translateX(2px);
+}
+
+.sidebar-nav a:first-child {
+    font-weight: 600;
+}
+
+.sidebar-nav a.active {
+    color: var(--gold);
+    background: rgba(201, 162, 74, 0.16);
+}
+
+.sidebar-nav a:last-child {
+    margin-top: 8px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    color: var(--gold);
+    font-weight: 600;
+}
+
+.sidebar-nav a:last-child:hover {
+    background: rgba(201, 162, 74, 0.16);
 }
 
 /* ===== Main content ===== */

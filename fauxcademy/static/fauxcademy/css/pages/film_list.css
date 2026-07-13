@@ -117,7 +117,7 @@
 
     background: rgba(0, 0, 0, 0.85);
     opacity: 0;
-    transition: opacity 0.15s ease;
+    transition: opacity 0.15s ease, transform 0s linear 0.2s;
 }
 
 .delete-overlay,
@@ -141,6 +141,7 @@
 .poster.unwatched .poster-overlay {
     background: rgba(0, 0, 0, 0.95);
     opacity: 0.95;
+    transform: scaleX(-1);
 }
 
 /* content inside overlay */
@@ -189,6 +190,10 @@
     opacity: 0;
 }
 
+.poster.unwatched {
+    transform: rotateY(180deg);
+}
+
 .poster.unwatched .unwatched-label {
     opacity: 1;
 }
@@ -209,19 +214,16 @@ body.tool-watched .poster:hover:not(.poster-add) .watch-overlay {
 /* gold outline in select mode */
 body.tool-select .poster:hover:not(.poster-add){
     outline-offset: 2px;
-    transition: opacity 0.15s ease;
     outline: 2px solid var(--gold);
 }
 
 body.tool-watched .poster:hover:not(.poster-add) {
     outline-offset: 2px;
-    transition: opacity 0.15s ease;
     outline: 2px solid #6FB6FF;
 }
 
 body.tool-delete .poster:hover:not(.poster-add) {
     outline-offset: 2px;
-    transition: opacity 0.15s ease;
     outline: 2px solid #ff4d4d;
 }
 

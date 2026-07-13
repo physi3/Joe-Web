@@ -1,0 +1,128 @@
+.login-panel {
+    width: min(420px, 90vw);
+    margin: 8rem auto;
+    padding: 2rem;
+
+    background: var(--panel);
+    border: 1px solid rgba(201, 162, 74, 0.15);
+    border-radius: 10px;
+
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(255, 255, 255, 0.03);
+}
+
+.login-panel h1 {
+    margin: 0 0 1.75rem;
+    color: var(--gold);
+    font-size: 1.8rem;
+    font-weight: 500;
+    text-align: center;
+}
+
+.form-row {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1.25rem;
+}
+
+.form-row label {
+    margin-bottom: 0.45rem;
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.form-row input {
+    width: 100%;
+    box-sizing: border-box;
+
+    padding: 0.75rem 0.9rem;
+
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--text);
+
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 6px;
+
+    transition:
+        border-color 0.15s ease,
+        background 0.15s ease;
+}
+
+.form-row input:focus {
+    outline: none;
+    border-color: var(--gold);
+    background: rgba(201, 162, 74, 0.05);
+}
+
+.form-row ul.errorlist,
+.form-row .errorlist {
+    margin: 0.35rem 0 0;
+    padding: 0;
+    list-style: none;
+
+    color: #e26b6b;
+    font-size: 0.85rem;
+}
+
+.login-panel .errorlist.nonfield,
+.login-panel > ul.errorlist {
+    margin: 0 0 1rem;
+    padding: 0;
+    list-style: none;
+
+    color: #e26b6b;
+    text-align: center;
+}
+
+.login-panel button {
+    width: 100%;
+    margin-top: 0.75rem;
+    padding: 0.8rem;
+
+    background: var(--gold);
+    color: #111;
+
+    border: none;
+    border-radius: 6px;
+
+    font-size: 0.95rem;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        filter 0.15s ease,
+        transform 0.15s ease;
+}
+
+.login-panel button:hover {
+    filter: brightness(1.08);
+    transform: translateY(-1px);
+}
+
+.login-panel button:active {
+    transform: translateY(0);
+}
+
+.hero-title {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 1;
+}
+
+.title-small {
+    font-size: 1.2rem;
+    letter-spacing: 0.4em;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+}
+
+.title-main {
+    font-family: "Cinzel", serif;
+    font-size: clamp(3.5rem, 8vw, 6rem);
+    letter-spacing: 0.08em;
+    color: var(--gold);
+    text-align: center;
+}

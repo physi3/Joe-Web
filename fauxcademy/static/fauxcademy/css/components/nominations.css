@@ -1,0 +1,418 @@
+/* ===== Poster grid ===== */
+.poster-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 14px;
+}
+
+.carousel-container {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.poster-grid.mini {
+    display: flex;
+    gap: 0.2rem;
+
+    overflow-x: auto;
+    scroll-behavior: smooth;
+
+    flex: 1;
+
+    scrollbar-width: none;
+}
+
+.poster-grid.mini::-webkit-scrollbar {
+    display: none;
+}
+
+.poster-grid.mini .poster {
+    flex: 0 0 auto;
+    width: 120px;
+    margin: 0.3em;
+    margin-top: 0.6em;
+}
+
+.carousel-selected-film {
+    margin-top: 1.5rem;
+
+    text-align: center;
+
+    font-family: "Cinzel", serif;
+    font-size: 1.25rem;
+    letter-spacing: 0.05em;
+
+    color: var(--text);
+
+    position: relative;
+}
+
+.carousel-selected-film::before,
+.carousel-selected-film::after {
+    content: "";
+
+    display: inline-block;
+
+    width: 40px;
+    height: 1px;
+
+    margin: 0 1rem;
+
+    vertical-align: middle;
+
+    background: rgba(201,162,74,0.5);
+}
+
+.poster.selected {
+    outline: 2px solid var(--gold);
+    transform: translateY(-4px);
+}
+
+/* arrows */
+
+.carousel-button {
+    flex-shrink: 0;
+
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: rgba(255,255,255,0.05);
+    color: var(--text);
+
+    border: 1px solid rgba(255,255,255,0.08);
+
+    cursor: pointer;
+
+    transition:
+        color 0.15s ease,
+        border-color 0.15s ease,
+        background 0.15s ease;
+}
+
+.carousel-button:hover {
+    color: var(--gold);
+    border-color: rgba(201,162,74,0.5);
+    background: rgba(201,162,74,0.08);
+}
+
+.poster {
+    overflow: hidden;
+    background: #1a1a1d;
+    border-radius: 7px;
+    border: 1px solid rgba(255,255,255,0.06);
+    cursor: pointer;
+    position: relative;
+    transform: rotateY(0deg);
+    transition: transform 0.6s ease, opacity 0.15s ease;
+}
+
+.poster img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.poster-add {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    background: transparent;
+    border: 2px dashed rgba(201, 162, 74, 0.25);
+    transition: 0.14s ease;
+    aspect-ratio: 2 / 3;
+}
+
+.poster-add span {
+    font-size: 3rem;
+    font-weight: 200;
+    color: var(--gold);
+    line-height: 1;
+    transition: transform 0.2s ease;
+}
+
+.poster-add:hover {
+    border-color: var(--gold);
+    background: rgba(201, 162, 74, 0.06);
+}
+
+.poster-add:hover span {
+    transform: scale(1.1);
+}
+
+.poster-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.85);
+    opacity: 0;
+    transition: opacity 0.15s ease;
+}
+
+.select-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 8px;
+    opacity: 0;
+}
+
+.poster.unwatched .poster-overlay {
+    background: rgba(0, 0, 0, 0.95);
+    opacity: 0.95;
+}
+
+.select-overlay {
+    color: var(--gold);
+}
+
+.nominee-title {
+    padding: 0 8px;
+}
+
+.overlay-content i {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.poster:hover .poster-overlay {
+    opacity: 1;
+}
+
+.poster:hover:not(.poster-add) .select-overlay {
+    opacity: 1;
+}
+
+.poster:hover:not(.poster-add) {
+    outline-offset: 2px;
+    outline: 2px solid var(--gold);
+}
+
+.poster-card {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.poster-rank-buttons {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+}
+
+.poster-rank-buttons button {
+    padding: 6px 0;
+    border: none;
+    border-radius: 4px;
+    background: #25252a;
+    color: var(--gold);
+    cursor: pointer;
+    transition: .15s;
+}
+
+.poster-rank-buttons button:hover:not(:disabled) {
+    background: var(--gold);
+    color: #111;
+}
+
+.poster-rank-buttons button:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+
+    border-color: rgba(255, 255, 255, 0.12);
+    color: var(--text);
+}
+
+
+.poster-rank-buttons button.selected {
+    background: var(--gold);
+    color: #111;
+    font-weight: 600;
+    box-shadow: 0 0 10px 4px var(--gold-soft);
+}
+
+.poster-rank-buttons button.selected:hover:not(:disabled) {
+    background: var(--gold);
+    color: #111;
+}
+
+
+.nomination-film {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    margin: 1.5rem 0 1rem 0;
+}
+
+.nomination-film img {
+    width: 120px;
+    aspect-ratio: 2 / 3;
+
+    object-fit: cover;
+
+    border-radius: 6px;
+
+    box-shadow:
+        0 10px 30px rgba(0,0,0,0.4);
+}
+
+.nomination-film .carousel-selected-film {
+    margin-top: 1rem;
+
+    font-family: "Cinzel", serif;
+    font-size: 1.2rem;
+    letter-spacing: 0.05em;
+
+    color: var(--white);
+}
+
+
+/* category line */
+
+.nomination-category {
+    text-align: center;
+
+    color: var(--muted);
+    font-size: 0.95rem;
+
+    margin-bottom: 1.5rem;
+}
+
+.nomination-category span {
+    display: block;
+
+    margin-top: 0.4rem;
+
+    color: var(--text);
+
+    font-size: 1.15rem;
+    font-weight: 500;
+}
+
+
+/* notes */
+
+.nomination-notes {
+    display: flex;
+    flex-direction: column;
+
+    gap: 0.5rem;
+
+    margin-bottom: 1.5rem;
+}
+
+.nomination-notes label {
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.nomination-notes textarea {
+    min-height: 90px;
+
+    resize: vertical;
+
+    padding: 0.75rem;
+
+    background: rgba(255,255,255,0.03);
+
+    color: var(--text);
+
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 6px;
+
+    font-family: inherit;
+}
+
+.nomination-notes textarea:focus {
+    outline: none;
+
+    border-color: var(--gold);
+}
+
+.nomination-person {
+    font-family: "Cinzel", serif;
+    text-align: center;
+    color: var(--gold);
+    font-size: 1.15rem;
+    font-weight: 500;
+    margin-top: 0.1em;
+    font-size: 1.4rem;
+}
+
+.nomination-person .role {
+    color: var(--text);
+    font-size: 0.8rem;
+    margin-top: 0.5em;
+}
+
+#next-button,
+#create-nomination-button {
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+
+    padding: 8px 16px;
+    border-radius: 6px;
+
+    cursor: pointer;
+    font-size: 14px;
+
+    transition: all 0.15s ease;
+}
+
+#next-button:hover:not(:disabled),
+#create-nomination-button:hover:not(:disabled) {
+    background: rgba(201, 162, 74, 0.08);
+    border-color: var(--gold);
+}
+
+#next-button:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+
+    border-color: rgba(255, 255, 255, 0.12);
+    color: var(--text);
+}
+
+.unwatched-label {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    color: var(--muted);
+    opacity: 0;
+}
+
+.poster-card.unwatched .poster-overlay {
+    opacity: 1;
+}
+
+.poster-card.unwatched .unwatched-label {
+    opacity: 1;
+}

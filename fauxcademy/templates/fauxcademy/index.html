@@ -1,0 +1,41 @@
+{% extends "fauxcademy/base.html" %}
+
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'fauxcademy/css/pages/index.css' %}">
+{% endblock %}
+
+{% block title %}The Fauxcademy Awards{% endblock %}
+
+{% block content %}
+<div class="hero">
+
+    <div class="hero-content">
+        <h1 class="hero-title">    <span class="title-small">The</span>
+    <span class="title-main">Fauxcademy Awards</span></h1>
+
+        <p class="tagline">
+            An awards show with an academy you can trust.
+        </p>
+
+        <div class="hero-actions">
+            {% if user.is_authenticated %}
+                <a href="{% url 'profile' user.username %}" class="btn btn-primary">
+                    Go to my profile
+                </a>
+            {% else %}
+                <a href="{% url 'register' %}" class="btn btn-primary">
+                    Register
+                </a>
+
+                <a href="{% url 'login' %}" class="btn btn-secondary">
+                    Login
+                </a>
+            {% endif %}
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

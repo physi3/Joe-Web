@@ -1,0 +1,59 @@
+{% extends "fauxcademy/base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'fauxcademy/css/pages/profile.css' %}">
+{% endblock %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+
+<div class="profile">
+
+    <div class="profile-header">
+        <h1 class="username">{{ user.username }}</h1>
+        <p class="tagline">Member of the Fauxcademy Awards</p>
+    </div>
+
+    <div class="profile-section">
+        <h2>Admin of</h2>
+
+        {% if admin_awards %}
+            <div class="list-grid">
+                {% for award in admin_awards %}
+                    <a href="{% url 'user_list' username=award.owner.username listname=award.slug %}" class="list-card admin">
+                        <div class="list-title">{{ award.name }}</div>
+                        <div class="list-meta">
+                            {{ award.eligiblefilm_set.count }} films · {{ award.memberships.count }} members
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="empty">You don't administer any awards yet.</p>
+        {% endif %}
+    </div>
+
+    <div class="profile-section">
+        <h2>Participating in</h2>
+
+        {% if participating_awards %}
+            <div class="list-grid">
+                {% for award in participating_awards %}
+                    <a href="{% url 'user_list' username=award.owner.username listname=award.slug %}" class="list-card member">
+                        <div class="list-title">{{ award.name }}</div>
+                        <div class="list-meta">
+                            {{ award.eligiblefilm_set.count }} films · {{ award.memberships.count }} members
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="empty">You're not part of any awards yet.</p>
+        {% endif %}
+    </div>
+
+</div>
+
+{% endblock %}
