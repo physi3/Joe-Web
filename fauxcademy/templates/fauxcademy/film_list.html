@@ -1,0 +1,74 @@
+{% extends "fauxcademy/list_base.html" %}
+
+{% load static %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'fauxcademy/css/pages/film_list.css' %}">
+{% endblock %}
+{% block title %}Films · {{ award.name }}{% endblock %}
+
+{% block content %}
+
+<h1 class="page-title">Films</h1>
+
+<div class="toolbar">
+    <button class="tool active" data-tool="select">
+        <i data-lucide="mouse-pointer-click"></i>
+    </button>
+
+    <button class="tool" data-tool="watched">
+        <i data-lucide="eye"></i>
+        <p>Watch/Unwatch</p>
+    </button>
+
+    {% if is_admin %}
+    <button class="tool" data-tool="delete">
+        <i data-lucide="trash-2"></i>
+        <p>Delete</p>
+    </button>
+    {% endif %}
+</div>
+
+<div class="poster-grid">
+    {% for film in films %}
+        <div class="poster{% if film.unwatched %} unwatched{% endif %}" id="{{ film.tmdb_id }}-poster" data-film-id="{{ film.tmdb_id }}" data-film-title="{{ film.title }}">
+            <img src="{{ film.poster_url }}" alt="{{ film.title }}">
+
+            <div class="poster-overlay">
+                <div class="overlay-content">
+                    <div class="delete-overlay">
+                        <i data-lucide="trash-2"></i>
+                        <div class="film-title">{{ film.title }}</div>
+                    </div>
+
+                    <div class="watch-overlay">
+                        <i data-lucide="eye"></i>
+                        <div class="film-title">{{ film.title }}</div>
+                    </div>
+
+                    <div class="select-overlay">
+                        <i data-lucide="mouse-pointer-click"></i>
+                        <div class="film-title">{{ film.title }}</div>
+                    </div>
+
+                    <div class="unwatched-label">
+                        <i data-lucide="eye-off"></i>
+                        <p>Unwatched</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+
+    {% if is_admin %}
+    <div href="#" class="poster poster-add" data-film-id="add" >
+        <span>+</span>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}
+
+{% block outer-content %}
+<script type="module" src="{% static 'fauxcademy/js/pages/film_list.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,386 @@
+@import url("../components/toolbar.css");
+@import url("../components/poster.css");
+@import url("../components/film-modal.css");
+
+.poster img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.poster-add {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    text-decoration: none;
+
+    background: transparent;
+    border: 2px dashed rgba(201, 162, 74, 0.25);
+
+    transition: 0.14s ease;
+}
+
+.poster-add span {
+    font-size: 3rem;
+    font-weight: 200;
+    color: var(--gold);
+    line-height: 1;
+}
+
+.poster-add:hover {
+    border-color: var(--gold);
+    background: rgba(201, 162, 74, 0.06);
+}
+
+.poster-add:hover span {
+    transform: scale(1.1);
+}
+
+.poster-add span {
+    transition: transform 0.2s ease;
+}
+
+/* ===== Toolbar ===== */
+
+.toolbar {
+    display: flex;
+    width: fit-content;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.tool {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.08);
+    color: var(--muted);
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: 0.1s ease;
+    height: 50px;
+}
+
+.tool p {
+    padding-left: 8px;
+    display: none;
+}
+
+.tool.active p {
+    display: block;
+}
+
+.tool:hover {
+    border-color: var(--gold-soft);
+    color: var(--gold);
+}
+
+.tool.active {
+    border-color: var(--gold);
+    color: var(--gold);
+    background: rgba(201, 162, 74, 0.08);
+}
+
+/* ===== Selection state ===== */
+
+.poster.selected {
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
+}
+
+.tool i {
+    width: 18px;
+    height: 18px;
+    stroke-width: 1.75;
+}
+
+.tool {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* base overlay (hidden by default) */
+.poster {
+    position: relative;
+}
+
+/* overlay layer */
+.poster-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(0, 0, 0, 0.85);
+    opacity: 0;
+    transition: opacity 0.15s ease, transform 0s linear 0.2s;
+}
+
+.delete-overlay,
+.watch-overlay,
+.select-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+    opacity: 0;
+}
+
+.poster.unwatched .poster-overlay {
+    background: rgba(0, 0, 0, 0.95);
+    opacity: 0.95;
+    transform: scaleX(-1);
+}
+
+/* content inside overlay */
+.delete-overlay {
+    color: var(--danger);
+}
+
+.select-overlay {
+    color: var(--gold);
+}
+
+.watch-overlay{
+    color: #6FB6FF;
+}
+
+.film-title {
+    padding: 0 8px;
+}
+
+.overlay-content i {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.poster:hover .poster-overlay {
+    opacity: 1;
+}
+
+.unwatched-label {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    color: var(--muted);
+    opacity: 0;
+}
+
+.poster.unwatched {
+    transform: rotateY(180deg);
+}
+
+.poster.unwatched .unwatched-label {
+    opacity: 1;
+}
+
+
+body.tool-delete .poster:hover:not(.poster-add) .delete-overlay {
+    opacity: 1;
+}
+
+body.tool-select .poster:hover:not(.poster-add) .select-overlay {
+    opacity: 1;
+}
+
+body.tool-watched .poster:hover:not(.poster-add) .watch-overlay {
+    opacity: 1;
+}
+
+/* gold outline in select mode */
+body.tool-select .poster:hover:not(.poster-add){
+    outline-offset: 2px;
+    outline: 2px solid var(--gold);
+}
+
+body.tool-watched .poster:hover:not(.poster-add) {
+    outline-offset: 2px;
+    outline: 2px solid #6FB6FF;
+}
+
+body.tool-delete .poster:hover:not(.poster-add) {
+    outline-offset: 2px;
+    outline: 2px solid var(--danger);
+}
+
+.modal {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    position: relative;
+    width: 520px;
+
+    background: #111114;
+    border: 1px solid rgba(201, 162, 74, 0.15);
+
+    border-radius: 10px;
+    padding: 18px;
+
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.6),
+        0 0 0 1px rgba(255, 255, 255, 0.03);
+
+    transform: translateY(-4px);
+}
+
+.modal-content h2 {
+    margin: 0 0 12px 0;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--gold);
+    letter-spacing: 0.3px;
+}
+
+.search-results {
+    margin-top: 12px;
+    max-height: 320px;
+    overflow-y: auto;
+
+    padding-right: 4px;
+}
+
+.search-results::-webkit-scrollbar {
+    width: 6px;
+}
+
+.search-results::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+}
+
+.result {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 10px 8px;
+    margin-top: 6px;
+
+    border-radius: 6px;
+
+    background: transparent;
+    transition: background 0.12s ease, transform 0.12s ease;
+}
+
+.result img {
+    width: 36px;
+    height: 54px; /* keeps 2:3 ratio */
+    object-fit: cover;
+
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+
+.result span {
+    font-size: 14px;
+    color: var(--text);
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.result:hover {
+    background: rgba(201, 162, 74, 0.08);
+    transform: translateX(2px);
+}
+
+.result button {
+    margin-left: auto;
+
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.12);
+    color: var(--muted);
+
+    padding: 4px 8px;
+    border-radius: 4px;
+
+    font-size: 12px;
+    cursor: pointer;
+
+    transition: all 0.12s ease;
+}
+
+.result button:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+}
+
+#film-search-input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px 12px;
+
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+
+    border-radius: 6px;
+    color: var(--text);
+
+    outline: none;
+
+    transition: border 0.15s ease, background 0.15s ease;
+}
+
+#film-search-input:focus {
+    border-color: var(--gold);
+    background: rgba(201, 162, 74, 0.06);
+}
+
+#close-modal {
+    margin-top: 12px;
+
+    background: transparent;
+    border: none;
+
+    color: rgba(255, 255, 255, 0.4);
+    cursor: pointer;
+
+    font-size: 12px;
+}
+
+#close-modal:hover {
+    color: var(--gold);
+}

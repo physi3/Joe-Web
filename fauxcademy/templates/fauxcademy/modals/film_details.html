@@ -1,0 +1,48 @@
+<h2 class="film-modal-title">{{ title }}</h2>
+
+    <div class="film-modal-header">
+        <img src="{{ poster_url }}" alt="{{ title }}">
+    </div>
+
+    {% if tagline %}
+        <p class="film-tagline">
+            "{{ tagline }}"
+        </p>
+    {% endif %}
+
+    <div class="film-modal-section">
+        <h3>Nominations</h3>
+
+        <div class="film-nominations">
+
+            {% for nomination in nominations %}
+            <div class="film-nomination">
+
+                <div class="nomination-category">
+                    {{ nomination.category.name }}
+                </div>
+
+                {% if nomination.nominated_person %}
+                    <div class="nomination-person">
+                        {{ nomination.nominated_person.cached_name }}
+                        {% if nomination.nominated_role %}
+                            <span>{{ nomination.nominated_role }}</span>
+                        {% endif %}
+                    </div>
+                {% endif %}
+
+            </div>
+            {% empty %}
+
+            <p class="muted">
+                This film hasn't received any nominations yet.
+            </p>
+
+            {% endfor %}
+
+        </div>
+    </div>
+
+    <div class="modal-actions">
+        <button data-modal-close>Close</button>
+    </div>

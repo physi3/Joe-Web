@@ -66,6 +66,7 @@ INSTALLED_APPS = [
     'mugrank',
     'joewebapp',
     'statusdisplay',
+    'fauxcademy',
 ]
 
 MIDDLEWARE = [

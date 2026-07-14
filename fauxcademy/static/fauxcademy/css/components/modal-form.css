@@ -1,0 +1,62 @@
+.modal-form {
+    display: flex;
+    flex-direction: column;
+
+    gap: 16px;
+
+    margin-top: 1.5rem;
+}
+
+.form-row {
+    display: flex;
+    flex-direction: column;
+
+    gap: 6px;
+}
+
+.form-row label {
+    font-size: 0.85rem;
+    color: var(--muted);
+}
+
+.form-row input,
+.form-row textarea,
+.form-row select {
+    padding: 10px 12px;
+
+    background: rgba(255,255,255,0.03);
+
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 6px;
+
+    color: var(--text);
+
+    font-family: inherit;
+    font-size: 14px;
+
+    transition: border-color 0.15s ease;
+}
+
+.form-row textarea {
+    min-height: 90px;
+
+    resize: vertical;
+}
+
+.form-row input:focus,
+.form-row textarea:focus,
+.form-row select:focus {
+    outline: none;
+
+    border-color: var(--gold);
+}
+
+.form-row select {
+    background: rgba(255,255,255,0.03);
+    color: var(--text);
+}
+
+.form-row select option {
+    background: var(--panel);
+    color: var(--text);
+}

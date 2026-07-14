@@ -1,0 +1,73 @@
+{% extends "fauxcademy/list_base.html" %}
+
+{% load static %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'fauxcademy/css/pages/results.css' %}">
+{% endblock %}
+{% block title %}Results · {{ award.name }}{% endblock %}
+
+{% block content %}
+
+<div class="ceremony">
+
+    <button class="results-arrow left" id="previous-category">
+        <i data-lucide="chevron-left"></i>
+    </button>
+
+
+    <main class="ceremony-stage">
+
+        <div class="ceremony-header">
+            <h1>{{ award.name }}</h1>
+            <div class="divider"></div>
+            <h2 id="category-name"></h2>
+        </div>
+
+
+        <section class="nominees" id="nominees"></section>
+
+        <button class="reveal-button hidden" id="reveal-winner">
+            Reveal Winner
+        </button>
+
+        <section class="winner-reveal hidden" id="winner">
+
+            <div class="winner-overlay"></div>
+
+            <p class="winner-label">
+                And the Fauxcademy Award goes to...
+            </p>
+
+            <div class="winner-card">
+                <img id="winner-poster">
+
+                <h3 id="winner-name"></h3>
+
+                <div class="winner-badge">
+                    🏆 Winner
+                </div>
+            </div>
+
+        </section>
+
+        <div class="winner-anchor" id="winner-anchor"></div>
+
+    </main>
+
+
+    <button class="results-arrow right" id="next-category">
+        <i data-lucide="chevron-right"></i>
+    </button>
+
+</div>
+
+
+{{ results_json|json_script:"results-data" }}
+
+<script>
+    const results = JSON.parse(document.getElementById("results-data").textContent);
+</script>
+<script src="{% static 'fauxcademy/js/pages/results.js' %}"></script>
+
+{% endblock %}
