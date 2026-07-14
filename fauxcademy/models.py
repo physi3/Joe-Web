@@ -216,6 +216,29 @@ class AwardCategory(models.Model):
 
     def __str__(self):
         return self.name
+    
+    @property
+    def nominees(self):
+        return Nomination.objects.filter(category=self)
+
+    def winningNomination(self):
+        points = {n : 0 for n in self.nominees}
+
+        ballots = Ballot.objects.filter(category=self).select_related(
+            "first_choice",
+            "second_choice",
+            "third_choice",
+        )
+
+        for ballot in ballots:
+            if ballot.first_choice:
+                points[ballot.first_choice] = points.get(ballot.first_choice, 0) + 3
+            if ballot.second_choice:
+                points[ballot.second_choice] = points.get(ballot.second_choice, 0) + 2
+            if ballot.third_choice:
+                points[ballot.third_choice] = points.get(ballot.third_choice, 0) + 1
+
+        return max(points.items(), key=lambda item: item[1])[0]
 
     def save(self, *args, **kwargs):
         if not self.slug and self.name:

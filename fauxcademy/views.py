@@ -654,9 +654,11 @@ def viewResults(request, award):
     for category in categories:
         nominees = []
 
-        for i, nomination in enumerate(Nomination.objects.filter(category=category)):
+        winner = category.winningNomination()
+
+        for nomination in Nomination.objects.filter(category=category):
             nomineeCtx = nomination.GetCTX()
-            nomineeCtx["winner"] = i == 0
+            nomineeCtx["winner"] = nomination == winner
             nominees.append(nomineeCtx)
 
         results.append({
