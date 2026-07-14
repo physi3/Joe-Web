@@ -1,0 +1,46 @@
+{% extends "fauxcademy/list_base.html" %}
+
+{% load static %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'fauxcademy/css/pages/results.css' %}">
+{% endblock %}
+
+{% block title %}Results · {{ award.name }}{% endblock %}
+
+{% block content %}
+
+<div class="ceremony">
+
+    <main class="ceremony-stage">
+
+        <div class="ceremony-header">
+
+            <h1>{{ award.name }}</h1>
+
+            <div class="divider"></div>
+
+            <h2>Results Pending</h2>
+
+        </div>
+
+
+        <div class="results-pending">
+
+            <i data-lucide="hourglass"></i>
+
+            <p>
+                The votes have been cast.
+            </p>
+
+            <p class="muted">
+                The ceremony has not yet begun.
+            </p>
+
+        </div>
+
+    </main>
+
+</div>
+
+{% endblock %}

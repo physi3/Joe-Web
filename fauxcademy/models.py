@@ -16,6 +16,7 @@ class Awards(models.Model):
     slug = models.SlugField(max_length=100, blank=True)
     description = models.TextField(blank=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    results_ready = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
@@ -61,9 +62,32 @@ class Awards(models.Model):
             return True
         return self.memberships.filter(user=user, is_admin=True).exists()
 
+    def getCategories(self):
+        return AwardCategory.objects.filter(awards=self)
+
+    def totalVoteState(self):
+        counts = {"finished":0, "partial":0, "not_started":0}
+
+        for membership in self.memberships.select_related('user'):
+            counts[self.userVoteState(membership.user)] += 1
+
+        return counts
+
+    def userVoteState(self, user):
+        ballotsCast = []
+        for category in self.getCategories():
+            ballotsCast.append(Ballot.objects.filter(category=category, user=user).exists())
+
+        if all(ballotsCast):
+            return "finished"
+        if any(ballotsCast):
+            return "partial"
+        return "not_started"
+
     @property
     def memberships(self):
         return AwardMembership.objects.filter(award=self)
+    
 
 
 class AwardMembership(models.Model):
@@ -251,6 +275,7 @@ class Nomination(models.Model):
         filmCtx = self.film.GetCTX(LOD=2)
         ctx["film_title"] = filmCtx["title"]
         ctx["id"] = self.id
+        ctx["str"] = str(self)
 
         match self.category.nominee_type:
             case "film":

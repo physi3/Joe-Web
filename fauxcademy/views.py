@@ -634,3 +634,70 @@ def removeCategory(request, award, category):
     return JsonResponse({
         "message": f"Category '{category_name}' removed successfully."
     })
+
+@login_required(login_url='login')
+@load_award()
+def viewResults(request, award):
+    ctx = {
+        "award":award,
+        "is_admin": award.is_admin(request.user),
+        "active_page" : "results",
+    }
+
+    if not award.results_ready:
+        return render(request, "fauxcademy/results_early.html", ctx)
+    
+    results = []
+
+    categories = AwardCategory.objects.filter(awards=award).order_by("-importance", "name")
+
+    for category in categories:
+        nominees = []
+
+        for i, nomination in enumerate(Nomination.objects.filter(category=category)):
+            nomineeCtx = nomination.GetCTX()
+            nomineeCtx["winner"] = i == 0
+            nominees.append(nomineeCtx)
+
+        results.append({
+            "name": category.name,
+            "nominees": nominees,
+        })
+    
+    ctx["results_json"] = results
+    
+    return render(request, "fauxcademy/results.html", ctx)
+
+
+@login_required(login_url='login')
+@load_award(admin=True)
+def dashboard(request, award):
+    ctx = {
+        "award" : award,
+        "is_admin": award.is_admin(request.user),
+        "active_page" : "dashboard",
+        }
+
+    ctx.update(award.totalVoteState())
+
+    return render(request, "fauxcademy/dashboard.html", ctx)
+
+@load_award(admin=True)
+def revealResults(request, award):
+    data = json.loads(request.body)
+
+    revealed = data.get("revealed")
+
+    if revealed is None:
+        return JsonResponse(
+            {"error": "Missing 'revealed' value."},
+            status=400
+        )
+    
+    award.results_ready = bool(revealed)
+    award.save(update_fields=["results_ready"])
+
+    return JsonResponse({
+        "success": True,
+        "results_revealed": award.results_ready
+    })

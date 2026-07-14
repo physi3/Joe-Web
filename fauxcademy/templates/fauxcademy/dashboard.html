@@ -1,0 +1,90 @@
+{% extends "fauxcademy/list_base.html" %}
+
+{% load static %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'fauxcademy/css/pages/dashboard.css' %}">
+{% endblock %}
+
+{% block title %}Dashboard · {{ award.name }}{% endblock %}
+
+{% block content %}
+
+<script type="module" src="{% static 'fauxcademy/js/pages/dashboard.js' %}"></script>
+
+<div class="dashboard">
+
+    <h1 class="dashboard-title">Awards Dashboard</h1>
+
+    <div class="dashboard-grid">
+
+        <section class="dashboard-card">
+
+            <h2>Ceremony</h2>
+
+            <p class="dashboard-description">
+                Once revealed, all members will be able to watch the awards ceremony.
+            </p>
+
+            <div class="reveal-control">
+
+                <span class="reveal-label">
+                    Reveal Results
+                </span>
+
+                <label class="reveal-switch">
+                    <input
+                        type="checkbox"
+                        id="results-toggle"
+                        {% if award.results_ready %}checked{% endif %}
+                    >
+                    <span class="slider"></span>
+                </label>
+
+            </div>
+
+        </section>
+
+
+        <section class="dashboard-card">
+
+            <h2>Voting Progress</h2>
+
+            <div class="progress-stats">
+
+                <div class="progress-stat complete">
+                    <div class="progress-number">
+                        {{ finished }}
+                    </div>
+                    <div class="progress-label">
+                        Finished
+                    </div>
+                </div>
+
+                <div class="progress-stat partial">
+                    <div class="progress-number">
+                        {{ partial }}
+                    </div>
+                    <div class="progress-label">
+                        Partial
+                    </div>
+                </div>
+
+                <div class="progress-stat empty">
+                    <div class="progress-number">
+                        {{ not_started }}
+                    </div>
+                    <div class="progress-label">
+                        Not Started
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+    </div>
+
+</div>
+
+{% endblock %}

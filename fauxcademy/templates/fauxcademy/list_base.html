@@ -18,20 +18,68 @@
 <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
 
 <aside class="sidebar" id="sidebar">
+
     <div class="sidebar-title">
         {{ award.name }}
     </div>
 
     <nav class="sidebar-nav">
-        <a href="{% url 'categories' username=award.owner.username listname=award.slug %}" class="{% if active_page == 'categories' %}active{% endif %}">Cast Your Vote</a>
-        {% if category %}
-        <a href="{% url 'category_detail' username=award.owner.username listname=award.slug slug=category.slug %}" class="active category-link">{{ category.name }}</a>
-        {% endif %}
-        <a href="{% url 'user_list' username=award.owner.username listname=award.slug %}" class="{% if active_page == 'user_list' %}active{% endif %}">Films</a>
-        <a href="{% url 'members' username=award.owner.username listname=award.slug %}" class="{% if active_page == 'members' %}active{% endif %}">Members</a>
+
+        <div class="sidebar-section">
+            <div class="sidebar-heading">Ceremony</div>
+            
+            {% if is_admin %}
+            <a href="{% url 'dashboard' username=award.owner.username listname=award.slug %}"
+            class="{% if active_page == 'dashboard' %}active{% endif %}">
+                <i data-lucide="layout-dashboard"></i>
+                <span>Dashboard</span>
+            </a>
+            {% endif %}
+
+            <a href="{% url 'categories' username=award.owner.username listname=award.slug %}"
+               class="{% if active_page == 'categories' %}active{% endif %}">
+                <i data-lucide="vote"></i>
+                <span>Cast Your Vote</span>
+            </a>
+
+            {% if category %}
+                <a href="{% url 'category_detail' username=award.owner.username listname=award.slug slug=category.slug %}"
+                   class="active category-link">
+                    {{ category.name }}
+                </a>
+            {% endif %}
+
+            <a href="{% url 'view_results' username=award.owner.username listname=award.slug %}"
+               class="{% if active_page == 'results' %}active{% endif %}">
+                <i data-lucide="trophy"></i>
+                <span>View Results</span>
+            </a>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-heading">Explore</div>
+
+            <a href="{% url 'user_list' username=award.owner.username listname=award.slug %}"
+               class="{% if active_page == 'user_list' %}active{% endif %}">
+                <i data-lucide="film"></i>
+                <span>Film Library</span>
+            </a>
+
+            <a href="{% url 'members' username=award.owner.username listname=award.slug %}"
+               class="{% if active_page == 'members' %}active{% endif %}">
+                <i data-lucide="users"></i>
+                <span>Members</span>
+            </a>
+        </div>
+
         {% if user.is_authenticated %}
-        <a href="{% url 'profile' user.username %}">Return to Profile</a>
+        <a class="sidebar-return" href="{% url 'profile' user.username %}">
+            <i data-lucide="arrow-left"></i>
+            <span>Return to Profile</span>
+        </a>
         {% endif %}
+
     </nav>
+
 </aside>
 {% endblock %}

@@ -1,0 +1,357 @@
+.ceremony {
+    min-height: calc(100vh - 80px);
+
+    background:
+        radial-gradient(circle at center, rgba(201,162,74,.12), transparent 45%),
+        #0b0b0d;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    position:relative;
+}
+
+
+.ceremony-stage {
+    width:100%;
+    max-width:1100px;
+
+    text-align:center;
+
+    padding:2rem;
+}
+
+
+.ceremony-header h1 {
+    font-family:"Cinzel", serif;
+    color:var(--gold);
+
+    font-size:clamp(2rem,5vw,4rem);
+}
+
+
+.ceremony-header h2 {
+    color:var(--text);
+    font-size:2rem;
+}
+
+
+.divider {
+    width:140px;
+    height:2px;
+
+    margin:1rem auto;
+
+    background:var(--gold);
+}
+
+
+.nominees {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 2rem;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+
+.nominee {
+    width:160px;
+
+    opacity:0;
+    transform:translateY(30px);
+
+    animation:
+        nominee-in .6s forwards;
+}
+
+
+.nominee img {
+    width:100%;
+    border-radius:12px;
+}
+
+
+.nominee-title {
+    margin-top:.8rem;
+    color:var(--muted);
+}
+
+
+@keyframes nominee-in {
+
+    to {
+        opacity:1;
+        transform:none;
+    }
+
+}
+
+
+.winner-reveal {
+    margin-top:2rem;
+}
+
+
+.winner-reveal.hidden {
+    display:none;
+}
+
+.winner-anchor.hidden {
+    height: 200px;
+}
+
+.winner-label {
+
+    font-family:"Cinzel", serif;
+
+    color:var(--gold);
+
+    font-size:2rem;
+}
+
+
+#winner-poster {
+
+    width:260px;
+
+    border-radius:16px;
+
+    box-shadow:
+        0 0 50px rgba(201,162,74,.35);
+
+    animation:
+        winner-in 1s ease;
+
+}
+
+
+#winner-name {
+
+    font-family:"Cinzel", serif;
+
+    color:var(--gold);
+
+    font-size:2.5rem;
+
+}
+
+
+.winner-badge {
+
+    color:#111;
+
+    background:var(--gold);
+
+    display:inline-block;
+
+    padding:.5rem 1rem;
+
+    border-radius:20px;
+}
+
+
+@keyframes winner-in {
+
+    from {
+        opacity:0;
+        transform:scale(.7);
+    }
+
+    to {
+        opacity:1;
+        transform:scale(1);
+    }
+
+}
+
+.results-arrow {
+    position:absolute;
+
+    top:50vh;
+    transform:translateY(-50%);
+
+    z-index:10;
+
+    background:rgba(11,11,13,0.6);
+    border:1px solid rgba(255,255,255,0.08);
+
+    color:var(--gold);
+
+    width:48px;
+    height:48px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border-radius:50%;
+
+    cursor:pointer;
+
+    transition:
+        background .15s ease,
+        transform .15s ease;
+}
+
+
+.results-arrow:hover:not(:disabled) {
+    background:rgba(201,162,74,0.15);
+}
+
+.results-arrow:disabled {
+    opacity: 0.2;
+    cursor: not-allowed;
+}
+
+.results-arrow:disabled:hover {
+    transform: translateY(-50%);
+}
+
+.results-arrow.left {
+    left:1.5rem;
+}
+
+
+.results-arrow.right {
+    right:1.5rem;
+}
+
+.winner-anchor {
+    height: 800px;
+    transition: height 1s;
+}
+
+.reveal-button {
+    margin-top: 3rem;
+
+    padding: 0.9rem 2rem;
+
+    background: var(--gold);
+    color: #111;
+
+    border: none;
+    border-radius: 8px;
+
+    font-size: 1rem;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    box-shadow: 0 10px 30px rgba(201,162,74,.15);
+
+    opacity: 1;
+    transform: scale(1);
+
+    transition:
+        opacity .3s ease,
+        transform .3s ease,
+        filter .15s ease;
+}
+
+.reveal-button:hover {
+    filter: brightness(1.1);
+    transform: translateY(-2px) scale(1.02);
+}
+
+.reveal-button.hidden {
+    opacity: 0;
+    transform: scale(0.9);
+    pointer-events: none;
+}
+
+.reveal-button:not(.hidden) {
+    animation: reveal-pulse 2s infinite;
+}
+
+@keyframes reveal-pulse {
+    0%, 100% {
+        box-shadow: 0 10px 30px rgba(201,162,74,.15);
+    }
+    50% {
+        box-shadow: 0 10px 45px rgba(201,162,74,.35);
+    }
+}
+
+@media (max-width: 600px) {
+
+    .ceremony-stage {
+        padding: 1rem;
+    }
+
+    .nominees {
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .nominee {
+        width: 100px;
+    }
+
+    .nominee-title {
+        font-size: 0.85rem;
+    }
+
+    .winner-label {
+        font-size: 1.5rem;
+    }
+
+    #winner-poster {
+        width: 200px;
+        max-width: 80vw;
+    }
+
+    #winner-name {
+        font-size: 1.8rem;
+    }
+
+    .results-arrow.left {
+        left: 0.5rem;
+    }
+
+    .results-arrow.right {
+        right: 0.5rem;
+    }
+
+}
+
+.results-pending {
+    margin-top: 3rem;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+
+    color: var(--muted);
+}
+
+
+.results-pending svg {
+    width: 64px;
+    height: 64px;
+
+    color: var(--gold);
+
+    opacity: 0.8;
+}
+
+
+.results-pending p {
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+
+.results-pending .muted {
+    font-size: 1rem;
+    opacity: 0.7;
+}
+
+
+.return-button {
+    display: inline-block;
+    margin-top: 2.5rem;
+}
