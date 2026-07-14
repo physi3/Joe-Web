@@ -30,6 +30,7 @@
         0 20px 60px rgba(0, 0, 0, 0.6),
         0 0 0 1px rgba(255, 255, 255, 0.03);
     transform: translateY(-4px);
+    margin: 2em;
 }
 
 .modal-content h2 {
@@ -151,11 +152,11 @@ button[data-modal-close]:hover {
 
 .modal-actions button.danger {
     border-color: rgba(255, 77, 77, 0.8);
-    color: #ff4d4d;
+    color: var(--danger);
 }
 
 .modal-actions button.danger:hover {
     background: rgba(255, 77, 77, 0.08);
-    border-color: #ff4d4d;
-    color: #ff4d4d;
+    border-color: var(--danger);
+    color: var(--danger);
 }

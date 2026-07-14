@@ -190,11 +190,20 @@
     border-bottom-width: 2px;
 }
 
-.return {
-    margin-bottom: 1em;
+.tool {
     text-decoration: none;
-        display: inline-flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 6px;
+}
+
+.tool.delete {
+    border-color: rgba(255, 77, 77, 0.8);
+    color: var(--danger);
+    width: 3em;
+}
+
+.tool.delete:hover {
+    background: rgba(255, 77, 77, 0.08);
 }

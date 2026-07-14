@@ -21,6 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let openNewNominationModalPoster = () => {openNewNominationModal(posterContent)}
         poster_add.addEventListener("click", openNewNominationModalPoster);
+
+        document.getElementById("delete-category").addEventListener("click", openDeleteCategoryModal)
     }
 
     document.querySelectorAll(".poster:not(.poster-add)").forEach(poster => {
@@ -43,6 +45,52 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 })
+
+function openDeleteCategoryModal() {
+    openModal(`
+        <h2>Delete Category</h2>
+
+        <p>Are you sure you want to delete <b>${nominationState.categoryName}</b>? This will remove all nominations and votes in this category.</p>
+
+        <div class="modal-actions">
+            <button type="button" id="delete-confirm-btn" class="danger">
+                Delete
+            </button>
+
+            <button type="button" data-modal-close>
+                Cancel
+            </button>
+        </div>
+    `);
+
+    const deleteButton = document.getElementById("delete-confirm-btn");
+    if (deleteButton) {
+        deleteButton.addEventListener("click", () => {
+            removeCategory();
+        });
+    }
+}
+
+async function removeCategory() {
+    const csrfToken = getCsrfToken();
+
+    if (!csrfToken) {
+        console.error("CSRF token missing");
+        return;
+    }
+
+    await fetch("remove/", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrfToken,
+            "X-Requested-With": "XMLHttpRequest",
+        }
+    });
+
+    location.href = '../';
+}
 
 function openNewNominationModal(posterContent) {
     openModal(`
@@ -207,7 +255,7 @@ function openNominationDetailsModal(create=true) {
         nomination_create.addEventListener("click", createNomination);
     } else if (categoryData.admin) {
         let nomination_remove = document.getElementById("delete-confirm-btn")
-        nomination_remove.addEventListener("click", () => {openDeleteModal(nominationState.id)});      
+        nomination_remove.addEventListener("click", () => {openDeleteNominationModal(nominationState.id)});      
     }
 }
 
@@ -274,7 +322,7 @@ async function createNomination() {
     location.reload();
 }
 
-function openDeleteModal(nominationId) {
+function openDeleteNominationModal(nominationId) {
     openModal(`
         <h2>Delete Nomination</h2>
 

@@ -104,10 +104,18 @@ const posterContent = `{% for film in films %}
         <p>Select your top three</p>
     </div>
 
-    <a class="tool return" href="{% url 'categories' username=award.owner.username listname=award.slug %}">
-        <i data-lucide="arrow-big-left"></i>
-        <span>Return to Categories</span>
-    </a>
+    <div class="toolbar">
+        <a class="tool return" href="{% url 'categories' username=award.owner.username listname=award.slug %}">
+            <i data-lucide="arrow-big-left"></i>
+            <span>Return to Categories</span>
+        </a>
+
+        {% if is_admin %}
+        <div class="tool delete" id="delete-category">
+            <i data-lucide="trash-2"></i>
+        </div>
+        {% endif %}
+    </div>
 </div>
 <div class="poster-grid">
     {% for nominee in nominees %}

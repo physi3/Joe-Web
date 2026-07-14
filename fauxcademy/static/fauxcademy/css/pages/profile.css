@@ -135,3 +135,53 @@
     color: rgba(255,255,255,0.4);
     font-style: italic;
 }
+
+.account-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.account-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 10px 14px;
+
+    border-radius: 8px;
+
+    color: var(--muted);
+    text-decoration: none;
+
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.02);
+
+    font-size: 0.9rem;
+
+    transition:
+        border-color 0.15s ease,
+        color 0.15s ease,
+        background 0.15s ease;
+}
+
+.account-link:hover {
+    color: var(--gold);
+    border-color: rgba(201,162,74,0.3);
+    background: rgba(201,162,74,0.06);
+}
+
+.account-link svg {
+    width: 16px;
+    height: 16px;
+}
+
+.account-link.danger {
+    color: #e26b6b;
+}
+
+.account-link.danger:hover {
+    color: var(--danger);
+    border-color: rgba(255,77,77,0.3);
+    background: rgba(255,77,77,0.06);
+}

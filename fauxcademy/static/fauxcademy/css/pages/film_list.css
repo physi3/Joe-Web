@@ -147,7 +147,7 @@
 
 /* content inside overlay */
 .delete-overlay {
-    color: #ff4d4d;
+    color: var(--danger);
 }
 
 .select-overlay {
@@ -225,7 +225,7 @@ body.tool-watched .poster:hover:not(.poster-add) {
 
 body.tool-delete .poster:hover:not(.poster-add) {
     outline-offset: 2px;
-    outline: 2px solid #ff4d4d;
+    outline: 2px solid var(--danger);
 }
 
 .modal {

@@ -1,6 +1,6 @@
 from typing import Any, cast
 
-from django.contrib.auth import authenticate, get_user_model, login
+from django.contrib.auth import authenticate, get_user_model, login, update_session_auth_hash, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.db.models import Q
@@ -9,10 +9,11 @@ from django.shortcuts import redirect, render
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
 from django.core.exceptions import ValidationError
 from django.template.loader import render_to_string
+from django.contrib.auth.forms import PasswordChangeForm
 
 import json
 
-from .models import AwardCategory, AwardMembership, Awards, EligibleFilm, UserEligibleFilmStatus, Nomination, NominatedPerson, Ballot
+from .models import AwardCategory, AwardMembership, Awards, EligibleFilm, UserEligibleFilmStatus, Nomination, NominatedPerson, Ballot, User
 from .services.tmdbClient import MovieClient, PosterURL
 
 from .utils.decorators import load_award, load_category
@@ -187,6 +188,39 @@ def register_view(request):
         'form': form,
         'next': next_url,
     })
+
+@login_required
+def change_password_view(request):
+    if request.method == "POST":
+        form = PasswordChangeForm(
+            user=request.user,
+            data=request.POST
+        )
+
+        if form.is_valid():
+            user = form.save()
+
+            # Keep the user logged in after changing password
+            update_session_auth_hash(request, user)
+
+            user = cast(User, request.user)
+
+            return redirect(
+                "profile",
+                username=user.username
+            )
+
+    else:
+        form = PasswordChangeForm(user=request.user)
+
+    return render(request, "fauxcademy/change_password.html", {
+        "form": form,
+    })
+
+def logout_view(request):
+    logout(request)
+
+    return redirect("index")
 
 @login_required(login_url='login')
 @load_award(admin=True)
@@ -584,4 +618,19 @@ def createCategory(request, award):
             "name": category.name,
             "slug": category.slug,
         }
+    })
+
+@load_category(admin=True)
+def removeCategory(request, award, category):
+    if request.method != "POST":
+        return JsonResponse(
+            {"error": "Invalid request method."},
+            status=405
+        )
+
+    category_name = category.name
+    category.delete()
+
+    return JsonResponse({
+        "message": f"Category '{category_name}' removed successfully."
     })

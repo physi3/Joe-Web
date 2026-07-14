@@ -1,6 +1,9 @@
 {% extends "fauxcademy/base.html" %}
+{% load static %}
 
 {% block sidebar %}
+<script type="module" src="{% static 'fauxcademy/js/components/sidebar.js' %}"></script>
+
 <div
     id="award-data"
     data-award-owner="{{ award.owner.username }}"
@@ -8,7 +11,13 @@
     data-award-name="{{ award.name }}">
 </div>
 
-<aside class="sidebar">
+<button class="sidebar-toggle" id="sidebar-toggle" type="button">
+    <i data-lucide="menu"></i>
+</button>
+
+<div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+<aside class="sidebar" id="sidebar">
     <div class="sidebar-title">
         {{ award.name }}
     </div>

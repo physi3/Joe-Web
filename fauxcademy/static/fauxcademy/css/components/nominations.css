@@ -486,3 +486,10 @@
 
     color: var(--muted);
 }
+
+/* Phones */
+@media (max-width: 768px) {
+    .vote-header {
+        flex-direction: column;
+    }
+}

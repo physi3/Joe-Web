@@ -56,6 +56,26 @@
         {% endif %}
     </div>
 
+    <div class="profile-section account-section">
+
+        <h2>Account</h2>
+
+        <div class="account-actions">
+
+            <a href="{% url 'change_password' %}" class="account-link">
+                <i data-lucide="key-round"></i>
+                Change Password
+            </a>
+
+            <a href="{% url 'logout' %}" class="account-link danger">
+                <i data-lucide="log-out"></i>
+                Logout
+            </a>
+
+        </div>
+
+    </div>
+
 </div>
 
 {% endblock %}
