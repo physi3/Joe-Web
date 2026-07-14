@@ -136,3 +136,7 @@ body {
     color: var(--gold);
     box-shadow: 0 0 20px rgba(201,162,74,0.08);
 }
+
+.main-content {
+    padding: 0;
+}

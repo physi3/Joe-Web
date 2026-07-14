@@ -416,3 +416,73 @@
 .poster-card.unwatched .unwatched-label {
     opacity: 1;
 }
+
+.vote-heading {
+    text-align: left;
+
+    margin: 2rem 0 2rem;
+}
+
+.vote-heading h1 {
+    margin: 0;
+
+    font-family: "Cinzel", serif;
+    font-size: 2rem;
+    font-weight: 500;
+
+    letter-spacing: 0.08em;
+
+    color: var(--gold);
+    text-transform: uppercase;
+}
+
+.vote-heading p {
+    margin: 0.5rem 0 0;
+
+    color: var(--muted);
+    font-size: 0.95rem;
+}
+
+.vote-heading::after {
+    content: "";
+
+    display: block;
+
+    width: 60px;
+    height: 2px;
+
+    margin-top: 1rem;
+
+    background: rgba(201, 162, 74, 0.5);
+}
+
+.vote-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 2rem;
+}
+
+.vote-heading {
+    text-align: left;
+}
+
+.vote-heading h1 {
+    margin: 0;
+
+    font-family: "Cinzel", serif;
+    font-size: 2rem;
+    font-weight: 500;
+
+    letter-spacing: 0.08em;
+
+    color: var(--gold);
+    text-transform: uppercase;
+}
+
+.vote-heading p {
+    margin: 0.5rem 0 0;
+
+    color: var(--muted);
+}

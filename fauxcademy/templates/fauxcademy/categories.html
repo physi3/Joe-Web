@@ -8,6 +8,12 @@
 {% block title %}Categories · {{ award.name }}{% endblock %}
 
 {% block content %}
+<script id="create-category-modal-template" type="text/template">
+    {{ modal_html|safe }}
+</script>
+
+<script type="module" src="{% static 'fauxcademy/js/pages/categories.js' %}"></script>
+
 <h1 class="page-title">Categories</h1>
 
 <div class="category-list">
@@ -73,5 +79,10 @@
     {% empty %}
     <div class="empty-state">No categories have been added yet.</div>
     {% endfor %}
+
+    <div class="category-card category-add" id="add-category-button">
+        <span>+</span>
+    </div>
+
 </div>
 {% endblock %}

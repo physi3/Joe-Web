@@ -1,0 +1,55 @@
+<h2>Create Category</h2>
+<div class="modal-form">
+
+    <div class="form-row">
+        <label for="category-name">Name</label>
+        <input 
+            type="text"
+            id="category-name"
+            placeholder="e.g. Best Picture"
+        >
+    </div>
+
+    <div class="form-row">
+        <label for="category-description">Description</label>
+        <textarea
+            id="category-description"
+            placeholder="What is this award for?"
+        ></textarea>
+    </div>
+
+    <div class="form-row">
+        <label for="category-type">Nominee Type</label>
+        <select id="category-type">
+        {% for value, label in nominee_types %}
+            <option value="{{ value }}">
+                {{ label }}
+            </option>
+        {% endfor %}
+        </select>
+    </div>
+
+    <div class="form-row">
+        <label for="category-priority">Priority</label>
+        <input
+            type="number"
+            id="category-priority"
+            min="0"
+            step="1"
+            value="1"
+        >
+    </div>
+
+</div>
+
+<div class="modal-actions">
+
+    <button type="button" id="create-category-button">
+        Create
+    </button>
+
+    <button type="button" data-modal-close>
+        Close
+    </button>
+
+</div>

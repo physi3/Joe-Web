@@ -12,16 +12,18 @@ let nominationState = {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-    let poster_add = document.getElementById("poster-add")
-
-    let openNewNominationModalPoster = () => {openNewNominationModal(posterContent)}
-    poster_add.addEventListener("click", openNewNominationModalPoster);
-
     const categoryData = JSON.parse(
         document.getElementById("category-data").textContent
     );
 
-    document.querySelectorAll(".poster").forEach(poster => {
+    if (categoryData.admin){
+        let poster_add = document.getElementById("poster-add")
+
+        let openNewNominationModalPoster = () => {openNewNominationModal(posterContent)}
+        poster_add.addEventListener("click", openNewNominationModalPoster);
+    }
+
+    document.querySelectorAll(".poster:not(.poster-add)").forEach(poster => {
         poster.addEventListener("click", () => {
             posterClick(poster)
         });
@@ -133,6 +135,7 @@ function initCarousel(){
 
 function posterClick(poster){
     nominationState.filmTitle = poster.dataset.filmTitle;
+    nominationState.id = poster.dataset.id;
     nominationState.posterUrl = poster.querySelector("img").src;
     nominationState.personName = poster.dataset.personName;
     nominationState.personRole = poster.dataset.personRole;
@@ -141,6 +144,10 @@ function posterClick(poster){
 }
 
 function openNominationDetailsModal(create=true) {
+    const categoryData = JSON.parse(
+        document.getElementById("category-data").textContent
+    );
+
     openModal(`
         ${create?`<h2>New Nomination</h2>`:""}
         
@@ -183,16 +190,25 @@ function openNominationDetailsModal(create=true) {
         <div class="modal-actions">
             ${create?`<button type="button" id="create-nomination-button">
                 Create
-            </button>`:""}
-            
+            </button>`: "" }
+
+            ${!create&categoryData.admin? `<button type="button" id="delete-confirm-btn" class="danger">
+                Delete
+            </button>`: "" }
+                    
             <button type="button" data-modal-close>
                 Close
             </button>
         </div>
     `);
 
-    let nomination_create = document.getElementById("create-nomination-button")
-    nomination_create.addEventListener("click", createNomination);
+    if (create){
+        let nomination_create = document.getElementById("create-nomination-button")
+        nomination_create.addEventListener("click", createNomination);
+    } else if (categoryData.admin) {
+        let nomination_remove = document.getElementById("delete-confirm-btn")
+        nomination_remove.addEventListener("click", () => {openDeleteModal(nominationState.id)});      
+    }
 }
 
 function capitalizeFirstLetter(val) {
@@ -258,6 +274,57 @@ async function createNomination() {
     location.reload();
 }
 
+function openDeleteModal(nominationId) {
+    openModal(`
+        <h2>Delete Nomination</h2>
+
+        <p>Are you sure you want to delete this nomination?</p>
+
+        <div class="modal-actions">
+            <button type="button" id="delete-confirm-btn" class="danger">
+                Delete
+            </button>
+
+            <button type="button" data-modal-close>
+                Cancel
+            </button>
+        </div>
+    `);
+
+    const deleteButton = document.getElementById("delete-confirm-btn");
+    if (deleteButton) {
+        deleteButton.addEventListener("click", () => {
+            removeNomination(nominationId);
+        });
+    }
+}
+
+async function removeNomination(nominationId) {
+    const csrfToken = getCsrfToken();
+
+    if (!csrfToken) {
+        console.error("CSRF token missing");
+        return;
+    }
+
+    let data = {
+        "nomination": nominationId,
+    }
+
+    await fetch("remove-nomination/", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrfToken,
+            "X-Requested-With": "XMLHttpRequest",
+        },
+        body: JSON.stringify(data),
+    });
+
+    location.reload();
+}
+
 async function castVote(id, place, button) {
     document.querySelectorAll(`.vote-button[data-choice="${place}"]`).forEach(button => {
         button.classList.remove("selected");
@@ -285,7 +352,7 @@ async function castVote(id, place, button) {
         "place": place,
     }
 
-    let response = await fetch("vote/", {
+    await fetch("vote/", {
         method: "POST",
         credentials: "same-origin",
         headers: {
@@ -295,8 +362,6 @@ async function castVote(id, place, button) {
         },
         body: JSON.stringify(data),
     });
-
-    console.log(await response.json())
 
     location.reload();
 }

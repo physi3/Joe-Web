@@ -1,0 +1,74 @@
+.film-modal-header {
+    display: flex;
+    justify-content: center;
+
+    margin: 1.5rem 0;
+}
+
+.film-modal-header img {
+    width: 160px;
+    aspect-ratio: 2 / 3;
+
+    border-radius: 8px;
+}
+
+.film-modal-section {
+    margin-top: 1.5rem;
+}
+
+.film-modal-section h3 {
+    margin-bottom: 1rem;
+
+    font-family: "Cinzel", serif;
+    color: var(--gold);
+}
+
+.film-nominations {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.film-nomination {
+    padding: 12px;
+
+    border-radius: 8px;
+
+    background: rgba(255,255,255,.03);
+    border: 1px solid rgba(255,255,255,.08);
+}
+
+.nomination-category {
+    font-weight: 600;
+}
+
+.nomination-person {
+    color: var(--text);
+    margin-top: 4px;
+}
+
+.nomination-person span {
+    color: var(--muted);
+}
+
+.nomination-by {
+    margin-top: 6px;
+
+    font-size: .85rem;
+    color: var(--muted);
+}
+
+.film-tagline {
+    margin: 0.75rem auto 1.5rem;
+
+    max-width: 34rem;
+
+    text-align: center;
+
+    font-family: "Cinzel", serif;
+    font-style: italic;
+    font-size: 1rem;
+    line-height: 1.5;
+
+    color: var(--muted);
+}

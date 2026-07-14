@@ -6,9 +6,11 @@ from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.db.models import Q
 from django.http import JsonResponse, HttpResponseForbidden
 from django.shortcuts import redirect, render
-from django.views.decorators.csrf import ensure_csrf_cookie
+from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
 from .models import AwardCategory, AwardMembership, Awards, EligibleFilm, UserEligibleFilmStatus, Nomination, NominatedPerson, Ballot
 from .services.tmdbClient import MovieClient, PosterURL
+from django.core.exceptions import ValidationError
+from django.template.loader import render_to_string
 
 import json
 
@@ -117,6 +119,10 @@ def categories(request, username, listname):
         "award": award,
         "is_admin": award.is_admin(request.user),
         "categories": categories,
+        "modal_html" : render_to_string("fauxcademy/modals/create_category.html",
+            {"nominee_types" : AwardCategory._meta.get_field("nominee_type").choices},
+            request=request,
+            )
     }
 
     return render(request, "fauxcademy/categories.html", ctx)
@@ -348,6 +354,36 @@ def watchFilm(request, username, listname):
 
     return JsonResponse({"error": "Invalid request method."}, status=405)
 
+@csrf_exempt
+def filmModal(request, username, listname):
+    if not request.user.is_authenticated:
+        return JsonResponse({"error": "Authentication required."}, status=401)
+
+    award = Awards.objects.filter(owner__username=username, slug=listname.lower()).first()
+
+    if not award:
+        return JsonResponse({"error": "Award not found."}, status=404)
+
+    if not award.has_access(request.user):
+        return JsonResponse({"error": "You do not have permission to access this award."}, status=403)
+
+    tmdb_id = request.GET.get("id", "")
+
+    if not tmdb_id:
+        return JsonResponse({"error": "Missing id in request."}, status=400)
+
+    film = EligibleFilm.objects.filter(tmdb_id=tmdb_id, awards=award).first()
+    if not film:
+        return JsonResponse({"error": "Film not found for this award."}, status=404)
+
+    html = render_to_string(
+        "fauxcademy/modals/film_details.html",
+        film.GetCTX(LOD=2, getNominations=True),
+        request=request,
+    )
+
+    return JsonResponse({"html": html})
+
 def addNomination(request, username, listname, slug):
     if request.method != "POST":
         return JsonResponse({"error": "Invalid request method."}, status=405)
@@ -400,7 +436,7 @@ def addNomination(request, username, listname, slug):
             tmdb_id=nominated_person_id
         )
 
-    nomination = Nomination.objects.create(
+    nomination = Nomination(
         category=category,
         film=film,
         nominated_person=nominated_person,
@@ -408,9 +444,80 @@ def addNomination(request, username, listname, slug):
         nominated_by=request.user,
     )
 
+    try:
+        nomination.full_clean()
+        nomination.save()
+    except ValidationError as e:
+        return JsonResponse(
+            {"error": e.message_dict if hasattr(e, "message_dict") else e.messages},
+            status=400,
+        )
+    
     return JsonResponse({
         "message": "Nomination added successfully.",
         "nomination": nomination.GetCTX()
+    })
+
+def removeNomination(request, username, listname, slug):
+    if request.method != "POST":
+        return JsonResponse({"error": "Invalid request method."}, status=405)
+
+    if not request.user.is_authenticated:
+        return JsonResponse({"error": "Authentication required."}, status=401)
+
+    award = Awards.objects.filter(
+        owner__username=username,
+        slug=listname.lower()
+    ).first()
+
+    if not award:
+        return JsonResponse({"error": "Award not found."}, status=404)
+
+    if not award.has_access(request.user):
+        return JsonResponse(
+            {"error": "You do not have permission to access this award."},
+            status=403
+        )
+
+    if not award.is_admin(request.user):
+        return JsonResponse(
+            {"error": "Only admins can remove nominations."},
+            status=403
+        )
+
+    category = AwardCategory.objects.filter(
+        awards=award,
+        slug=slug.lower()
+    ).first()
+
+    if not category:
+        return JsonResponse({"error": "Category not found."}, status=404)
+
+    data = json.loads(request.body)
+
+    nomination_id = data.get("nomination")
+
+    if not nomination_id:
+        return JsonResponse(
+            {"error": "Missing 'nomination' in request body."},
+            status=400
+        )
+
+    nomination = Nomination.objects.filter(
+        id=nomination_id,
+        category=category
+    ).first()
+
+    if not nomination:
+        return JsonResponse(
+            {"error": "Nomination not found."},
+            status=404
+        )
+
+    nomination.delete()
+
+    return JsonResponse({
+        "message": "Nomination removed successfully."
     })
 
 def filmSearch(request):
@@ -562,5 +669,116 @@ def castVote(request, username, listname, slug):
             "first": ballot.first_choice.id if ballot.first_choice else None,
             "second": ballot.second_choice.id if ballot.second_choice else None,
             "third": ballot.third_choice.id if ballot.third_choice else None,
+        }
+    })
+
+
+def createAward(request, username):
+    if request.method != "POST":
+        return JsonResponse({"error": "Invalid request method."}, status=405)
+
+    if not request.user.is_authenticated:
+        return JsonResponse({"error": "Authentication required."}, status=401)
+
+    data = json.loads(request.body)
+
+    name = data.get("name")
+    description = data.get("description", "")
+
+    if not name:
+        return JsonResponse(
+            {"error": "Missing 'name' in request body."},
+            status=400
+        )
+
+    award = Awards(
+        name=name,
+        description=description,
+        owner=request.user
+    )
+
+    try:
+        award.full_clean()
+        award.save()
+
+    except ValidationError as e:
+        return JsonResponse(
+            {"error": e.message_dict},
+            status=400
+        )
+
+    return JsonResponse({
+        "message": "Award created successfully.",
+        "award": {
+            "name": award.name,
+            "slug": award.slug,
+            "url": award.get_absolute_url()
+        }
+    })
+
+
+def createCategory(request, username, listname):
+    if request.method != "POST":
+        return JsonResponse({"error": "Invalid request method."}, status=405)
+
+    if not request.user.is_authenticated:
+        return JsonResponse({"error": "Authentication required."}, status=401)
+
+    award = Awards.objects.filter(
+        owner__username=username,
+        slug=listname.lower()
+    ).first()
+
+    if not award:
+        return JsonResponse({"error": "Award not found."}, status=404)
+
+    if not award.has_access(request.user):
+        return JsonResponse(
+            {"error": "You do not have permission to access this award."},
+            status=403
+        )
+
+    if not award.is_admin(request.user):
+        return JsonResponse(
+            {"error": "Only admins can create categories."},
+            status=403
+        )
+
+    data = json.loads(request.body)
+
+    name = data.get("name")
+    description = data.get("description", "")
+    nominee_type = data.get("nominee_type", "film")
+    importance = data.get("importance", 0)
+
+    if not name:
+        return JsonResponse(
+            {"error": "Missing 'name' in request body."},
+            status=400
+        )
+
+    category = AwardCategory(
+        name=name,
+        description=description,
+        nominee_type=nominee_type,
+        importance=importance,
+        awards=award
+    )
+
+    try:
+        category.full_clean()
+        category.save()
+
+    except ValidationError as e:
+        return JsonResponse(
+            {"error": e.message_dict},
+            status=400
+        )
+
+    return JsonResponse({
+        "message": "Category created successfully.",
+        "category": {
+            "name": category.name,
+            "slug": category.slug,
         }
     })

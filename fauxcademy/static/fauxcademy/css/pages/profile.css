@@ -1,3 +1,5 @@
+@import url("../components/modal-form.css");
+
 /* page layout */
 .profile {
     max-width: 1000px;
@@ -91,6 +93,41 @@
 .list-meta {
     font-size: 0.85rem;
     color: var(--muted);
+}
+
+.list-add {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    text-decoration: none;
+
+    background: transparent;
+    border: 2px dashed rgba(201, 162, 74, 0.25);
+
+    transition: 0.14s ease;
+    cursor: pointer;
+}
+
+.list-add span {
+    font-size: 3rem;
+    font-weight: 200;
+    color: var(--gold);
+    line-height: 1;
+    translate: 0 -0.1em;
+}
+
+.list-add:hover {
+    border-color: var(--gold);
+    background: rgba(201, 162, 74, 0.06);
+}
+
+.list-add:hover span {
+    transform: scale(1.1);
+}
+
+.list-add span {
+    transition: transform 0.2s ease;
 }
 
 /* empty state */

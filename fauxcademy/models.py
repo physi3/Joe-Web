@@ -125,18 +125,29 @@ class EligibleFilm(models.Model):
         self.cache_LOD = LOD
         self.save()
 
-    def GetCTX(self, LOD = 2):
+    def GetCTX(self, LOD = 2, getNominations = False):
         if self.cache_LOD < LOD:
             self.RefreshCache(LOD)
 
         ctx = {
             "tmdb_id": self.tmdb_id,
             "title": self.cached_title,
-            "tagline": self.cached_tagline,
+        }
+
+        if LOD < 2:
+            return ctx
+
+        ctx.update({"tagline": self.cached_tagline,
             "overview": self.cached_overview,
             "poster_url": PosterURL(self.cached_poster_path, type="movie"),
-            "release_date": self.cached_release_date,
-        }
+            "release_date": self.cached_release_date})
+
+        if not getNominations:
+            return ctx
+
+        ctx.update({
+            "nominations" : Nomination.objects.filter(film=self)
+        })
 
         return ctx
 
@@ -171,6 +182,13 @@ class AwardCategory(models.Model):
 
     class Meta:
         ordering = ['importance', 'name']
+        constraints = [
+            models.UniqueConstraint(
+                Lower("slug"),
+                "awards",
+                name="unique_category_award_slug"
+            )
+        ]
 
     def __str__(self):
         return self.name
@@ -203,6 +221,29 @@ class Nomination(models.Model):
             raise ValidationError({
                 "nominated_person": "This category requires a nominated person."
             })
+        
+        queryset = Nomination.objects.filter(category=self.category)
+
+        if self.pk:
+            queryset = queryset.exclude(pk=self.pk)
+
+        nominee_type = self.category.nominee_type
+
+        if nominee_type == "film":
+            if queryset.filter(film=self.film).exists():
+                raise ValidationError(
+                    "This film has already been nominated in this category."
+                )
+
+        else:
+            if queryset.filter(
+                film=self.film,
+                nominated_person=self.nominated_person,
+                nominated_role=self.nominated_role,
+            ).exists():
+                raise ValidationError(
+                    "This nomination already exists."
+                )
 
     def GetCTX(self):
         ctx = {}

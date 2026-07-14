@@ -1,5 +1,6 @@
 @import url("../components/toolbar.css");
 @import url("../components/nominations.css");
+@import url("../components/modal-form.css");
 
 /* categories page */
 .category-list {
@@ -21,6 +22,41 @@
 .category-card:hover {
     transform: translateY(-1px);
     border-color: rgba(201, 162, 74, 0.2);
+}
+
+.category-add {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    text-decoration: none;
+
+    background: transparent;
+    border: 2px dashed rgba(201, 162, 74, 0.25);
+
+    transition: 0.14s ease;
+    cursor: pointer;
+}
+
+.category-add span {
+    font-size: 3rem;
+    font-weight: 200;
+    color: var(--gold);
+    line-height: 1;
+    padding-bottom: 0.2em;
+}
+
+.category-add:hover {
+    border-color: var(--gold);
+    background: rgba(201, 162, 74, 0.06);
+}
+
+.category-add:hover span {
+    transform: scale(1.1);
+}
+
+.category-add span {
+    transition: transform 0.2s ease;
 }
 
 .category-card-header {

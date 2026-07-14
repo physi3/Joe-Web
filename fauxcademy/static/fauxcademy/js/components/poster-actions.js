@@ -110,6 +110,12 @@ function openAddFilmModal() {
     initFilmSearch();
 }
 
+async function openViewModal(filmId){
+    let response = await fetch(`film-details/?id=${encodeURIComponent(filmId)}`);
+    let json = await response.json();
+    openModal(json["html"]);
+}
+
 function openDeleteModal(filmId, filmTitle) {
     openModal(`
         <h2>Delete Film</h2>
@@ -150,7 +156,7 @@ function posterClicked(filmId, poster) {
             markWatched(filmId, poster);
             break;
         case "select":
-            
+            openViewModal(filmId);
             break;
     }
 }

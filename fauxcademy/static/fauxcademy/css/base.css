@@ -24,6 +24,7 @@ body {
 .app-shell {
     display: flex;
     min-height: 100vh;
+    box-sizing: border-box;
 }
 
 /* ===== Sidebar ===== */
@@ -36,6 +37,7 @@ body {
     position: sticky;
     top: 0;
     height: 100vh;
+    box-sizing: border-box;
 }
 
 .sidebar-title {

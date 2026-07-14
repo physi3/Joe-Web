@@ -15,7 +15,8 @@
 {
     "id": {{ category.id }},
     "name": "{{ category.name|escapejs }}",
-    "nomineeType" : "{{ category.nominee_type|escapejs }}"
+    "nomineeType" : "{{ category.nominee_type|escapejs }}",
+    "admin" : {{ is_admin|yesno:"true,false" }}
 }
 </script>
 
@@ -38,11 +39,6 @@ const posterContent = `{% for film in films %}
     </div>
 {% endfor %}`
 </script>
-
-<a class="tool return" href="{% url 'categories' username=award.owner.username listname=award.slug %}">
-    <i data-lucide="arrow-big-left"></i>
-    <span>Return to Categories</span>
-</a>
 
 <div class="category-detail">
     <div class="category-card detail-card">
@@ -102,6 +98,17 @@ const posterContent = `{% for film in films %}
     </div>
 </div>
 
+<div class="vote-header">
+    <div class="vote-heading">
+        <h1>Cast Your Vote</h1>
+        <p>Select your top three</p>
+    </div>
+
+    <a class="tool return" href="{% url 'categories' username=award.owner.username listname=award.slug %}">
+        <i data-lucide="arrow-big-left"></i>
+        <span>Return to Categories</span>
+    </a>
+</div>
 <div class="poster-grid">
     {% for nominee in nominees %}
     <div class="poster-card{% if nominee.unwatched %} unwatched{% endif %}" id="poster-card-{{ nominee.id }}">
@@ -154,5 +161,4 @@ const posterContent = `{% for film in films %}
     </div>
     {% endif %}
 </div>
-
 {% endblock %}
