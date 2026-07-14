@@ -7,12 +7,15 @@ from django.db.models import Q
 from django.http import JsonResponse, HttpResponseForbidden
 from django.shortcuts import redirect, render
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
-from .models import AwardCategory, AwardMembership, Awards, EligibleFilm, UserEligibleFilmStatus, Nomination, NominatedPerson, Ballot
-from .services.tmdbClient import MovieClient, PosterURL
 from django.core.exceptions import ValidationError
 from django.template.loader import render_to_string
 
 import json
+
+from .models import AwardCategory, AwardMembership, Awards, EligibleFilm, UserEligibleFilmStatus, Nomination, NominatedPerson, Ballot
+from .services.tmdbClient import MovieClient, PosterURL
+
+from .utils.decorators import load_award, load_category
 
 def index(request):
     return render(request, "fauxcademy/index.html")
@@ -40,15 +43,8 @@ def profile(request, username):
 # Create your views here.
 @login_required(login_url='login')
 @ensure_csrf_cookie
-def userList(request, username, listname):
-    award = Awards.objects.filter(owner__username=username, slug=listname.lower()).first()
-
-    if not award:
-        return render(request, "404.html", status=404)
-
-    if not award.has_access(request.user):
-        return HttpResponseForbidden("You do not have permission to view this award.")
-
+@load_award()
+def userList(request, award):
     films = EligibleFilm.objects.filter(awards=award)
     filmsCTX = [film.GetCTX() for film in films]
 
@@ -72,15 +68,8 @@ def userList(request, username, listname):
 
 @login_required(login_url='login')
 @ensure_csrf_cookie
-def members(request, username, listname):
-    award = Awards.objects.filter(owner__username=username, slug=listname.lower()).first()
-
-    if not award:
-        return render(request, "404.html", status=404)
-
-    if not award.has_access(request.user):
-        return HttpResponseForbidden("You do not have permission to view this award.")
-
+@load_award()
+def members(request, award):
     ctx = {
         "active_page": "members",
         "award": award,
@@ -91,18 +80,10 @@ def members(request, username, listname):
 
     return render(request, "fauxcademy/members.html", ctx)
 
-
 @login_required(login_url='login')
 @ensure_csrf_cookie
-def categories(request, username, listname):
-    award = Awards.objects.filter(owner__username=username, slug=listname.lower()).first()
-
-    if not award:
-        return render(request, "404.html", status=404)
-
-    if not award.has_access(request.user):
-        return HttpResponseForbidden("You do not have permission to view this award.")
-
+@load_award()
+def categories(request, award):
     categories = AwardCategory.objects.filter(awards=award).order_by("importance", "name")
     for category in categories:
         setattr(
@@ -127,22 +108,10 @@ def categories(request, username, listname):
 
     return render(request, "fauxcademy/categories.html", ctx)
 
-
 @login_required(login_url='login')
 @ensure_csrf_cookie
-def category_detail(request, username, listname, slug):
-    award = Awards.objects.filter(owner__username=username, slug=listname.lower()).first()
-
-    if not award:
-        return render(request, "404.html", status=404)
-
-    if not award.has_access(request.user):
-        return HttpResponseForbidden("You do not have permission to view this award.")
-
-    category = AwardCategory.objects.filter(awards=award, slug=slug).first()
-    if not category:
-        return render(request, "404.html", status=404)
-
+@load_category()
+def category_detail(request, award, category):
     nominees = Nomination.objects.filter(category=category)
     nomineeCtx = [nominee.GetCTX() for nominee in nominees]
 
@@ -183,7 +152,6 @@ def category_detail(request, username, listname, slug):
 
     return render(request, "fauxcademy/category_detail.html", ctx)
 
-
 def login_view(request):
     next_url = request.GET.get('next', request.POST.get('next', '/'))
     if request.method == 'POST':
@@ -201,7 +169,6 @@ def login_view(request):
         'form': form,
         'next': next_url,
     })
-
 
 def register_view(request):
     next_url = request.GET.get('next', request.POST.get('next', '/'))
@@ -221,23 +188,9 @@ def register_view(request):
         'next': next_url,
     })
 
-
 @login_required(login_url='login')
-def inviteUser(request, username, listname):
-    if request.method != "POST":
-        return JsonResponse({"error": "Invalid request method."}, status=405)
-
-    award = Awards.objects.filter(owner__username=username, slug=listname.lower()).first()
-
-    if not award:
-        return JsonResponse({"error": "Award not found."}, status=404)
-
-    if not award.has_access(request.user):
-        return JsonResponse({"error": "You do not have permission to access this award."}, status=403)
-
-    if not award.is_admin(request.user):
-        return JsonResponse({"error": "Only admins can invite members."}, status=403)
-
+@load_award(admin=True)
+def inviteUser(request, award):
     target_username = request.POST.get("username", "").strip()
     if not target_username:
         return JsonResponse({"error": "Username is required."}, status=400)
@@ -254,23 +207,9 @@ def inviteUser(request, username, listname):
 
     return JsonResponse({"message": "Invitation sent successfully."})
 
-
-def addFilm(request, username, listname):
+@load_award(admin=True)
+def addFilm(request, award):
     if request.method == "POST":
-        if not request.user.is_authenticated:
-            return JsonResponse({"error": "Authentication required."}, status=401)
-
-        award = Awards.objects.filter(owner__username=username, slug=listname.lower()).first()
-
-        if not award:
-            return JsonResponse({"error": "Award not found."}, status=404)
-
-        if not award.has_access(request.user):
-            return JsonResponse({"error": "You do not have permission to access this award."}, status=403)
-
-        if not award.is_admin(request.user):
-            return JsonResponse({"error": "Only admins can add films."}, status=403)
-
         data = json.loads(request.body)
         tmdb_id = data.get("tmdb_id")
 
@@ -289,22 +228,9 @@ def addFilm(request, username, listname):
 
     return JsonResponse({"error": "Invalid request method."}, status=405)
 
-def removeFilm(request, username, listname):
+@load_award(admin=True)
+def removeFilm(request, award):
     if request.method == "POST":
-        if not request.user.is_authenticated:
-            return JsonResponse({"error": "Authentication required."}, status=401)
-
-        award = Awards.objects.filter(owner__username=username, slug=listname.lower()).first()
-
-        if not award:
-            return JsonResponse({"error": "Award not found."}, status=404)
-
-        if not award.has_access(request.user):
-            return JsonResponse({"error": "You do not have permission to access this award."}, status=403)
-
-        if not award.is_admin(request.user):
-            return JsonResponse({"error": "Only admins can remove films."}, status=403)
-
         data = json.loads(request.body)
         tmdb_id = data.get("tmdb_id")
 
@@ -321,19 +247,9 @@ def removeFilm(request, username, listname):
 
     return JsonResponse({"error": "Invalid request method."}, status=405)
 
-def watchFilm(request, username, listname):
+@load_award()
+def watchFilm(request, award):
     if request.method == "POST":
-        if not request.user.is_authenticated:
-            return JsonResponse({"error": "Authentication required."}, status=401)
-
-        award = Awards.objects.filter(owner__username=username, slug=listname.lower()).first()
-
-        if not award:
-            return JsonResponse({"error": "Award not found."}, status=404)
-
-        if not award.has_access(request.user):
-            return JsonResponse({"error": "You do not have permission to access this award."}, status=403)
-
         data = json.loads(request.body)
         tmdb_id = data.get("tmdb_id")
 
@@ -355,18 +271,8 @@ def watchFilm(request, username, listname):
     return JsonResponse({"error": "Invalid request method."}, status=405)
 
 @csrf_exempt
-def filmModal(request, username, listname):
-    if not request.user.is_authenticated:
-        return JsonResponse({"error": "Authentication required."}, status=401)
-
-    award = Awards.objects.filter(owner__username=username, slug=listname.lower()).first()
-
-    if not award:
-        return JsonResponse({"error": "Award not found."}, status=404)
-
-    if not award.has_access(request.user):
-        return JsonResponse({"error": "You do not have permission to access this award."}, status=403)
-
+@load_award()
+def filmModal(request, award):
     tmdb_id = request.GET.get("id", "")
 
     if not tmdb_id:
@@ -384,34 +290,10 @@ def filmModal(request, username, listname):
 
     return JsonResponse({"html": html})
 
-def addNomination(request, username, listname, slug):
+@load_category(admin=True)
+def addNomination(request, award, category):
     if request.method != "POST":
         return JsonResponse({"error": "Invalid request method."}, status=405)
-
-    if not request.user.is_authenticated:
-        return JsonResponse({"error": "Authentication required."}, status=401)
-
-    award = Awards.objects.filter(
-        owner__username=username,
-        slug=listname.lower()
-    ).first()
-
-    if not award:
-        return JsonResponse({"error": "Award not found."}, status=404)
-
-    if not award.has_access(request.user):
-        return JsonResponse({"error": "You do not have permission to access this award."}, status=403)
-
-    if not award.is_admin(request.user):
-        return JsonResponse({"error": "Only admins can add nominations."}, status=403)
-
-    category = AwardCategory.objects.filter(
-        awards=award,
-        slug=slug.lower()
-    ).first()
-
-    if not category:
-        return JsonResponse({"error": "Category not found."}, status=404)
 
     data = json.loads(request.body)
 
@@ -458,40 +340,10 @@ def addNomination(request, username, listname, slug):
         "nomination": nomination.GetCTX()
     })
 
-def removeNomination(request, username, listname, slug):
+@load_category(admin=True)
+def removeNomination(request, award, category):
     if request.method != "POST":
         return JsonResponse({"error": "Invalid request method."}, status=405)
-
-    if not request.user.is_authenticated:
-        return JsonResponse({"error": "Authentication required."}, status=401)
-
-    award = Awards.objects.filter(
-        owner__username=username,
-        slug=listname.lower()
-    ).first()
-
-    if not award:
-        return JsonResponse({"error": "Award not found."}, status=404)
-
-    if not award.has_access(request.user):
-        return JsonResponse(
-            {"error": "You do not have permission to access this award."},
-            status=403
-        )
-
-    if not award.is_admin(request.user):
-        return JsonResponse(
-            {"error": "Only admins can remove nominations."},
-            status=403
-        )
-
-    category = AwardCategory.objects.filter(
-        awards=award,
-        slug=slug.lower()
-    ).first()
-
-    if not category:
-        return JsonResponse({"error": "Category not found."}, status=404)
 
     data = json.loads(request.body)
 
@@ -587,32 +439,10 @@ def personSearch(request):
 
     return JsonResponse({"results": people})
 
-
-def castVote(request, username, listname, slug):
+@load_category()
+def castVote(request, award, category):
     if request.method != "POST":
         return JsonResponse({"error": "Invalid request method."}, status=405)
-
-    if not request.user.is_authenticated:
-        return JsonResponse({"error": "Authentication required."}, status=401)
-
-    award = Awards.objects.filter(
-        owner__username=username,
-        slug=listname.lower()
-    ).first()
-
-    if not award:
-        return JsonResponse({"error": "Award not found."}, status=404)
-
-    if not award.has_access(request.user):
-        return JsonResponse({"error": "You do not have permission to access this award."}, status=403)
-
-    category = AwardCategory.objects.filter(
-        awards=award,
-        slug=slug.lower()
-    ).first()
-
-    if not category:
-        return JsonResponse({"error": "Category not found."}, status=404)
 
     data = json.loads(request.body)
 
@@ -672,7 +502,6 @@ def castVote(request, username, listname, slug):
         }
     })
 
-
 def createAward(request, username):
     if request.method != "POST":
         return JsonResponse({"error": "Invalid request method."}, status=405)
@@ -716,34 +545,8 @@ def createAward(request, username):
         }
     })
 
-
-def createCategory(request, username, listname):
-    if request.method != "POST":
-        return JsonResponse({"error": "Invalid request method."}, status=405)
-
-    if not request.user.is_authenticated:
-        return JsonResponse({"error": "Authentication required."}, status=401)
-
-    award = Awards.objects.filter(
-        owner__username=username,
-        slug=listname.lower()
-    ).first()
-
-    if not award:
-        return JsonResponse({"error": "Award not found."}, status=404)
-
-    if not award.has_access(request.user):
-        return JsonResponse(
-            {"error": "You do not have permission to access this award."},
-            status=403
-        )
-
-    if not award.is_admin(request.user):
-        return JsonResponse(
-            {"error": "Only admins can create categories."},
-            status=403
-        )
-
+@load_award(admin=True)
+def createCategory(request, award):
     data = json.loads(request.body)
 
     name = data.get("name")

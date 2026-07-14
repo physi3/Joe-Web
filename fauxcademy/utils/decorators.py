@@ -2,7 +2,7 @@ from functools import wraps
 
 from django.http import JsonResponse
 
-from ..models import Awards
+from ..models import Awards, AwardCategory
 
 def load_award(admin=False):
     def decorator(view_func):
@@ -42,6 +42,35 @@ def load_award(admin=False):
                 award,
                 *args,
                 **kwargs
+            )
+
+        return wrapper
+
+    return decorator
+
+
+def load_category(admin=False):
+    def decorator(view_func):
+        @wraps(view_func)
+        @load_award(admin=admin)
+        def wrapper(request, award, slug, *args, **kwargs):
+            category = AwardCategory.objects.filter(
+                awards=award,
+                slug__iexact=slug,
+            ).first()
+
+            if not category:
+                return JsonResponse(
+                    {"error": "Category not found."},
+                    status=404,
+                )
+
+            return view_func(
+                request,
+                award,
+                category,
+                *args,
+                **kwargs,
             )
 
         return wrapper
