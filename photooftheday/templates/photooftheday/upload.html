@@ -1,0 +1,154 @@
+{% extends "photooftheday/base.html" %}
+
+{% block title %}Upload Photo{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+{% endblock %}
+
+{% block content %}
+<div class="page">
+  <main class="container">
+    <section class="upload-page">
+
+      <header class="upload-heading">
+        <p class="upload-kicker">Photo of the day</p>
+        <h1>Upload photo</h1>
+        <p class="upload-date">{{ day|date:"l, j F Y" }}</p>
+        <a class="upload-button upload-back-link" href="{% url 'day' year=day.year month=day.month day=day.day %}">
+          ← Back to day
+        </a>
+      </header>
+
+      {% if error %}
+        <div class="form-errors">{{ error }}</div>
+      {% endif %}
+
+      {% if not temp_path %}
+        {% if existing %}
+          <div class="notice">You already have a submission for this day. Uploading will overwrite it.</div>
+        {% endif %}
+
+        <form id="upload-image-form" class="upload-card" method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <label class="upload-dropzone" for="upload-image">
+            <span class="upload-dropzone-title">Choose a photograph</span>
+            <span class="upload-dropzone-copy">JPG, PNG, or HEIC with optional camera metadata</span>
+            <span class="upload-file-name" id="upload-file-name">No image selected</span>
+          </label>
+          <input id="upload-image" class="upload-file-input" type="file" name="image" accept="image/*" required>
+          <div class="upload-actions">
+            <button type="submit" class="btn-primary">Upload image</button>
+          </div>
+        </form>
+
+      {% else %}
+        <div class="upload-card upload-edit-card">
+          <div class="upload-preview">
+            <img src="{{ preview_url }}" alt="Preview">
+          </div>
+
+          <form class="upload-details" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="step" value="confirm">
+            <input type="hidden" name="temp_path" value="{{ temp_path }}">
+
+          <label class="field-label">Caption</label>
+          <input class="text-input" name="caption" value="{{ existing.caption|default_if_none:'' }}">
+
+          <label class="field-label">Timestamp</label>
+          {% if exif_timestamp %}
+            <input type="time" name="time" value="{{ exif_timestamp|time:"H:i" }}">
+          {% else %}
+            <input type="time" name="time" value="{{ "now"|date:"Y-m-d\TH:i" }}">
+          {% endif %}
+
+             <label class="field-label">Location</label>
+             <div id="location-map" class="location-map" aria-label="Map for choosing the photo location"></div>
+             <p class="map-help">Click the map or drag the pin to choose a location.</p>
+             <input type="hidden" id="latitude" name="latitude"
+               value="{{ exif_lat|default_if_none:'' }}">
+             <input type="hidden" id="longitude" name="longitude"
+               value="{{ exif_lon|default_if_none:'' }}">
+             <div id="selected-location" class="selected-location" aria-live="polite"></div>
+
+          <div class="upload-actions">
+            {% if existing %}
+              <div class="notice">A submission exists — confirming will overwrite it.</div>
+            {% endif %}
+            <button type="submit" class="btn-primary">Save submission</button>
+          </div>
+          </form>
+        </div>
+
+      {% endif %}
+
+    </section>
+  </main>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+  {% if not temp_path %}
+    <script>
+      document.getElementById("upload-image").addEventListener("change", function () {
+        document.getElementById("upload-file-name").textContent = this.files.length
+          ? this.files[0].name
+          : "No image selected";
+        if (this.files.length > 0) {
+          document.getElementById("upload-image-form").submit();
+        }
+      });
+    </script>
+  {% endif %}
+
+  {% if temp_path %}
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+      const latitudeInput = document.getElementById("latitude");
+      const longitudeInput = document.getElementById("longitude");
+      const selectedLocation = document.getElementById("selected-location");
+      const startingLatitude = Number.parseFloat(latitudeInput.value);
+      const startingLongitude = Number.parseFloat(longitudeInput.value);
+      const hasStartingLocation = Number.isFinite(startingLatitude)
+        && Number.isFinite(startingLongitude)
+        && startingLatitude >= -90 && startingLatitude <= 90
+        && startingLongitude >= -180 && startingLongitude <= 180;
+      const initialCenter = hasStartingLocation ? [startingLatitude, startingLongitude] : [20, 0];
+      const initialZoom = hasStartingLocation ? 13 : 2;
+      const map = L.map("location-map").setView(initialCenter, initialZoom);
+
+      L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png?key={{ carto_api_key|urlencode }}", {
+        attribution: "&copy; OpenStreetMap contributors &copy; CARTO",
+        subdomains: "abcd",
+        maxZoom: 20
+      }).addTo(map);
+
+      let marker = hasStartingLocation
+        ? L.marker([startingLatitude, startingLongitude], {draggable: true}).addTo(map)
+        : null;
+
+      function setLocation(latitude, longitude) {
+        latitudeInput.value = latitude.toFixed(6);
+        longitudeInput.value = longitude.toFixed(6);
+        selectedLocation.textContent = `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
+      }
+
+      function placeMarker(event) {
+        if (!marker) {
+          marker = L.marker(event.latlng, {draggable: true}).addTo(map);
+          marker.on("dragend", () => setLocation(marker.getLatLng().lat, marker.getLatLng().lng));
+        } else {
+          marker.setLatLng(event.latlng);
+        }
+        setLocation(event.latlng.lat, event.latlng.lng);
+      }
+
+      map.on("click", placeMarker);
+      if (marker) {
+        marker.on("dragend", () => setLocation(marker.getLatLng().lat, marker.getLatLng().lng));
+        setLocation(startingLatitude, startingLongitude);
+      }
+    </script>
+  {% endif %}
+{% endblock %}

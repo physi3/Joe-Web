@@ -1,0 +1,156 @@
+{% extends "photooftheday/base.html" %}
+
+{% block content %}
+
+<div class="page">
+
+  <main class="container">
+
+    <!-- MASTHEAD -->
+    <header class="masthead">
+      <div class="masthead-grid">
+        <div class="masthead-est">
+          {% if group and group.created_at %}
+            EST. {{ group.created_at|date:"F Y" }}
+          {% else %}
+            EST.
+          {% endif %}
+        </div>
+
+        <div class="masthead-title">
+          PHOTO <small>OF THE</small> DAY
+        </div>
+
+        <div class="earth">
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/9/97/The_Earth_seen_from_Apollo_17.jpg"
+            alt="Earth photographed from space"
+          >
+        </div>
+      </div>
+    </header>
+
+
+    <!-- DAY NAVIGATION -->
+    <nav class="day-nav">
+      {% if next_url %}<a href="{{ next_url }}" class="arrow">← Next</a>{% else %}<a class="arrow disabled">← Next</a>{% endif %}
+
+      <div class="day-nav-center">
+        {% if archive %}
+          {% for item in archive %}
+            <a href="{{ item.url }}" class="{% if item.active %}active{% endif %}">
+              {{ item.label }}
+            </a>
+            {% if not forloop.last %}<span>·</span>{% endif %}
+          {% endfor %}
+        {% else %}
+          <a href="#" class="active">Latest</a>
+        {% endif %}
+      </div>
+
+      {% if prev_url %}<a href="{{ prev_url }}" class="arrow">Prev →</a>{% else %}<a class="arrow disabled" >Prev →</a>{% endif %}
+    </nav>
+
+
+    <!-- DAILY DISPATCH -->
+    <!--
+    <section class="dispatch-heading">
+      <div class="date">
+        {{ day|date:"l" }}<br>
+        <strong>{{ day|date:"j F Y" }}</strong>
+      </div>
+
+      <div class="dispatch-title">The Daily Dispatch</div>
+
+      <div class="dispatch-info">
+        {{ submissions|length }} submissions<br>
+        {{ locations|length|default:"—" }} locations
+      </div>
+    </section>
+
+
+    <div class="locations">
+      {% if locations %}
+        {% for loc in locations %}
+          {{ loc }}{% if not forloop.last %} &nbsp; / &nbsp;{% endif %}
+        {% endfor %}
+      {% endif %}
+    </div>
+
+    //-->
+
+    <!-- PHOTOS -->
+    <section class="dispatch-grid">
+
+      {% for item in members %}
+      {% with member=item.member submission=item.submission %}
+      <article class="dispatch">
+
+        <div class="person-header">
+          <h2 class="person-name">{{ member.name }}</h2>
+          <div class="person-meta">
+            {% if submission %}
+              {% if submission.cached_address %}<b>
+                {{ submission.cached_address.city }}, {{ submission.cached_address.country }}</b><br>
+              {% elif submission.latitude and submission.longitude %}
+                {{ submission.latitude }}, {{ submission.longitude }}<br>
+              {% endif %}
+              {{ submission.time|time:"g:i A" }}
+            {% else %}
+              No submission
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="photo-frame">
+          {% if submission and submission.image and submission.image.url %}
+            <img src="{{ submission.image.url }}" alt="{{ submission.caption|default:'Photo' }}">
+          {% else %}
+            <div class="photo-placeholder">{{ member.name }} hasn't uploaded a photo yet!<br>Find them and shame them.</div>
+          {% endif %}
+        </div>
+
+        <div class="caption">{% if submission %}{{ submission.caption }}{% else %}{% endif %}</div>
+
+        <div class="location">
+          <svg class="pin" style="--pin-color: {% cycle '#1769aa' '#d97706' '#b42318' %}" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M12 21s7-6.1 7-12a7 7 0 1 0-14 0c0 5.9 7 12 7 12Z"></path>
+            <circle cx="12" cy="9" r="2.25"></circle>
+          </svg>
+          {% if submission %}
+            {% if submission.cached_address %}
+              {{ submission.cached_address.name }}, {{ submission.cached_address.city }}
+            {% elif submission.latitude and submission.longitude %}
+              {{ submission.latitude }}, {{ submission.longitude }}
+            {% endif %}
+          {% else %}
+            —
+          {% endif %}
+        </div>
+
+      </article>
+      {% endwith %}
+      {% endfor %}
+
+    </section>
+
+
+    <!-- SIMPLE DAY FOOTER -->
+    <footer class="dispatch-footer">
+      <div class="day-number">{% if day_number %}Day {{ day_number }}{% endif %}</div>
+      <div class="archive-label">Photo of the Day Archive</div>
+    </footer>
+
+
+    <!-- UPLOAD -->
+    <section class="upload-section">
+      <h2>{% if day == today %}Today's dispatch{% else %}Dispatch: {{ day|date:"j F" }}{% endif %}</h2>
+      <p>Add or update your photograph.</p>
+      <a class="upload-button" href="{{ upload_url }}">+ Add photo</a>
+    </section>
+
+  </main>
+
+</div>
+
+{% endblock %}

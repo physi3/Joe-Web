@@ -1,0 +1,47 @@
+{% extends "photooftheday/base.html" %}
+
+{% block title %}Sign In{% endblock %}
+
+{% block content %}
+
+<div class="page">
+  <main class="container">
+    <section class="login-page">
+      <div class="login-card">
+        <h1>Sign in</h1>
+        <p class="muted">Enter your credentials to continue to Photo of the Day.</p>
+
+        <form method="post" action="{% url 'login' %}">
+          {% csrf_token %}
+
+          {% if form.errors %}
+            <div class="form-errors">
+              {{ form.non_field_errors }}
+            </div>
+          {% endif %}
+
+          {# Preserve next parameter so LoginView redirects where requested #}
+          {% if next %}
+            <input type="hidden" name="next" value="{{ next }}">
+          {% endif %}
+
+          <label class="field-label">Username</label>
+          <input type="text" name="username" class="text-input" required autofocus value="{{ request.POST.username|default:"" }}">
+
+          <label class="field-label">Password</label>
+          <input type="password" name="password" class="text-input" required>
+
+          <div class="form-actions">
+            <button type="submit" class="btn-primary">Sign in</button>
+          </div>
+        </form>
+
+        <div class="login-footer">
+          <a href="#">Forgot password?</a>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+{% endblock %}
