@@ -1,0 +1,920 @@
+/* =========================================================
+    RESET
+========================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    background: #e9e4d8;
+    color: #1d1d1b;
+    font-family: "Space Grotesk", sans-serif;
+}
+
+img {
+    display: block;
+    width: 100%;
+}                   
+
+button {
+    font: inherit;
+}
+
+.location-map {
+    height: 360px;
+    margin-top: 8px;
+    border: 1px solid #777064;
+}
+
+.map-help,
+.selected-location {
+    margin: 8px 0 0;
+    font-family: "DM Mono", monospace;
+    font-size: 11px;
+}
+
+.map-help {
+    color: #6b665d;
+}
+
+.selected-location {
+    min-height: 16px;
+}
+
+
+/* =========================================================
+    PAGE / PAPER
+========================================================= */
+
+.page {
+    min-height: 100vh;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Very subtle paper grain */
+.page::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    opacity: .13;
+
+    background-image:
+    radial-gradient(#555 0.6px, transparent 0.6px),
+    radial-gradient(#777 0.5px, transparent 0.5px);
+
+    background-size: 7px 7px, 11px 11px;
+    background-position: 0 0, 3px 4px;
+
+    mix-blend-mode: multiply;
+    z-index: 10;
+}
+
+
+/* =========================================================
+    CONTAINER
+========================================================= */
+
+.container {
+    width: min(1400px, calc(100% - 64px));
+    margin: 0 auto;
+}
+
+
+/* =========================================================
+    MASTHEAD
+========================================================= */
+
+.masthead {
+    padding: 34px 0 24px;
+    border-bottom: 1px solid #777064;
+}
+
+.masthead-grid {
+    display: grid;
+    grid-template-columns: 1fr 2.6fr 1fr;
+    align-items: center;
+    gap: 28px;
+}
+
+.masthead-est {
+    font-family: "DM Mono", monospace;
+    font-size: 10px;
+    line-height: 1.7;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+}
+
+.masthead-title {
+    text-align: center;
+
+    font-family: "Playfair Display", serif;
+    font-size: clamp(55px, 7vw, 105px);
+    font-weight: 500;
+
+    letter-spacing: -.07em;
+    line-height: .85;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+    EARTH IMAGE
+========================================================= */
+
+.earth {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.earth img {
+    width: 95px;
+    height: 95px;
+
+    object-fit: cover;
+    border-radius: 50%;
+
+    filter: saturate(.65) contrast(.95);
+    opacity: .85;
+}
+
+
+/* =========================================================
+    DAY NAVIGATION
+========================================================= */
+
+.day-nav {
+    min-height: 58px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+
+    border-bottom: 1px solid #777064;
+
+    font-family: "DM Mono", monospace;
+    font-size: 10px;
+
+    text-transform: uppercase;
+    letter-spacing: .08em;
+}
+
+.day-nav a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.day-nav-center {
+    display: flex;
+    gap: 25px;
+    align-items: center;
+
+    overflow: hidden;
+}
+
+.day-nav-center a {
+    white-space: nowrap;
+}
+
+.day-nav-center .active {
+    font-weight: 600;
+}
+
+.arrow {
+    font-size: 15px;
+    white-space: nowrap;
+}
+
+.day-nav a.disabled {
+    opacity: .3;
+    pointer-events: none;
+}
+
+
+/* =========================================================
+    DISPATCH HEADER
+========================================================= */
+
+.dispatch-heading {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    align-items: center;
+
+    padding: 28px 0 24px;
+
+    border-bottom: 1px solid #777064;
+}
+
+.date {
+    font-family: "DM Mono", monospace;
+    font-size: 11px;
+
+    line-height: 1.7;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+}
+
+.date strong {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.dispatch-title {
+    text-align: center;
+
+    font-family: "Playfair Display", serif;
+    font-size: clamp(34px, 4vw, 62px);
+    font-style: italic;
+    font-weight: 500;
+
+    letter-spacing: -.04em;
+}
+
+.dispatch-info {
+    text-align: right;
+
+    font-family: "DM Mono", monospace;
+    font-size: 9px;
+    line-height: 1.7;
+
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+
+
+/* =========================================================
+    LOCATIONS
+========================================================= */
+
+.locations {
+    padding: 11px 0;
+
+    text-align: center;
+
+    font-family: "DM Mono", monospace;
+    font-size: 9px;
+
+    letter-spacing: .2em;
+    text-transform: uppercase;
+
+    border-bottom: 1px solid #777064;
+}
+
+
+/* =========================================================
+    THREE PHOTO COLUMNS
+========================================================= */
+
+.dispatch-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.dispatch {
+    padding: 30px 24px 34px;
+
+    border-right: 1px solid #777064;
+}
+
+.dispatch:first-child {
+    padding-left: 0;
+}
+
+.dispatch:last-child {
+    padding-right: 0;
+    border-right: none;
+}
+
+
+/* =========================================================
+    PERSON HEADER
+========================================================= */
+
+.person-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+
+    gap: 15px;
+    margin-bottom: 18px;
+}
+
+.person-name {
+    margin: 0;
+
+    font-family: "Playfair Display", serif;
+    font-size: 37px;
+    font-weight: 500;
+
+    letter-spacing: -.04em;
+}
+
+.person-meta {
+    font-family: "DM Mono", monospace;
+    font-size: 9px;
+    line-height: 1.5;
+
+    letter-spacing: .08em;
+    text-align: right;
+    text-transform: uppercase;
+}
+
+
+/* =========================================================
+    PHOTO
+========================================================= */
+
+.photo-frame {
+    padding: 7px;
+
+    background: #f1eee5;
+
+    box-shadow:
+    0 2px 4px rgba(0,0,0,.08),
+    0 8px 20px rgba(0,0,0,.05);
+}
+
+.photo-frame img {
+    aspect-ratio: 4 / 4.8;
+    object-fit: cover;
+
+    filter: saturate(.82) contrast(.95);
+}
+
+.photo-placeholder {
+    text-align: center;
+}
+
+.caption {
+    padding: 20px 8px 16px 5px;
+
+    font-family: "Playfair Display", serif;
+    font-size: 21px;
+    font-style: italic;
+
+    line-height: 1.35;
+}
+
+.location {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    padding-left: 5px;
+
+    font-family: "DM Mono", monospace;
+    font-size: 9px;
+
+    line-height: 1.5;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+}
+
+.pin {
+    width: 13px;
+    height: 13px;
+
+    flex: 0 0 13px;
+
+    fill: none;
+    stroke: var(--pin-color, #1769aa);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.8;
+}
+
+
+/* =========================================================
+    FOOTER
+========================================================= */
+
+.dispatch-footer {
+    padding: 25px 0 30px;
+
+    text-align: center;
+
+    border-top: 1px solid #777064;
+    border-bottom: 1px solid #777064;
+}
+
+.day-number {
+    display: inline-block;
+
+    padding: 7px 21px;
+
+    border: 1px solid #555;
+    border-radius: 50%;
+
+    font-family: "Playfair Display", serif;
+    font-size: 21px;
+    font-style: italic;
+
+    transform: rotate(-4deg);
+}
+
+.archive-label {
+    margin-top: 13px;
+
+    font-family: "DM Mono", monospace;
+    font-size: 8px;
+
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    opacity: .65;
+}
+
+
+/* =========================================================
+    UPLOAD
+========================================================= */
+
+.upload-section {
+    padding: 48px 0 70px;
+    text-align: center;
+}
+
+.upload-section h2 {
+    margin: 0 0 10px;
+
+    font-family: "Playfair Display", serif;
+    font-size: 32px;
+    font-weight: 500;
+}
+
+.upload-section p {
+    max-width: 450px;
+
+    margin: 0 auto 24px;
+
+    font-family: "DM Mono", monospace;
+    font-size: 9px;
+
+    line-height: 1.7;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+}
+
+.upload-button {
+    display: inline-block;
+
+    padding: 12px 20px;
+
+    border: 1px solid #1d1d1b;
+    background: transparent;
+
+    font-family: "DM Mono", monospace;
+    font-size: 10px;
+
+    text-transform: uppercase;
+    letter-spacing: .08em;
+
+    cursor: pointer;
+
+    transition: .2s ease;
+
+    color: #1d1d1b;
+    text-decoration: none;
+}
+
+.upload-button:hover {
+    background: #1d1d1b;
+    color: #e9e4d8;
+}
+
+.upload-back-link {
+    margin-top: 18px;
+}
+
+
+/* =========================================================
+    UPLOAD PAGE
+========================================================= */
+
+.upload-page {
+    width: min(100%, 860px);
+    margin: 0 auto;
+    padding: 34px 0 70px;
+}
+
+.upload-heading {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.upload-kicker,
+.upload-date {
+    margin: 0;
+    color: #5f5a50;
+    font-family: "DM Mono", monospace;
+    font-size: 9px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+}
+
+.upload-heading h1 {
+    margin: 6px 0 4px;
+    font-family: "Playfair Display", serif;
+    font-size: clamp(36px, 5vw, 58px);
+    font-style: italic;
+    font-weight: 500;
+    letter-spacing: -.04em;
+}
+
+.upload-card {
+    width: 100%;
+    padding: 22px;
+    border: 1px solid #777064;
+    background: rgba(241, 238, 229, .7);
+    box-shadow: 0 8px 20px rgba(29, 29, 27, .05);
+}
+
+.upload-dropzone {
+    display: flex;
+    min-height: 190px;
+    padding: 28px;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 8px;
+    border: 1px dashed #777064;
+    background: #f1eee5;
+    text-align: center;
+    cursor: pointer;
+}
+
+.upload-dropzone:hover {
+    background: #e9e4d8;
+}
+
+.upload-dropzone-title {
+    font-family: "Playfair Display", serif;
+    font-size: 27px;
+    font-style: italic;
+}
+
+.upload-dropzone-copy,
+.upload-file-name {
+    font-family: "DM Mono", monospace;
+    font-size: 9px;
+    letter-spacing: .08em;
+    line-height: 1.6;
+    text-transform: uppercase;
+}
+
+.upload-file-name {
+    color: #5f5a50;
+    overflow-wrap: anywhere;
+}
+
+.upload-file-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+.upload-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 14px;
+    margin-top: 18px;
+}
+
+.upload-edit-card {
+    display: grid;
+    grid-template-columns: minmax(220px, 34%) 1fr;
+    gap: 24px;
+    align-items: start;
+}
+
+.upload-preview {
+    display: flex;
+    width: 100%;
+    height: clamp(260px, 38vw, 390px);
+    padding: 8px;
+    align-items: center;
+    justify-content: center;
+    background: #1d1d1b;
+}
+
+.upload-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.upload-details {
+    min-width: 0;
+}
+
+.upload-details .text-input,
+.upload-details input[type="time"] {
+    width: 100%;
+}
+
+.upload-details .location-map {
+    height: 180px;
+}
+
+.upload-details .notice,
+.upload-card + .notice {
+    margin-bottom: 12px;
+}
+
+.form-errors,
+.notice {
+    padding: 11px 13px;
+    border: 1px solid #a58b72;
+    background: #f1e5d8;
+    font-family: "DM Mono", monospace;
+    font-size: 10px;
+    line-height: 1.5;
+    letter-spacing: .04em;
+}
+
+.upload-page > .notice {
+    margin-bottom: 14px;
+}
+
+
+/* =========================================================
+    MOBILE
+========================================================= */
+
+@media (max-width: 800px) {
+
+    .container {
+    width: min(100% - 32px, 600px);
+    }
+
+
+    /* ----- Masthead ----- */
+
+    .masthead {
+    padding-top: 24px;
+    }
+
+    .masthead-grid {
+    grid-template-columns: 1fr;
+    gap: 17px;
+    }
+
+    .masthead-est {
+    text-align: center;
+    }
+
+    .masthead-title {
+    font-size: 60px;
+    }
+
+    .earth {
+    justify-content: center;
+    }
+
+    .earth img {
+    width: 72px;
+    height: 72px;
+    }
+
+
+    /* ----- Navigation ----- */
+
+    .day-nav {
+    overflow: hidden;
+    }
+
+    .day-nav-center {
+    gap: 14px;
+
+    overflow-x: auto;
+
+    scrollbar-width: none;
+    }
+
+    .day-nav-center::-webkit-scrollbar {
+    display: none;
+    }
+
+    .day-nav-center a:nth-child(n+4) {
+    display: none;
+    }
+
+
+    /* ----- Dispatch heading ----- */
+
+    .dispatch-heading {
+    grid-template-columns: 1fr;
+
+    gap: 15px;
+    padding: 24px 0;
+    }
+
+    .date {
+    text-align: center;
+    }
+
+    .dispatch-title {
+    order: -1;
+    font-size: 42px;
+    }
+
+    .dispatch-info {
+    text-align: center;
+    }
+
+
+    /* ----- Locations ----- */
+
+    .locations {
+    font-size: 8px;
+    letter-spacing: .14em;
+    }
+
+
+    /* ----- Photos ----- */
+
+    .dispatch-grid {
+    display: block;
+    }
+
+    .dispatch,
+    .dispatch:first-child,
+    .dispatch:last-child {
+    padding: 30px 0;
+
+    border-right: none;
+    border-bottom: 1px solid #777064;
+    }
+
+    .person-name {
+    font-size: 34px;
+    }
+
+    .photo-frame img {
+    aspect-ratio: 4 / 4.7;
+    }
+
+    .caption {
+    font-size: 20px;
+    }
+
+
+    /* ----- Footer ----- */
+
+    .dispatch-footer {
+    padding: 24px 0;
+    }
+
+
+    /* ----- Upload ----- */
+
+    .upload-section {
+    padding-bottom: 45px;
+    }
+
+    .upload-page {
+    padding-top: 24px;
+    }
+
+    .upload-edit-card {
+    grid-template-columns: 1fr;
+    }
+
+    .upload-preview {
+    height: min(72vw, 360px);
+    }
+
+}
+
+
+/* =========================================================
+    SMALL PHONES
+========================================================= */
+
+@media (max-width: 420px) {
+
+    .container {
+    width: calc(100% - 24px);
+    }
+
+    .masthead-title {
+    font-size: 51px;
+    }
+
+    .day-nav {
+    font-size: 9px;
+    }
+
+    .day-nav-center {
+    gap: 10px;
+    }
+
+    .dispatch-title {
+    font-size: 36px;
+    }
+
+    .locations {
+    font-size: 8px;
+    }
+
+    .person-name {
+    font-size: 31px;
+    }
+
+    .person-meta {
+    font-size: 8px;
+    }
+
+    .caption {
+    font-size: 19px;
+    }
+
+}
+
+
+/* =========================================================
+   LOGIN PAGE
+   Shared, minimal styles intended to be reusable across apps
+========================================================= */
+
+.login-page {
+    display: flex;
+    justify-content: center;
+    padding: 80px 0 120px;
+}
+
+.login-card {
+    width: 100%;
+    max-width: 420px;
+    padding: 32px;
+    background: #fff;
+    border: 1px solid #ded6c9;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+    border-radius: 6px;
+}
+
+.login-card h1 {
+    margin: 0 0 8px;
+    font-family: "Playfair Display", serif;
+    font-size: 28px;
+}
+
+.login-card .muted {
+    margin: 0 0 18px;
+    color: #666;
+    font-family: "DM Mono", monospace;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .12em;
+}
+
+.field-label {
+    display: block;
+    margin: 10px 0 6px;
+    font-family: "DM Mono", monospace;
+    font-size: 11px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+
+.text-input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 15px;
+    margin-bottom: 6px;
+}
+
+.form-actions {
+    margin-top: 18px;
+    text-align: right;
+}
+
+.btn-primary {
+    padding: 10px 16px;
+    background: #1d1d1b;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: "DM Mono", monospace;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+}
+
+.btn-primary:hover { opacity: .95 }
+
+.login-footer { margin-top: 12px; font-size: 13px }

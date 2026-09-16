@@ -26,6 +26,7 @@ urlpatterns = [
     path('mugrank/', include('mugrank.urls')),
     path('statusdisplay/', include('statusdisplay.urls')),
     path('fauxcademy/', include('fauxcademy.urls')),
+    path('photooftheday/', include('photooftheday.urls')),
 ]
 
 if settings.DEBUG:
