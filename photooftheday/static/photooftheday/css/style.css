@@ -128,6 +128,10 @@ button {
     white-space: nowrap;
 }
 
+.masthead-title span {
+    display: inline-block;
+}
+
 
 /* =========================================================
     EARTH IMAGE
@@ -680,6 +684,7 @@ button {
 
     .masthead-title {
     font-size: 60px;
+    white-space: normal;
     }
 
     .earth {
