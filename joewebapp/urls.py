@@ -1,8 +1,19 @@
 from django.urls import path
 from .views import personal, auth, sketches
 
+personalPages = {
+    "" : personal.PersonalPage2025,
+    "2025/" : personal.PersonalPage2025,
+}
+
+personalUrlPatterns = [
+    pattern
+    for prefix, page in personalPages.items()
+    for pattern in page.GetUrlPatterns(prefix)
+]
+
 urlpatterns = [
-    path('', personal.index),
+    *personalUrlPatterns,
     path('sketches/', sketches.index),
     path('sketches/<str:sketch>/', sketches.view),
     path('sketches/<str:sketch>/source/', sketches.source),
