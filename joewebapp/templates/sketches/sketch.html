@@ -1,24 +1,27 @@
-{% extends "subpage.html" %} {% load static %} {% block head %}
-<link rel="stylesheet" href={% static "/sketch.css" %}>
-
+{% extends "subpage.html" %}
+{% load static %}
+{% block head %}
+<link rel="stylesheet" href="{% static 'sketch.css' %}">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.js"></script>
 <script src="{% static 'sketches/sketches.js' %}"></script>
-{% endblock %} {% block title%} {{sketch.name}} {% endblock %} {% block nav %}
-<a href="/sketches/">🠜 Back to Sketches</a> {% endblock %} {% block body %}
-
+{% endblock %}
+{% block title %}{{ sketch.name }}{% endblock %}
+{% block nav %}
+<a class="text-link page-back" href="/sketches/">Back to sketches <span>→</span></a>
+{% endblock %}
+{% block body %}
 <div class="page-content">
-    {% block scripts %}
-        {% for script in sketch.scripts %}
-        <script src="{% static 'sketches/' %}{{script}}"></script>
-        {% endfor %}
+  {% block scripts %}
+    {% for script in sketch.scripts %}
+    <script src="{% static 'sketches/' %}{{ script }}"></script>
+    {% endfor %}
 
-        {% for library in sketch.libraries %}
-        <script src="{{ library }}"></script>
-        {% endfor %}
-    {% endblock %}
-    <div id="sketch-holder"></div>
-    <div id="input-holder"></div>
-    <div ><a id="view-source" href="source/">View Source</a></div>
-    
+    {% for library in sketch.libraries %}
+    <script src="{{ library }}"></script>
+    {% endfor %}
+  {% endblock %}
+  <div id="sketch-holder"></div>
+  <div id="input-holder"></div>
+  <a id="view-source" href="source/">View Source</a>
 </div>
 {% endblock %}

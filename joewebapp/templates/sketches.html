@@ -1,20 +1,18 @@
 {% extends "subpage.html" %}
 {% load static %}
-{% block navClass %}top-nav-collapsable{% endblock %}
-{% block title %} Sketches {% endblock %}
-
-{% block head %}
-<link rel="stylesheet" href={% static "/sketches.css" %}>
-{% endblock %}
+{% block title %}Sketches{% endblock %}
 
 {% block body %}
-<div class="sketches-container">
-    {% for sketch in sketches %}
-    <div class="sketch-card" onclick="location='{{ sketch.urlName }}'">
-        <div class="card-img" style="background-image: url('{% static sketch.imagePath %}');">
-        </div>
-        <p>{{ sketch.name }}</p>
-    </div>
-    {% endfor %}
+<p class="eyebrow">Creative coding</p>
+<h1>Sketches</h1>
+<p class="intro">Experiments in generative art, interaction and creative coding — a place to test ideas without worrying about the finished product.</p>
+
+<div class="sketches-grid">
+  {% for sketch in sketches %}
+  <a class="sketch-card" href="{{ sketch.urlName }}/">
+    <div class="card-img" style="background-image: url('{% static sketch.imagePath %}');"></div>
+    <p>{{ sketch.name }}</p>
+  </a>
+  {% endfor %}
 </div>
 {% endblock %}

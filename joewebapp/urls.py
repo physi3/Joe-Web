@@ -2,8 +2,9 @@ from django.urls import path
 from .views import personal, auth, sketches
 
 personalPages = {
-    "" : personal.PersonalPage2025,
-    "2025/" : personal.PersonalPage2025,
+    "" : personal.CurrentPersonalPage,
+    "archive/2026/" : personal.CurrentPersonalPage,
+    "archive/2025/" : personal.PersonalPage2025,
 }
 
 personalUrlPatterns = [

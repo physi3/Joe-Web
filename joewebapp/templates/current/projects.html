@@ -4,35 +4,63 @@
   {% load static %}
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>{% block title %}Joe Marriage{% endblock %} — Joe Marriage</title>
+  <meta name="description" content="Joe Marriage — developer, mathematician and creator.">
+  <title>Projects — Joe Marriage</title>
 
   {% include "metadata.html" %}
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  
+  <link rel="shortcut icon" type="image/svg+xml" href="{% static 'current/favicon.svg' %}" />
 
-  <link rel="shortcut icon" type="image/svg" href="{% static 'current/favicon.svg' %}" />
   <link rel="stylesheet" href="{% static 'current/style.css' %}">
-  {% block head %}{% endblock %}
 </head>
+
 <body>
   <div class="grain"></div>
-
   <header class="site-header">
-    <a class="wordmark" href="/">Joe Marriage</a>
+    <a class="wordmark" href="../">Joe Marriage</a>
     <nav>
-      <a href="/">Home</a>
-      <a href="/projects/">Projects</a>
-      <a href="/#about">About</a>
+      <a href="../">Home</a>
+      <a class="active" href="#">Projects</a>
+      <a href="../#about">About</a>
       <a href="mailto:hello@joemarriage.com">Contact</a>
     </nav>
   </header>
 
   <main class="page">
-    {% block nav %}{% endblock %}
-    {% block body %}{% endblock %}
+    <p class="eyebrow">Selected work</p>
+    <h1>Projects</h1>
+    <p class="intro">A collection of things I've built, experimented with and learned from.</p>
+
+    <div class="project-grid">
+      <article class="project-card">
+        <span class="number">01</span>
+        <h2>My Little Rocketship</h2>
+        <p>A casual arcade mobile game built in Unity, exploring tight controls, progression and a deliberately simple visual language.</p>
+        <a href="https://physi3.itch.io/my-little-rocketship">View project →</a>
+      </article>
+      <article class="project-card">
+        <span class="number">02</span>
+        <h2>p5.js sketches</h2>
+        <p>Experiments in generative art, interaction and creative coding — a place to test ideas without worrying about the finished product.</p>
+        <a href="/sketches/">View project →</a>
+      </article>
+      <article class="project-card">
+        <span class="number">03</span>
+        <h2>Fauxcademy</h2>
+        <p>A web-based platform for creating and sharing "academy-like" awards with your friends.</p>
+        <a href="/fauxcademy/">View project →</a>
+      </article>
+      <article class="project-card">
+        <span class="number">04</span>
+        <h2>Programmable Car</h2>
+        <p>A small programming game created for VimJam 2, including a custom programming language and level system.</p>
+        <a href="https://physi3.itch.io/on-the-edge">View project →</a>
+      </article>
+    </div>
   </main>
 
   <footer>
