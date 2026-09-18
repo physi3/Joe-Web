@@ -1,0 +1,49 @@
+.page-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 1em;
+}
+
+#input-holder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 1em;
+}
+
+#input-holder label {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+}
+
+
+#input-holder label span {
+    padding-right: 0.75em;
+}
+
+#view-source {
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 0.6em;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 1.2em;
+    margin: 0.6em;
+    display: block;
+}
+
+#view-source:link,
+#view-source:visited
+{
+    color: rgb(179, 179, 179);
+}
+
+#view-source:hover,
+#view-source:active {
+    color: white;
+}
+
+code {
+    border-radius: 0.8em;
+}
