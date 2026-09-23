@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 500 500"
+     aria-hidden="true">
+
+    <defs>
+        <mask id="dot-cutout"
+              maskUnits="userSpaceOnUse"
+              x="0" y="0"
+              width="500"
+              height="500">
+
+            <!-- Keep the whole circle -->
+            <rect width="500" height="500" fill="white"/>
+
+            <!-- Cut out the dots -->
+            <g transform="translate(61 180)" fill="black">
+                <!-- Green -->
+                <ellipse cx="189" cy="70"
+                         rx="70.0786517" ry="70"/>
+
+                <!-- Blue -->
+                <ellipse cx="307.9213486" cy="70"
+                         rx="70.0786517" ry="70"/>
+
+                <!-- Orange -->
+                <ellipse cx="70.0786517" cy="70"
+                         rx="70.0786517" ry="70"/>
+            </g>
+
+            <!-- Restore the overlapping regions -->
+            <g transform="translate(61 180)" fill="white">
+
+                <!-- Orange / Green overlap -->
+                <path d="
+                    M129.539326 107.063108
+                    C122.810493 96.3149291 118.921348 83.611134 118.921348 70
+                    C118.921348 56.388866 122.810493 43.6850709 129.539326 32.9368922
+                    C136.268159 43.6850709 140.157303 56.388866 140.157303 70
+                    C140.157303 83.611134 136.268159 96.3149291 129.539326 107.063108 Z"/>
+
+                <!-- Green / Blue overlap -->
+                <path d="
+                    M248.460674 32.9368922
+                    C255.189507 43.6850709 259.078652 56.388866 259.078652 70
+                    C259.078652 83.611134 255.189507 96.3149291 248.460674 107.063108
+                    C241.731841 96.3149291 237.842697 83.611134 237.842697 70
+                    C237.842697 56.388866 241.731841 43.6850709 248.460674 32.9368922 Z"/>
+            </g>
+
+        </mask>
+    </defs>
+
+    <!-- currentColor makes the SVG colour controllable with CSS -->
+    <circle cx="250"
+            cy="250"
+            r="250"
+            fill="currentColor"
+            mask="url(#dot-cutout)"/>
+</svg>

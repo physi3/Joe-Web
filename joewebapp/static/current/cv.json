@@ -1,0 +1,47 @@
+{
+    "Employment" : [
+        {
+            "Timeframe" : "2023 - 2024",
+            "Company" : "GoStudent",
+            "CompanyLink" : "https://www.linkedin.com/company/gostudent-gmbh/",
+            "Role" : "Maths and Physics Tutor",
+            "Description" : "Tutored students in maths and physics, helping them to understand complex concepts and improve their academic performance."
+        },
+        {
+            "Timeframe" : "Summer 2024",
+            "Company" : "Wooshii",
+            "CompanyLink" : "https://www.linkedin.com/company/wooshii/",
+            "Role" : "Data Analyst",
+            "Description" : "Worked as a data analyst, analyzing and interpreting data to provide insights and support decision-making processes."
+        },
+        {
+            "Timeframe" : "2022 - 2025",
+            "Company" : "Game Pickle Studios",
+            "CompanyLink" : "https://www.linkedin.com/company/game-pickle/",
+            "Role" : "Game Developer",
+            "Description" : "Worked across mobile and co-op game projects, handling gameplay, UI, systems, ads and IAPs. Developed Flying Ambulance Simulator from prototype through launch."
+        },
+        {
+            "Timeframe" : "2025 - Present",
+            "Company" : "Cocktail Bar",
+            "CompanyLink" : "https://www.linkedin.com/company/the-drawing-rooms/",
+            "Role" : "Pianist",
+            "Description" : "Performing live piano sets in a busy environment, adapting repertoire to suit different audiences."
+        },
+        {
+            "Timeframe" : "2026 - Present",
+            "Company" : "Equisoft",
+            "CompanyLink" : "https://www.linkedin.com/company/equisoft/",
+            "Role" : "Placement Developer",
+            "Description" : "Industry placement as a software developer, working on a financial technology platforms and gaining experience in different areas of software development."
+        }
+    ],
+    "Education" : [
+        {
+            "Timeframe" : "2024 - 2028",
+            "Institution" : "University of Bath",
+            "Degree" : "MMath Mathematics",
+            "Description" : "Studying Mathematics with a focus on statistics, machine learning and data analysis. Working with R and exploring real-world datasets and projects."
+        }
+    ]
+}
