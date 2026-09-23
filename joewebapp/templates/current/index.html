@@ -141,6 +141,28 @@
         </a>
       </div>
     </section>
+
+    <section class="archive" id="archive">
+      <div class="section-intro">
+        <p class="eyebrow archive-intro">
+          <span class="archive-mark" aria-hidden="true">
+            <img src="{% static 'current/favicon.svg' %}" alt="" />
+          </span>
+          Archive
+        </p>
+        <h2>Old versions of me.</h2>
+      </div>
+
+      <div class="archive-links">
+        {% for page in archive_pages %}
+        <a class="archive-link" href="{{ page.url }}" aria-label="Open the {{ page.year }} version of Joe Marriage's personal site">
+          <span class="archive-badge">Archived</span>
+          <span class="archive-year">{{ page.year }}</span>
+          <span class="archive-meta">{{ page.url }}</span>
+        </a>
+        {% endfor %}
+      </div>
+    </section>
   </main>
 
   <footer>
