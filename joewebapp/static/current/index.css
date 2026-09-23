@@ -62,7 +62,19 @@
   grid-template-columns: repeat(5, 1fr);
   grid-template-rows: repeat(5, 1fr);
   gap: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
   filter: drop-shadow(0 0 25px rgba(145,137,255,.28));
+}
+
+.logo-grid:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 8px;
+  border-radius: 12px;
 }
 
 .logo-grid i {
@@ -165,7 +177,7 @@
 
 .timeline-item time {
   padding-top: 3px;
-  color: #a8a6c4;
+  color: var(--muted-strong);
   font: 11px var(--mono);
   text-transform: uppercase;
   letter-spacing: .12em;
@@ -201,7 +213,7 @@
 .timeline-item div:last-child > p:last-child {
   max-width: 610px;
   margin: 0;
-  color: #aaaab4;
+  color: var(--muted);
   font: 14px/1.6 var(--serif);
 }
 
@@ -252,7 +264,7 @@
 
 .next > div p {
   margin: 0 0 10px;
-  color: #c2c0ca;
+  color: var(--muted-strong);
   font: italic 16px/1.65 var(--serif);
 }
 

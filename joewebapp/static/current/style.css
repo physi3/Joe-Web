@@ -3,12 +3,26 @@
   --bg-soft: #0b0d16;
   --text: #f0eee8;
   --muted: #a8a9b5;
+  --muted-strong: #c7c6cc;
   --line: rgba(165, 157, 255, .22);
+  --card: rgba(255, 255, 255, .012);
   --accent: #9189ff;
   --accent-bright: #b5afff;
   --serif: "Playfair Display", Georgia, "Times New Roman", serif;
   --sans: Inter, system-ui, sans-serif;
   --mono: "DM Mono", monospace;
+}
+
+[data-theme="light"] {
+  --bg: #f5f3ee;
+  --bg-soft: #efeae1;
+  --text: #171b24;
+  --muted: #5d6476;
+  --muted-strong: #384152;
+  --line: rgba(91, 99, 140, .16);
+  --card: rgba(255, 255, 255, .7);
+  --accent: #403ec7;
+  --accent-bright: #2d2a8d;
 }
 
 * { box-sizing: border-box; }
@@ -26,6 +40,13 @@ body {
     var(--bg);
   font-family: var(--sans);
   overflow-x: hidden;
+}
+
+body[data-theme="light"] {
+  background:
+    radial-gradient(circle at 78% 8%, rgba(104, 91, 255, .12), transparent 28rem),
+    radial-gradient(circle at 20% 60%, rgba(72, 65, 180, .06), transparent 35rem),
+    var(--bg);
 }
 
 body::before {
@@ -153,7 +174,7 @@ h1 {
 .intro {
   max-width: 535px;
   margin: 34px 0 38px;
-  color: #c7c6cc;
+  color: var(--muted-strong);
   font: 400 17px/1.65 var(--serif);
 }
 
@@ -186,8 +207,12 @@ h1 {
 
 .text-link:hover {
   gap: 34px;
-  color: #dfe1ff;
+  color: var(--text);
   transform: translateX(2px);
+}
+
+body[data-theme="light"] .text-link:hover {
+  color: var(--accent-bright);
 }
 
 .text-link:hover::before {
@@ -242,7 +267,7 @@ h1 {
   border: 1px solid var(--line);
   border-radius: 50%;
   color: var(--muted);
-  background: rgba(255, 255, 255, .01);
+  background: var(--card);
   transition: border-color .2s ease, color .2s ease, transform .2s ease, box-shadow .2s ease;
 }
 
@@ -376,7 +401,7 @@ h1 {
   min-width: 190px;
   padding: 18px 20px 16px;
   border: 1px solid var(--line);
-  background: rgba(255, 255, 255, .012);
+  background: var(--card);
   overflow: hidden;
   transition: border-color .2s ease, transform .2s ease, box-shadow .2s ease;
 }
@@ -561,7 +586,7 @@ footer {
   min-height: 300px;
   padding: 34px;
   border: 1px solid var(--line);
-  background: rgba(255, 255, 255, .012);
+  background: var(--card);
   transition: .3s ease;
   position: relative;
   overflow: hidden;
@@ -618,7 +643,7 @@ footer {
 
 .sketch-card {
   border: 1px solid var(--line);
-  background: rgba(255, 255, 255, .012);
+  background: var(--card);
   overflow: hidden;
   cursor: pointer;
   transition: .3s ease;
