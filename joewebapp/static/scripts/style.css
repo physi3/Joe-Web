@@ -1,0 +1,80 @@
+body {
+    font-family: "Georgia", "Times New Roman", serif;
+    background: #fafafa;
+    color: #111;
+    max-width: 800px;
+    margin: 60px auto;
+    line-height: 1.6;
+    padding: 0 20px;
+}
+
+.title {
+    text-align: center;
+    font-size: 2.3em;
+    margin: 2.5em 0 1.5em;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: normal;
+}
+
+.act {
+    text-align: center;
+    font-size: 1.8em;
+    margin: 3em 0 1.5em;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.scene {
+    text-align: center;
+    font-size: 1.2em;
+    margin: 1em 0;
+    padding: 1em 0;
+    font-style: italic;
+    font-weight: normal;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: #fafafa;
+    width: 100%;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+br {
+    margin-bottom: 1em;
+}
+
+.dialogue {
+    margin: 1.5em 0;
+    page-break-inside: avoid;
+}
+
+.speaker {
+    margin: 0 0 0.2em 0;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* Spoken lines */
+.dialogue p:not(.speaker):not(.stage-direction) {
+    margin: 0 0 0.8em 2em;
+}
+
+.stage-direction {
+    font-style: italic;
+    color: #444;
+    margin: 1em 0;
+}
+
+/* Stage directions inside dialogue feel tighter */
+.dialogue .stage-direction {
+    margin-left: 0;
+}
+
+/* Optional: page-like feel */
+@media print {
+    body {
+        background: white;
+        color: black;
+    }
+}
