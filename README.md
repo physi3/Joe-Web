@@ -27,4 +27,4 @@
 
    These can be found in the directories: `joeweb` and `statusdisplay`.
 
-We are now running on Gitea
+We are now running on Gitea.
