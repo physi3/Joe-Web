@@ -8,5 +8,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Deploy
-        run: sudo -u joe /usr/local/bin/deploy-joeweb
+      - name: Update code
+        run: |
+          sudo -u joe git -C /var/www/Joe-Web fetch origin
+          sudo -u joe git -C /var/www/Joe-Web reset --hard origin/main
+
+      - name: Run migrations
+        run: |
+          sudo -u joe /var/www/Joe-Web/venv/bin/python \
+            /var/www/Joe-Web/manage.py migrate --noinput
+
+      - name: Collect static files
+        run: |
+          sudo -u joe /var/www/Joe-Web/venv/bin/python \
+            /var/www/Joe-Web/manage.py collectstatic --noinput
+
+      - name: Restart Gunicorn
+        run: |
+          sudo systemctl restart joeweb
