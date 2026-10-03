@@ -9,7 +9,4 @@ jobs:
 
     steps:
       - name: Deploy
-        run: |
-          cd /var/www/Joe-Web
-          git fetch origin
-          git reset --hard origin/main
+        run: sudo -u joe /usr/local/bin/deploy-joeweb
