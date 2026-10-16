@@ -35,6 +35,7 @@ if (ENV_DEBUG := environ.get('DEBUG')):
 
 GUNICORN_DEBUG = getenv('GUNICORN_DEBUG', 'False') == 'True'
 CARTO_API_KEY = environ.get('CARTO_API_KEY', '')
+TMDB_API_KEY = environ.get('TMDB_API_KEY', '')
 
 # If either are true
 DEBUG = ENV_DEBUG or GUNICORN_DEBUG

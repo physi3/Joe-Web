@@ -13,7 +13,7 @@ def Client():
     global _client
     if _client is None:
         _client = TMDb()
-        _client.api_key = "ba28fa72da38f40b03d5aad5d0b4040f"
+        _client.api_key = settings.TMDB_API_KEY
         _client.language = settings.LANGUAGE_CODE
     return _client
 
