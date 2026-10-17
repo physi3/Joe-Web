@@ -153,17 +153,16 @@ button {
     opacity: .85;
 }
 
-
 /* =========================================================
-    DAY NAVIGATION
+    SITE NAVIGATION
 ========================================================= */
 
-.day-nav {
+.site-nav {
     min-height: 58px;
 
     display: flex;
     align-items: center;
-    justify-content: space-between;
+
     gap: 20px;
 
     border-bottom: 1px solid #777064;
@@ -173,11 +172,41 @@ button {
 
     text-transform: uppercase;
     letter-spacing: .08em;
+
+    justify-content: center;
 }
 
-.day-nav a {
+.site-nav a {
     color: inherit;
     text-decoration: none;
+}
+
+.site-nav a.disabled {
+    opacity: .3;
+    pointer-events: none;
+}
+
+.site-nav .day-nav-center {
+    gap: clamp(16px, 4vw, 48px);
+    overflow: visible;
+}
+
+.site-nav .active {
+    border-bottom: 1px solid currentColor;
+    padding-bottom: 3px;
+}
+
+.site-nav a:focus-visible {
+    outline: 2px solid #1d1d1b;
+    outline-offset: -3px;
+}
+
+/* =========================================================
+    DAY NAVIGATION
+========================================================= */
+
+.day-nav {
+    justify-content: space-between;
 }
 
 .day-nav-center {
@@ -439,6 +468,22 @@ button {
     opacity: .65;
 }
 
+.copyright {
+    margin-top: 8px;
+
+    font-family: "DM Mono", monospace;
+    font-size: 8px;
+
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    opacity: .65;
+
+    justify-content: center;
+    display: flex;
+
+    margin-top: 4em;
+    margin-bottom: 4em;
+}
 
 /* =========================================================
     UPLOAD
@@ -699,8 +744,17 @@ button {
 
     /* ----- Navigation ----- */
 
+    .site-nav .day-nav-center a:not(.active),
+    .site-nav .day-nav-center span {
+        display: inline-block;
+    }
+
     .day-nav {
     overflow: hidden;
+    }
+
+    .site-nav:not(.day-nav) .day-nav-center {
+        gap: clamp(11px, 3vw, 26px);
     }
 
     .day-nav-center {
@@ -715,10 +769,12 @@ button {
     display: none;
     }
 
-    .day-nav-center a:not(.active),
-    .day-nav-center span {
-    display: none;
+    .day-nav .day-nav-center a:not(.active),
+    .day-nav .day-nav-center span {
+        display: none;
     }
+
+
 
 
     /* ----- Dispatch heading ----- */
@@ -818,14 +874,14 @@ button {
     width: calc(100% - 24px);
     }
 
+    .site-nav {
+        font-size: 9px;
+    }
+
     .masthead-title {
     max-width: 100%;
     font-size: 42px;
     white-space: normal;
-    }
-
-    .day-nav {
-    font-size: 9px;
     }
 
     .day-nav-center {

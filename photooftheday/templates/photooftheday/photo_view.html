@@ -1,0 +1,54 @@
+{% extends "photooftheday/base.html" %}
+
+{% block content %}
+
+<div class="page">
+
+  <main class="container">
+
+    <!-- MASTHEAD -->
+    <header class="masthead">
+      <div class="masthead-grid">
+        <div class="masthead-est">
+          {% if group and group.created_at %}
+            EST. {{ group.created_at|date:"F Y" }}
+          {% else %}
+            EST.
+          {% endif %}
+        </div>
+
+        <div class="masthead-title">
+          <span>PHOTO <small>OF </small></span>
+          <span><small>THE</small> DAY</span>
+        </div>
+
+        <div class="earth">
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/9/97/The_Earth_seen_from_Apollo_17.jpg"
+            alt="Earth photographed from space"
+          >
+        </div>
+      </div>
+    </header>
+
+    <nav class="site-nav" aria-label="Photo of the Day navigation">
+        <div class="day-nav-center">
+        <a href="/photooftheday/" {% if active_page == "day" %}class="active"{% endif %}>Day</a>
+        <a href="/photooftheday/week/" {% if active_page == "week" %}class="active"{% endif %} class="disabled" title="Week view coming soon!">Week</a>
+        <a href="/photooftheday/calendar/" {% if active_page == "calendar" %}class="active"{% endif %}>Calendar</a>
+        </div>
+    </nav>
+
+    {% block photo_content %}
+    {% endblock %}
+
+    <footer class="copyright">
+      <div>Copyright © Joe Marriage. All rights reserved.</div>
+    </footer>
+
+    {% block extra_content %}
+    {% endblock %}
+
+  </main>
+</div>
+{% endblock %}

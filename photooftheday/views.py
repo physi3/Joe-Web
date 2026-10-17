@@ -1,19 +1,23 @@
-from datetime import date as _date, timedelta
-from PIL.ExifTags import GPSTAGS
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
-
-from .models import GroupMember, PhotoSubmission
 from django.core.files.storage import default_storage
 from django.core.files.base import File
+
+from .models import GroupMember, PhotoSubmission
+
+from datetime import date as _date, timedelta
+from PIL.ExifTags import GPSTAGS
 from django.conf import settings
 from uuid import uuid4
 import os
 from decimal import Decimal
 from datetime import datetime
 from PIL import Image, ExifTags
+import calendar
+from datetime import date, timedelta
+
 
 from .utils.geocoding import dms_to_decimal
 
@@ -130,10 +134,82 @@ def day(request, year: int, month: int, day: int):
         "next_url": next_url,
         "day_number": day_number,
         "upload_url": upload_url,
+        "active_page": "day",
     }
 
     return render(request, "photooftheday/day.html", context)
 
+def this_week(request):
+    start_of_week = timezone.now().date() - timedelta(days=timezone.now().date().weekday())
+    return redirect(f"/photooftheday/week/{start_of_week.year}/{start_of_week.month}/{start_of_week.day}/")
+
+def week(request, year: int, month: int, day: int):
+    # coming soon
+    return redirect(f"/photooftheday/{year}/{month}/{day}/")
+
+def calendar_this_month(request):
+    today = timezone.now().date()
+    return redirect(f"/photooftheday/calendar/{today.year}/{today.month}/")
+
+def calendar_view(request, year:int, month_int:int):
+    month = date(year, month_int, 1)
+    today = timezone.now().date()
+
+    try:
+        group = GroupMember.objects.get(user=request.user).group
+        members = group.members.all().select_related('user')
+    except GroupMember.DoesNotExist:
+        return redirect("/")
+
+    # get monday of the creation week
+    creation_week = group.created_at.date() - timedelta(days=group.created_at.date().weekday())
+
+    weeks = []
+
+    for dates in calendar.Calendar(firstweekday=0).monthdatescalendar(
+        month.year, month.month
+    ):
+        week_start = dates[0]
+
+        days = []
+        for day in dates:
+            days.append({
+                "date": day,
+                "url": f"/photooftheday/{day:%Y}/{day:%m}/{day:%d}/",
+                "in_month": day.month == month.month,
+                "is_today": day == today,
+                "is_disabled": day < group.created_at.date() or day > today,
+                "uploads": [
+                    {
+                        "name": member.name,
+                        "uploaded": PhotoSubmission.objects.filter(
+                            group=group, user=member.user, date=day).exists()
+                    }
+                    for i, member in enumerate(members)
+                ],
+            })
+
+        weeks.append({
+            "number": (week_start - creation_week).days // 7,
+            "url": f"/photooftheday/week/{week_start:%Y}/{week_start:%m}/{week_start:%d}/",
+            "days": days,
+            "is_disabled": week_start < creation_week or week_start > today,
+        })
+
+    previous_month = (month - timedelta(days=1)).replace(day=1)
+    next_month = (month.replace(day=28) + timedelta(days=4)).replace(day=1)
+
+    context = {
+        "group": group,
+        "month": month,
+        "members": members,
+        "weeks": weeks,
+        "previous_month_url": f"/photooftheday/calendar/{previous_month:%Y}/{previous_month:%m}/" if month > creation_week else None,
+        "next_month_url": f"/photooftheday/calendar/{next_month:%Y}/{next_month:%m}/" if next_month < today else None,
+        "active_page": "calendar",
+    }
+
+    return render(request, "photooftheday/calendar.html", context)
 
 @login_required(login_url="login") # type: ignore
 def upload(request, year: int, month: int, day: int):

@@ -1,0 +1,67 @@
+{% extends "photooftheday/photo_view.html" %}
+{% load static %}
+
+{% block title %}{{ month|date:"F Y" }} — Photo / Day{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'photooftheday/css/calendar.css' %}">
+{% endblock %}
+
+{% block photo_content %}
+  <section class="calendar" aria-labelledby="calendar-month-title">
+    <div class="calendar-heading">
+      {% if previous_month_url %}<a class="calendar-month-arrow" href="{{ previous_month_url }}" aria-label="Previous month">←</a>{% else %}<span class="calendar-month-arrow disabled">←</span>{% endif %}
+      <h1 id="calendar-month-title">{{ month|date:"F Y" }}</h1>
+      {% if next_month_url %}<a class="calendar-month-arrow" href="{{ next_month_url }}" aria-label="Next month">→</a>{% else %}<span class="calendar-month-arrow disabled">→</span>{% endif %}
+    </div>
+
+    <div class="calendar-legend" aria-label="Upload indicator colours">
+      {% for member in members %}
+        <span class="calendar-legend-item">
+          <span class="calendar-dot calendar-dot--{{ forloop.counter }} is-uploaded" aria-hidden="true"></span>
+          {{ member.name }}
+        </span>
+      {% endfor %}
+    </div>
+
+    <div class="calendar-grid" aria-label="Days in {{ month|date:'F Y' }}">
+      <div class="calendar-weekdays" aria-hidden="true">
+        <span></span>
+        <span>Mon</span>
+        <span>Tue</span>
+        <span>Wed</span>
+        <span>Thu</span>
+        <span>Fri</span>
+        <span>Sat</span>
+        <span>Sun</span>
+      </div>
+
+      {% for week in weeks %}
+        <div class="calendar-week">
+          <a class="calendar-week-link {% if week.is_disabled %}disabled{% endif %}" href="{{ week.url }}" aria-label="View dispatch for week {{ week.number }}">
+            <span class="calendar-week-number">Week {{ week.number }}</span>
+            <span class="calendar-week-action">Dispatch <span aria-hidden="true">↗</span></span>
+          </a>
+
+          {% for day in week.days %}
+            <a href="{{ day.url }}"
+                class="calendar-day{% if not day.in_month %} is-outside{% endif %}{% if day.is_today %} is-today{% endif %}{% if day.is_disabled %} disabled{% endif %}"
+                {% if day.is_today %}aria-current="date"{% endif %}>
+              <time class="calendar-date" datetime="{{ day.date|date:'Y-m-d' }}">
+                {{ day.date|date:"j" }}
+              </time>
+
+              <span class="calendar-dots">
+                {% for status in day.uploads %}
+                  <span class="calendar-dot calendar-dot--{{ forloop.counter }}{% if status.uploaded %} is-uploaded{% endif %}"
+                        aria-hidden="true"></span>
+                  <span class="calendar-sr-only">{{ status.name }}: {% if status.uploaded %}uploaded{% else %}not uploaded{% endif %}. </span>
+                {% endfor %}
+              </span>
+            </a>
+          {% endfor %}
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+{% endblock %}

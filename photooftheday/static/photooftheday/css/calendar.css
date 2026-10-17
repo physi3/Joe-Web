@@ -1,0 +1,316 @@
+/* Calendar-specific styles. Loaded AFTER the shared style.css.
+   Phase 1: date index only; no thumbnails or JavaScript. */
+
+.page {
+    --calendar-line: #777064;
+    --calendar-week-width: clamp(88px, 14vw, 156px);
+}
+
+/* The existing day navigation hides non-active items on mobile.
+   A calendar needs all four site links visible. */
+
+.calendar-heading {
+    display: grid;
+    grid-template-columns: 48px minmax(0, 1fr) 48px;
+    align-items: center;
+    gap: 12px;
+    padding: 28px 0 15px;
+    border-bottom: 1px solid var(--calendar-line);
+}
+
+.calendar-heading h1 {
+    min-width: 0;
+    margin: 0;
+    text-align: center;
+    font-family: "Playfair Display", serif;
+    font-size: clamp(32px, 4.5vw, 62px);
+    font-style: italic;
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: -.045em;
+}
+
+.calendar-month-arrow {
+    display: grid;
+    place-items: center;
+    min-height: 44px;
+    color: inherit;
+    font-family: "DM Mono", monospace;
+    font-size: 25px;
+    text-decoration: none;
+}
+
+.calendar-month-arrow.disabled {
+    opacity: .38;
+    pointer-events: none;
+}
+
+.calendar-legend {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px 22px;
+    padding: 17px 0;
+}
+
+.calendar-legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-family: "DM Mono", monospace;
+    font-size: 9px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+
+.calendar-grid {
+    border-top: 1px solid var(--calendar-line);
+}
+
+.calendar-weekdays,
+.calendar-week {
+    display: grid;
+    grid-template-columns: var(--calendar-week-width) repeat(7, minmax(0, 1fr));
+}
+
+.calendar-weekdays {
+    min-height: 37px;
+    align-items: center;
+    border-bottom: 1px solid var(--calendar-line);
+    font-family: "DM Mono", monospace;
+    font-size: 10px;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+.calendar-week {
+    min-height: 106px;
+    border-bottom: 1px solid var(--calendar-line);
+}
+
+.calendar-week-link,
+.calendar-day {
+    min-width: 0;
+    color: inherit;
+    text-decoration: none;
+    border-right: 1px solid rgba(119, 112, 100, .35);
+    transition: background-color .16s ease;
+}
+
+.calendar-week-link {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 11px;
+    padding: 10px 12px;
+}
+
+.calendar-week-number {
+    font-family: "Playfair Display", serif;
+    font-style: italic;
+    font-size: clamp(15px, 1.6vw, 24px);
+    white-space: nowrap;
+}
+
+.calendar-week-action {
+    font-family: "DM Mono", monospace;
+    font-size: 9px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--calendar-line);
+    padding-bottom: 3px;
+}
+
+.calendar-day {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    padding: 12px 2px;
+}
+
+.calendar-day:last-child {
+    border-right: 0;
+}
+
+.calendar-date {
+    font-family: "Playfair Display", serif;
+    font-size: clamp(23px, 2.3vw, 34px);
+    font-weight: 400;
+    line-height: 1;
+}
+
+.calendar-dots {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+}
+
+.calendar-dot {
+    display: inline-block;
+    flex: 0 0 auto;
+    width: 10px;
+    height: 10px;
+    border: 1px solid var(--dot-color);
+    border-radius: 50%;
+    background: transparent;
+}
+
+.calendar-dot--1 { --dot-color: #376b9a; }
+.calendar-dot--2 { --dot-color: #b45135; }
+.calendar-dot--3 { --dot-color: #46683e; }
+
+.calendar-dot.is-uploaded {
+    background: var(--dot-color);
+}
+
+.calendar-day.is-outside {
+    opacity: .38;
+}
+
+.calendar-day.is-today .calendar-date {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 5px;
+}
+
+.calendar-day.disabled, 
+.calendar-week-link.disabled {
+    opacity: .38;
+    pointer-events: none;
+}
+
+.calendar-week-link:hover,
+.calendar-day:hover {
+    background: rgba(29, 29, 27, .055);
+}
+
+.calendar-week-link:focus-visible,
+.calendar-day:focus-visible,
+.calendar-month-arrow:focus-visible {
+    outline: 2px solid #1d1d1b;
+    outline-offset: -3px;
+}
+
+.calendar-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.calendar-footer {
+    margin-top: 32px;
+    border-top: 0; /* calendar's final row already provides the rule */
+}
+
+@media (max-width: 800px) {
+    .page {
+        --calendar-week-width: 66px;
+    }
+
+    .calendar-heading {
+        grid-template-columns: 38px minmax(0, 1fr) 38px;
+        padding-top: 20px;
+    }
+
+    .calendar-heading h1 {
+        font-size: clamp(29px, 7.8vw, 44px);
+    }
+
+    .calendar-legend {
+        gap: 14px;
+        padding: 14px 0;
+    }
+
+    .calendar-weekdays {
+        min-height: 33px;
+        font-size: 8px;
+        letter-spacing: 0;
+    }
+
+    .calendar-week {
+        min-height: 76px;
+    }
+
+    .calendar-week-link {
+        gap: 7px;
+        padding: 6px 3px;
+    }
+
+    .calendar-week-number {
+        font-size: 14px;
+    }
+
+    .calendar-week-action {
+        font-size: 8px;
+        letter-spacing: 0;
+    }
+
+    .calendar-day {
+        gap: 9px;
+        padding: 7px 1px;
+    }
+
+    .calendar-date {
+        font-size: 22px;
+    }
+
+    .calendar-dots {
+        gap: 3px;
+    }
+
+    .calendar-dot {
+        width: 7px;
+        height: 7px;
+    }
+}
+
+@media (max-width: 420px) {
+    .page {
+        --calendar-week-width: 55px;
+    }
+
+    .calendar-week {
+        min-height: 69px;
+    }
+
+    .calendar-week-number {
+        font-size: 12px;
+    }
+
+    .calendar-week-action {
+        font-size: 7px;
+    }
+
+    .calendar-date {
+        font-size: 20px;
+    }
+
+    .calendar-dots {
+        gap: 2px;
+    }
+
+    .calendar-dot {
+        width: 6px;
+        height: 6px;
+    }
+
+    .calendar-legend-item {
+        font-size: 8px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .calendar-week-link,
+    .calendar-day { transition: none; }
+}
