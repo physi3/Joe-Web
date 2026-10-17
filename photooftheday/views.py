@@ -90,8 +90,9 @@ def day(request, year: int, month: int, day: int):
     # Archive listing: recent 7 days, starting no earlier than group creation.
     archive = []
     group_created_date = group.created_at.date()
+    max_date = min(timezone.now().date(), max(requested_day + timedelta(days=3), group_created_date + timedelta(days=6)))  # Limit archive to 3 days after requested day
     for i in range(0, 7):
-        d = timezone.now().date() - timedelta(days=i)
+        d = max_date - timedelta(days=i)
         if d < group_created_date:
             continue
         archive.append({
