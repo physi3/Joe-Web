@@ -84,7 +84,7 @@
       <div class="caption">{% if submission %}{{ submission.caption }}{% else %}{% endif %}</div>
 
       <div class="location">
-        <svg class="pin" style="--pin-color: {% cycle '#1769aa' '#d97706' '#b42318' %}" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <svg class="pin" style="--pin-color: {{ member.colour }}" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
           <path d="M12 21s7-6.1 7-12a7 7 0 1 0-14 0c0 5.9 7 12 7 12Z"></path>
           <circle cx="12" cy="9" r="2.25"></circle>
         </svg>

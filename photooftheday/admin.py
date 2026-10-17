@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import Group, GroupMember, PhotoSubmission
-
+from django import forms
 
 class GroupAdmin(admin.ModelAdmin):
 	list_display = ("name", "created_at")
@@ -9,6 +9,9 @@ class GroupAdmin(admin.ModelAdmin):
 class GroupMemberAdmin(admin.ModelAdmin):
 	list_display = ("name", "user", "group",)
 	search_fields = ("name", "user__username", "user__email")
+	widgets = {
+		"colour": forms.TextInput(attrs={"type": "color"})
+	}
 
 
 class PhotoSubmissionAdmin(admin.ModelAdmin):

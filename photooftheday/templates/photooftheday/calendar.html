@@ -18,7 +18,7 @@
     <div class="calendar-legend" aria-label="Upload indicator colours">
       {% for member in members %}
         <span class="calendar-legend-item">
-          <span class="calendar-dot calendar-dot--{{ forloop.counter }} is-uploaded" aria-hidden="true"></span>
+          <span class="calendar-dot calendar-dot--{{ forloop.counter }} is-uploaded" style="--dot-color: {{ member.colour }}" aria-hidden="true"></span>
           {{ member.name }}
         </span>
       {% endfor %}
@@ -53,7 +53,8 @@
 
               <span class="calendar-dots">
                 {% for status in day.uploads %}
-                  <span class="calendar-dot calendar-dot--{{ forloop.counter }}{% if status.uploaded %} is-uploaded{% endif %}"
+                  <span class="calendar-dot calendar-dot--{{ forloop.counter }}{% if status.uploaded %} is-uploaded{% endif %}" 
+                        style="--dot-color: {{ status.colour }}"
                         aria-hidden="true"></span>
                   <span class="calendar-sr-only">{{ status.name }}: {% if status.uploaded %}uploaded{% else %}not uploaded{% endif %}. </span>
                 {% endfor %}

@@ -183,6 +183,7 @@ def calendar_view(request, year:int, month_int:int):
                 "uploads": [
                     {
                         "name": member.name,
+                        "colour": member.colour,
                         "uploaded": PhotoSubmission.objects.filter(
                             group=group, user=member.user, date=day).exists()
                     }

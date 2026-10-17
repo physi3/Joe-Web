@@ -160,10 +160,6 @@
     background: transparent;
 }
 
-.calendar-dot--1 { --dot-color: #376b9a; }
-.calendar-dot--2 { --dot-color: #b45135; }
-.calendar-dot--3 { --dot-color: #46683e; }
-
 .calendar-dot.is-uploaded {
     background: var(--dot-color);
 }

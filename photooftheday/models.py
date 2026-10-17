@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.core.validators import RegexValidator
 from django.db import models
 from django.utils import timezone
 from typing import Any
@@ -46,6 +47,16 @@ class GroupMember(models.Model):
 	user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 	group = models.ForeignKey(Group, related_name="members", on_delete=models.CASCADE)
 	name = models.CharField(max_length=150)
+	colour = models.CharField(
+        max_length=7,
+        default="#FFFFFF",
+        validators=[
+            RegexValidator(
+                regex=r"^#[0-9A-Fa-f]{6}$",
+                message="Enter a valid hex colour."
+            )
+        ]
+    )
 
 	class Meta:
 		ordering = ("group",)
