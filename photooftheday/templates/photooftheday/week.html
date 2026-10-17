@@ -1,0 +1,112 @@
+{% extends "photooftheday/photo_view.html" %}
+{% load static %}
+
+{% block title %}Week {{ week_number }} | Photo / Day{% endblock %}
+
+{% block extra_css %}
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'photooftheday/css/week.css' %}">
+<link rel="stylesheet" href="{% static 'photooftheday/css/weekly_layouts.css' %}">
+{% endblock %}
+
+{% block photo_content %}
+<div class="weekly-page">
+
+  <!-- WEEKLY EDITION HEADER -->
+  <header class="weekly-heading">
+    <div class="weekly-heading-copy">
+      <span class="weekly-eyebrow">Week {{ week_number }}</span>
+      <h1>
+        {% if week_start|date:"Ym" == week_end|date:"Ym" %}
+          {{ week_start|date:"j" }} <span class="weekly-date-dash">—</span> {{ week_end|date:"j F Y" }}
+        {% else %}
+          {{ week_start|date:"j M" }} <span class="weekly-date-dash">—</span> {{ week_end|date:"j M Y" }}
+        {% endif %}
+      </h1>
+    </div>
+
+    <div class="weekly-heading-end">
+      <nav class="weekly-arrows" aria-label="Week navigation">
+        {% if prev_url %}<a href="{{ prev_url }}" aria-label="Previous week">←</a>{% else %}<span aria-hidden="true">←</span>{% endif %}
+        {% if next_url %}<a href="{{ next_url }}" aria-label="Next week">→</a>{% else %}<span aria-hidden="true">→</span>{% endif %}
+      </nav>
+      <div class="weekly-stats">
+        <div>{{ photo_count|default_if_none:"0" }} photos</div>
+        <div>{{ day_count|default_if_none:"7" }} days</div>
+        <div>{{ place_count|default_if_none:"0" }} places</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- PHASE ONE: pass ONE day in `days` to perfect the fixed composition.
+       In Phase Two, the layout class on each row can vary. -->
+  {% for entry in days %}
+  <section class="weekly-day layout-01" aria-labelledby="weekly-day-{{ entry.date|date:'Ymd' }}">
+
+    <div class="weekly-day-sidebar">
+      <div class="weekly-day-date">
+        {% if entry.url %}<a href="{{ entry.url }}" id="weekly-day-{{ entry.date|date:'Ymd' }}">{{ entry.date|date:"l" }}</a>
+        {% else %}<h2 id="weekly-day-{{ entry.date|date:'Ymd' }}">{{ entry.date|date:"l" }}</h2>{% endif %}
+        <span>{{ entry.date|date:"j F Y" }}</span>
+      </div>
+
+      <ul class="weekly-contributors" aria-label="Contributors">
+        {% for item in entry.members %}
+        <li class="weekly-contributor">
+          <span class="weekly-dot" style="--dot-color: {{ item.member.colour }}" aria-hidden="true"></span>
+          <div>
+            <div class="weekly-contributor-name">{{ item.member.name }}{% if item.submission and item.submission.cached_address %} — {{ item.submission.cached_address.city }}, {{ item.submission.cached_address.country }}{% endif %}</div>
+            <div class="weekly-contributor-time">
+              {% if item.submission %}{{ item.submission.time|time:"g:i A"|default:"Time unknown" }}{% else %}No submission{% endif %}
+            </div>
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="weekly-gallery">
+      {% for item in entry.members %}
+      {% with submission=item.submission member=item.member %}
+      <figure class="weekly-photo">
+        {% if submission and submission.image %}
+          <div class="photo-frame weekly-photo-frame">
+            <img src="{{ submission.image.url }}" alt="{{ submission.caption|default:member.name }}" loading="lazy" decoding="async">
+          </div>
+        {% else %}
+          <div class="photo-frame weekly-photo-frame weekly-photo-missing">
+            <span>No photo from {{ member.name }}</span>
+          </div>
+        {% endif %}
+
+        <figcaption class="weekly-annotation">
+          {% if submission %}
+            <span class="weekly-photo-location">
+              <svg class="pin" style="--pin-color: {{ member.colour }}" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M12 21s7-6.1 7-12a7 7 0 1 0-14 0c0 5.9 7 12 7 12Z"></path>
+                <circle cx="12" cy="9" r="2.25"></circle>
+              </svg>
+              {% if submission.cached_address %}
+                {{ submission.cached_address.name }}, {{ submission.cached_address.city }}
+              {% elif submission.latitude and submission.longitude %}
+                {{ submission.latitude }}, {{ submission.longitude }}
+              {% endif %}
+            </span>
+            {% if submission.caption %}<span class="weekly-photo-caption">{{ submission.caption }}</span>{% endif %}
+          {% endif %}
+        </figcaption>
+      </figure>
+      {% endwith %}
+      {% endfor %}
+    </div>
+  </section>
+  {% empty %}
+    <p class="weekly-empty">No days to display yet.</p>
+  {% endfor %}
+
+  <footer class="dispatch-footer weekly-footer">
+    <div class="day-number">Week {{ week_number }}</div>
+    <div class="archive-label">Photo / Day Archive</div>
+  </footer>
+</div>
+{% endblock %}

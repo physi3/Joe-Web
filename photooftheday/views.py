@@ -5,7 +5,7 @@ from django.utils import timezone
 from django.core.files.storage import default_storage
 from django.core.files.base import File
 
-from .models import GroupMember, PhotoSubmission
+from .models import GroupMember, PhotoSubmission, WeeklyDispatch, WeeklyDispatchEntry
 
 from datetime import date as _date, timedelta
 from PIL.ExifTags import GPSTAGS
@@ -145,8 +145,75 @@ def this_week(request):
     return redirect(f"/photooftheday/week/{start_of_week.year}/{start_of_week.month}/{start_of_week.day}/")
 
 def week(request, year: int, month: int, day: int):
-    # coming soon
-    return redirect(f"/photooftheday/{year}/{month}/{day}/")
+    requested_week = _date(int(year), int(month), int(day))
+
+    if requested_week.weekday() != 0:
+        # If the requested date is not a Monday, redirect to the Monday of that week
+        requested_week = requested_week - timedelta(days=requested_week.weekday())
+        return redirect(f"/photooftheday/week/{requested_week.year}/{requested_week.month}/{requested_week.day}/")
+
+    try:
+        group = GroupMember.objects.get(user=request.user).group
+        members = group.members.all().select_related('user')
+    except GroupMember.DoesNotExist:
+        return redirect("/")
+
+    creation_week = group.created_at.date() - timedelta(days=group.created_at.date().weekday())
+    week_number = (requested_week - creation_week).days // 7
+
+    weekly_dispatch = WeeklyDispatch.objects.filter(group=group, week_start=requested_week).first()
+    if not weekly_dispatch:
+        weekly_dispatch = WeeklyDispatch.objects.create(
+            group=group,
+            week_start=requested_week,
+            week_number=week_number
+        )
+
+        for i in range(7):
+            day_date = requested_week + timedelta(days=i)
+            submissions = PhotoSubmission.objects.filter(group=group, date=day_date)
+            entry = WeeklyDispatchEntry.objects.create(
+                weekly_dispatch=weekly_dispatch,
+                date=day_date,
+                member_order=[member.pk for member in members],
+            )
+            
+    else:
+        print(f"WeeklyDispatch already exists for week starting {requested_week}: {weekly_dispatch}")
+
+    days = []
+    for i in range(7):
+        day_date = requested_week + timedelta(days=i)
+        submissions = PhotoSubmission.objects.filter(group=group, date=day_date)
+        dispatch_entry = WeeklyDispatchEntry.objects.filter(weekly_dispatch=weekly_dispatch, date=day_date).first()
+        if not dispatch_entry:
+            dispatch_entry = WeeklyDispatchEntry.objects.create(
+                weekly_dispatch=weekly_dispatch,
+                date=day_date,
+                member_order=[member.id for member in members],
+            )
+        day_members = [GroupMember.objects.get(id=memberpk) for memberpk in dispatch_entry.member_order]
+        days.append({
+            "url": f"/photooftheday/{day_date.year}/{day_date.month}/{day_date.day}/",
+            "date":day_date,
+            "members": [{"member": member, "submission": submissions.filter(user=member.user).first()} for member in day_members],
+        })
+
+    context = {
+        "active_page": "week",
+        "week_number": week_number,
+        "week_start": requested_week,
+        "week_end": requested_week + timedelta(days=6),
+        "photo_count": 21,
+        "day_count": 7,
+        "place_count": 3,
+        "prev_url": None,
+        "next_url": None,
+        "group": group,
+        "days": days,
+    }
+
+    return render(request, "photooftheday/week.html", context)
 
 def calendar_this_month(request):
     today = timezone.now().date()

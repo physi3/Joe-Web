@@ -129,3 +129,16 @@ class PhotoSubmission(models.Model):
 		self.cache_address_from_latlon()
 		super().save(*args, **kwargs)
 
+class WeeklyDispatch(models.Model):
+	group = models.ForeignKey(Group, related_name="weekly_dispatches", on_delete=models.CASCADE)
+	week_start = models.DateField(unique=True)
+	week_number = models.PositiveIntegerField()
+	title = models.CharField(max_length=200, blank=True)
+	published = models.BooleanField(default=False)
+
+class WeeklyDispatchEntry(models.Model):
+	weekly_dispatch = models.ForeignKey(WeeklyDispatch, related_name="days", on_delete=models.CASCADE)
+	date = models.DateField()
+
+	member_order = models.JSONField(default=list)  # List of member IDs in the order they should be displayed
+	layout = models.PositiveSmallIntegerField(default=1)

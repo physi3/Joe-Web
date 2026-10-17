@@ -1,0 +1,123 @@
+/* WEEKLY DISPATCH — isolated styles, built on the existing style.css.
+   Shared week heading, sidebar, captions and navigation; see weekly_layouts.css for compositions. */
+
+.weekly-page {
+  --weekly-rule: #777064;
+  --weekly-ink-muted: #625e56;
+}
+
+/* Edition heading */
+.weekly-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 32px;
+  padding: 32px 0 24px;
+  border-bottom: 1px solid var(--weekly-rule);
+}
+
+.weekly-eyebrow,
+.weekly-stats,
+.weekly-day-date,
+.weekly-contributors {
+  font-family: "DM Mono", monospace;
+  font-size: 10px;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+}
+
+.weekly-eyebrow { display: block; margin-bottom: 4px; }
+
+.weekly-heading h1 {
+  margin: 0;
+  font-family: "Playfair Display", serif;
+  font-size: clamp(35px, 4.3vw, 64px);
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: -.055em;
+  line-height: 1.12;
+  text-transform: uppercase;
+}
+
+.weekly-date-dash { padding: 0 .12em; font-weight: 400; }
+.weekly-heading-end { display: flex; align-items: center; gap: 26px; padding-bottom: 4px; }
+.weekly-arrows { display: flex; gap: 20px; white-space: nowrap; font-size: 20px; }
+.weekly-arrows a { color: inherit; text-decoration: none; }
+.weekly-arrows a:hover { opacity: .55; }
+.weekly-arrows span { opacity: .25; }
+.weekly-stats { min-width: 90px; padding-left: 24px; border-left: 1px solid var(--weekly-rule); font-size: 9px; line-height: 1.8; white-space: nowrap; }
+
+/* Each day shares one fixed height-neutral horizontal band */
+.weekly-day {
+  display: grid;
+  grid-template-columns: minmax(155px, 19%) minmax(0, 1fr);
+  gap: clamp(18px, 2.5vw, 42px);
+  align-items: stretch;
+  padding: 20px 0 24px;
+  border-bottom: 1px solid var(--weekly-rule);
+}
+
+.weekly-day-sidebar { min-width: 0; }
+.weekly-day-date { padding-bottom: 12px; line-height: 1.7; }
+.weekly-day-date h2,
+.weekly-day-date a {
+  display: block;
+  margin: 0;
+  color: inherit;
+  text-decoration: none;
+  font: inherit;
+  font-size: 12px;
+  letter-spacing: .22em;
+}
+.weekly-day-date a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.weekly-day-date > span { display: block; font-size: 9px; }
+.weekly-contributors { list-style: none; margin: 0; padding: 12px 0 0; border-top: 1px solid var(--weekly-rule); font-size: 8px; letter-spacing: .08em; }
+.weekly-contributor { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 15px; }
+.weekly-dot { flex: 0 0 8px; width: 8px; height: 8px; margin-top: 4px; border-radius: 50%; background: var(--dot-color); border: 1px solid rgba(0,0,0,.15); }
+.weekly-contributor-name { line-height: 1.7; }
+.weekly-contributor-time { margin-top: 2px; color: var(--weekly-ink-muted); line-height: 1.5; }
+
+/* The placement, sizing and rotation of photographs live in
+   weekly_layouts.css. Shared photo presentation stays here. */
+.weekly-photo-frame {
+  min-width: 0;
+  padding: 5px;
+  background: #f1eee5;
+}
+
+.weekly-annotation {
+  min-width: 0;
+  font-family: "Caveat", cursive;
+  font-size: clamp(14px, 1.45vw, 21px);
+  line-height: 1.03;
+  overflow-wrap: anywhere;
+}
+.weekly-photo-location,
+.weekly-photo-caption { display: block; }
+.weekly-photo-location { margin-bottom: 14px; }
+.weekly-photo-caption { white-space: pre-line; }
+.weekly-photo-missing {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px;
+  text-align: center;
+  font-family: "DM Mono", monospace;
+  font-size: 10px;
+  line-height: 1.6;
+  color: var(--weekly-ink-muted);
+}
+
+.weekly-footer { border-top: 0; }
+.weekly-empty { padding: 50px 0; text-align: center; font-family: "DM Mono", monospace; font-size: 12px; }
+
+/* Mobile fallback is intentionally simple; mobile-specific design later. */
+@media (max-width: 800px) {
+  .weekly-heading { align-items: start; flex-direction: column; gap: 14px; padding: 26px 0 20px; }
+  .weekly-heading h1 { font-size: clamp(30px, 7.6vw, 48px); }
+  .weekly-heading-end { width: 100%; justify-content: space-between; }
+  .weekly-day { grid-template-columns: 1fr; gap: 8px; }
+  .weekly-contributors { display: flex; flex-wrap: wrap; gap: 14px; }
+  .weekly-contributor { margin-bottom: 0; }
+  .weekly-annotation { font-size: 22px; }
+}

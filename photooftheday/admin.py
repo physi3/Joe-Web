@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Group, GroupMember, PhotoSubmission
+from .models import Group, GroupMember, PhotoSubmission, WeeklyDispatch, WeeklyDispatchEntry
 from django import forms
 
 class GroupAdmin(admin.ModelAdmin):
@@ -26,3 +26,5 @@ admin.site.site_header = "Photo of the Day Admin"
 admin.site.register(Group, GroupAdmin)
 admin.site.register(GroupMember, GroupMemberAdmin)
 admin.site.register(PhotoSubmission, PhotoSubmissionAdmin)
+admin.site.register(WeeklyDispatch)
+admin.site.register(WeeklyDispatchEntry)
