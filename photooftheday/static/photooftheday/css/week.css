@@ -77,6 +77,26 @@
 .weekly-contributor-name { line-height: 1.7; }
 .weekly-contributor-time { margin-top: 2px; color: var(--weekly-ink-muted); line-height: 1.5; }
 
+/* Gallery and optional editorial note form one column opposite the contributor sidebar. */
+.weekly-day-content { min-width: 0; }
+
+.weekly-day-caption {
+  max-width: 74ch;
+  margin: 22px 0 4px;
+  padding: 13px 0 0;
+  border-top: 1px solid rgba(119, 112, 100, .55);
+  color: #37332e;
+  font-family: "Playfair Display", Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(15px, 1.45vw, 20px);
+  line-height: 1.55;
+  letter-spacing: -.012em;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+.weekly-day-caption.is-empty { display: none; }
+
 /* The placement, sizing and rotation of photographs live in
    weekly_layouts.css. Shared photo presentation stays here. */
 .weekly-photo-frame {

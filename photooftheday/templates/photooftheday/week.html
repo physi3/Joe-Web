@@ -96,6 +96,14 @@
           {% endfor %}
         </select>
         <p class="weekly-layout-description" aria-live="polite"></p>
+        <label class="weekly-editor-field-label" for="weekly-caption-{{ entry.date|date:'Ymd' }}">Day caption <span class="weekly-optional-label">(optional)</span></label>
+        <textarea
+          id="weekly-caption-{{ entry.date|date:'Ymd' }}"
+          class="weekly-caption-input"
+          rows="4"
+          placeholder="A few words about the day…"
+          aria-label="Editorial caption for {{ entry.date|date:'l j F' }}"
+        >{{ entry.caption|default_if_none:'' }}</textarea>
         <div class="weekly-editor-actions">
           <button type="button" class="weekly-reset-day" disabled>Undo</button>
           <button type="button" class="weekly-save-day" disabled>Save day</button>
@@ -106,10 +114,11 @@
       {% endif %}
     </div>
 
-    <div class="weekly-gallery">
-      {% for item in entry.members %}
-      {% with submission=item.submission member=item.member %}
-      <figure class="weekly-photo" data-member-id="{{ member.pk }}">
+    <div class="weekly-day-content">
+      <div class="weekly-gallery">
+        {% for item in entry.members %}
+        {% with submission=item.submission member=item.member %}
+        <figure class="weekly-photo" data-member-id="{{ member.pk }}">
         {% if submission and submission.image %}
           <div class="photo-frame weekly-photo-frame">
             <img src="{{ submission.image.url }}" alt="{{ submission.caption|default:member.name }}" loading="lazy" decoding="async">
@@ -137,8 +146,10 @@
           {% endif %}
         </figcaption>
       </figure>
-      {% endwith %}
-      {% endfor %}
+        {% endwith %}
+        {% endfor %}
+      </div>
+      <p class="weekly-day-caption{% if not entry.caption %} is-empty{% endif %}" aria-live="off">{{ entry.caption|default_if_none:'' }}</p>
     </div>
   </section>
   {% empty %}

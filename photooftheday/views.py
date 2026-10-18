@@ -1,6 +1,7 @@
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.templatetags.static import static
 from django.utils import timezone
 from django.core.files.storage import default_storage
 from django.core.files.base import File
@@ -201,48 +202,12 @@ def week(request, year: int, month: int, day: int):
             "date":day_date,
             "members": [{"member": member, "submission": submissions.filter(user=member.user).first()} for member in day_members],
             "layout" : dispatch_entry.layout,
+            "caption": dispatch_entry.caption,
             "save_url" : f"/photooftheday/week/save/{dispatch_entry.pk}/", # Placeholder for future save URL if needed
         })
 
-
-    layouts = {
-        "layout-01": {
-            "name": "The Triptych",
-            "description": "Three photographs of equal importance, with handwritten annotations alongside."
-        },
-        "layout-02": {
-            "name": "The Lead Story",
-            "description": "One lead photograph, with two smaller supporting images."
-        },
-        "layout-03": {
-            "name": "The Contact Sheet",
-            "description": "A staggered contact sheet with a wide central photograph."
-        },
-        "layout-04": {
-            "name": "The Gallery Wall",
-            "description": "Three perfectly aligned portraits, without annotations."
-        },
-        "layout-05": {
-            "name": "The Feature Column",
-            "description": "A large portrait beside two vertically stacked supporting photos."
-        },
-        "layout-06": {
-            "name": "The Totem",
-            "description": "A tall central photograph framed by two staggered portraits."
-        },
-        "layout-07": {
-            "name": "The Diptych Plus One",
-            "description": "Two prominent portraits accompanied by a smaller third photograph."
-        },
-        "layout-08": {
-            "name": "The Film Strip",
-            "description": "Three vertically stacked portraits presented as a photographic film strip."
-        },
-        "layout-09": {
-            "name": "The Showcase",
-            "description": "A central hero portrait above two smaller, symmetrical photographs."
-        },
-    }
+    with open("photooftheday"+static('photooftheday/data/layouts.json') , encoding="utf-8") as f:
+        layouts = json.load(f)
 
     photo_count = sum(len([1 for member in day["members"] if member["submission"] is not None]) for day in days)
     place_count = len(set(member["submission"].cached_address.get("city") for day in days for member in day["members"] if member["submission"] is not None))
@@ -279,6 +244,13 @@ def save_weekly_setup(request, dispatch_entry_id):
 
     weekly_dispatch_entry.layout = body.get("layout", weekly_dispatch_entry.layout)
     weekly_dispatch_entry.member_order = body.get("member_order", weekly_dispatch_entry.member_order)
+    
+
+    if not isinstance(caption := body.get("caption", ""), str):
+        return JsonResponse({"error": "Invalid caption"}, status=400)
+
+    weekly_dispatch_entry.caption = caption.strip()
+
     weekly_dispatch_entry.save()
 
     return JsonResponse({"status": "success", "message": "Layout saved successfully."})

@@ -38,7 +38,8 @@
 }
 .weekly-edit-toggle:focus-visible,
 .weekly-page button:focus-visible,
-.weekly-layout-select:focus-visible {
+.weekly-layout-select:focus-visible,
+.weekly-caption-input:focus-visible {
   outline: 2px solid #354f68;
   outline-offset: 3px;
 }
@@ -132,6 +133,30 @@
   cursor: pointer;
   letter-spacing: 0;
 }
+.weekly-optional-label {
+  text-transform: none;
+  color: var(--weekly-ink-muted);
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+.weekly-caption-input {
+  display: block;
+  width: 100%;
+  min-height: 104px;
+  margin: 0 0 15px;
+  padding: 10px;
+  border: 1px solid #b1a99c;
+  border-radius: 0;
+  background: #f3eee5;
+  color: #272521;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  letter-spacing: 0;
+  resize: vertical;
+}
+.weekly-caption-input::placeholder { color: #867d70; opacity: 1; }
 .weekly-layout-description {
   margin: 8px 0 12px;
   color: var(--weekly-ink-muted);

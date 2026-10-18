@@ -1,6 +1,6 @@
 /* Curated Weekly Dispatch editor.
    Client-side editing is immediate; persistence requires entry.save_url.
-   Server contract: POST { member_order: [integer IDs], layout: "layout-01" }.
+   Server contract: POST { member_order: [integer IDs], layout: "layout-01", caption: "..." }.
 */
 (() => {
   "use strict";
@@ -22,15 +22,26 @@
   const cardsFor = (day) => [...day.querySelectorAll(".weekly-contributor")];
   const currentOrder = (day) => cardsFor(day).map((card) => card.dataset.memberId);
   const currentLayout = (day) => day.querySelector(".weekly-layout-select")?.value || day.dataset.layout;
+  const currentCaption = (day) => day.querySelector(".weekly-caption-input")?.value.trim() || "";
+
+  function updateCaptionPreview(day) {
+    const preview = day.querySelector(".weekly-day-caption");
+    if (!preview) return;
+    const caption = currentCaption(day);
+    // Keep editorial captions plain-text: never interpret editor input as HTML.
+    preview.textContent = caption;
+    preview.classList.toggle("is-empty", !caption);
+  }
 
   function snapshot(day) {
-    return { order: currentOrder(day), layout: currentLayout(day) };
+    return { order: currentOrder(day), layout: currentLayout(day), caption: currentCaption(day) };
   }
 
   function isDirty(day) {
     const initial = saved.get(day);
     return initial && (initial.layout !== currentLayout(day) ||
-      initial.order.join(",") !== currentOrder(day).join(","));
+      initial.order.join(",") !== currentOrder(day).join(",") ||
+      initial.caption !== currentCaption(day));
   }
 
   function setStatus(day, message = "", kind = "") {
@@ -49,6 +60,10 @@
     const busy = day.dataset.saving === "true";
     if (undo) undo.disabled = !dirty || busy;
     if (save) save.disabled = !dirty || busy || !day.dataset.saveUrl;
+    const captionInput = day.querySelector(".weekly-caption-input");
+    if (captionInput) captionInput.disabled = busy;
+    const layoutSelect = day.querySelector(".weekly-layout-select");
+    if (layoutSelect) layoutSelect.disabled = busy;
     const cards = cardsFor(day);
     cards.forEach((card, i) => {
       const up = card.querySelector(".weekly-move-up");
@@ -73,6 +88,7 @@
 
   function afterChange(day) {
     syncPhotos(day);
+    updateCaptionPreview(day);
     setStatus(day, !day.dataset.saveUrl ? "Preview only — add entry.save_url to enable saving." : "");
     refreshButtons(day);
   }
@@ -98,6 +114,8 @@
       if (card) list.appendChild(card);
     });
     applyLayout(day, initial.layout);
+    const input = day.querySelector(".weekly-caption-input");
+    if (input) input.value = initial.caption;
     afterChange(day);
   }
 
@@ -129,7 +147,8 @@
 
     const payload = {
       member_order: currentOrder(day).map((id) => Number(id)),
-      layout: currentLayout(day)
+      layout: currentLayout(day),
+      caption: currentCaption(day)
     };
     if (payload.member_order.some((id) => !Number.isSafeInteger(id))) {
       setStatus(day, "Cannot save: invalid member ID.", "error");
@@ -160,7 +179,8 @@
         } catch (_) { /* A non-JSON error page is also possible. */ }
         throw new Error(detail || `Server returned ${response.status}.`);
       }
-      saved.set(day, snapshot(day));
+      // Update the saved baseline only if the response succeeded.
+      saved.set(day, { ...payload, order: payload.member_order.map(String) });
       setStatus(day, "Saved.", "success");
     } catch (error) {
       setStatus(day, `Save failed: ${error.message}`, "error");
@@ -177,7 +197,13 @@
     if (!select) return;
     const layout = layoutClasses.includes(day.dataset.layout) ? day.dataset.layout : "layout-01";
     applyLayout(day, layout);
+    updateCaptionPreview(day);
     saved.set(day, snapshot(day));
+
+    day.querySelector(".weekly-caption-input")?.addEventListener("input", () => {
+      if (!page.classList.contains("is-editing") || day.dataset.saving === "true") return;
+      afterChange(day);
+    });
 
     select.addEventListener("change", () => {
       if (!page.classList.contains("is-editing")) return;

@@ -142,3 +142,4 @@ class WeeklyDispatchEntry(models.Model):
 
 	member_order = models.JSONField(default=list)  # List of member IDs in the order they should be displayed
 	layout = models.CharField(max_length=30, default="layout-01")
+	caption = models.TextField(blank=True, default="")
