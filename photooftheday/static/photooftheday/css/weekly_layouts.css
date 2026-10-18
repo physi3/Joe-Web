@@ -1,8 +1,8 @@
 /* ============================================================
-   WEEKLY DISPATCH — NINE CURATED COMPOSITIONS
+   WEEKLY DISPATCH — TWELVE CURATED COMPOSITIONS
 
    Applies only inside .weekly-page; does not affect daily pages.
-   Set entry.layout to "layout-01" through "layout-09".
+   Set entry.layout to "layout-01" through "layout-12".
 
    Figure order is the order of entry.members:
      1 = first photograph, 2 = second, 3 = third.
@@ -212,7 +212,7 @@
 }
 
 /* ============================================================
-   04–09 — MORE CURATED COMPOSITIONS
+   04–12 — MORE CURATED COMPOSITIONS
 
    04 keeps a strict, matched portrait format. 05–09 show the
    original image proportions without cropping; their maximum display
@@ -671,4 +671,207 @@
      locations on phones; the lead photograph retains its caption. */
   .weekly-page .weekly-day.layout-09 .weekly-photo:nth-child(n+2) .weekly-photo-caption { display: none; }
   .weekly-page .weekly-day.layout-09 .weekly-photo:nth-child(n+2) .weekly-photo-location { margin-bottom: 0; }
+}
+
+
+/* ============================================================
+   10–12 — COMPOSITIONS FOR SPARSE DAYS
+
+   10 & 11 expect TWO .weekly-photo figures; 12 expects ONE.
+   There is no new markup or annotation setting: figure order
+   still follows entry.members, and the editor may reorder it.
+   These rules follow the shared mobile fallbacks intentionally.
+   ============================================================ */
+
+/* 10 — THE DUET
+   Two portrait prints, equally weighted. Quiet, symmetrical and
+   annotation-free: an uninterrupted pair of images. */
+.weekly-page .weekly-day.layout-10 .weekly-gallery {
+  grid-template-columns: repeat(2, minmax(0, 285px));
+  justify-content: center;
+  align-items: center;
+  gap: clamp(20px, 4vw, 66px);
+  padding: 32px 16px 38px;
+}
+
+.weekly-page .weekly-day.layout-10 .weekly-photo:nth-child(3) { display: none; }
+
+.weekly-page .weekly-day.layout-10 .weekly-photo {
+  grid-template-columns: minmax(0, 1fr);
+  --photo-ratio: 3 / 4;
+  transform: none;
+}
+.weekly-page .weekly-day.layout-10 .weekly-photo-frame {
+  max-width: 285px;
+  justify-self: center;
+  box-shadow: 0 6px 19px rgba(38, 32, 26, .11);
+}
+.weekly-page .weekly-day.layout-10 .weekly-photo-frame img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+}
+.weekly-page .weekly-day.layout-10 .weekly-annotation { display: none; }
+
+/* 11 — THE CORRESPONDENCE
+   Two naturally proportioned prints stacked vertically with the
+   handwritten notes in their own right-hand margin. The second
+   print is slightly indented, like a letter slipped into a book. */
+.weekly-page .weekly-day.layout-11 .weekly-gallery {
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  align-items: start;
+  gap: clamp(20px, 3vw, 35px);
+  padding: 22px 10px 30px;
+}
+
+.weekly-page .weekly-day.layout-11 .weekly-photo:nth-child(3) { display: none; }
+
+.weekly-page .weekly-day.layout-11 .weekly-photo {
+  width: min(100%, 650px);
+  grid-template-columns: minmax(0, 260px) minmax(100px, 1fr);
+  align-items: center;
+  column-gap: clamp(22px, 4vw, 62px);
+}
+.weekly-page .weekly-day.layout-11 .weekly-photo:nth-child(1) {
+  transform: translateX(-24px) rotate(-1.6deg);
+}
+.weekly-page .weekly-day.layout-11 .weekly-photo:nth-child(2) {
+  transform: translateX(30px) rotate(1.4deg);
+}
+.weekly-page .weekly-day.layout-11 .weekly-photo-frame {
+  width: fit-content;
+  max-width: 100%;
+  justify-self: end;
+}
+.weekly-page .weekly-day.layout-11 .weekly-photo-frame img {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 235px;
+  aspect-ratio: auto;
+  object-fit: contain;
+}
+.weekly-page .weekly-day.layout-11 .weekly-photo-missing {
+  width: min(100%, 200px);
+  aspect-ratio: 3 / 4;
+}
+.weekly-page .weekly-day.layout-11 .weekly-annotation {
+  max-width: 255px;
+  align-self: center;
+  font-size: clamp(17px, 1.65vw, 24px);
+}
+
+/* 12 — THE PORTRAIT
+   A single generous, uncropped print. Its handwritten note occupies
+   the open margin to the right, as in a photographic exhibition. */
+.weekly-page .weekly-day.layout-12 .weekly-gallery {
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  padding: 30px 10px 42px;
+}
+
+.weekly-page .weekly-day.layout-12 .weekly-photo:not(:nth-child(1)) { display: none; }
+
+.weekly-page .weekly-day.layout-12 .weekly-photo {
+  width: min(100%, 710px);
+  grid-template-columns: minmax(0, 410px) minmax(140px, 1fr);
+  align-items: center;
+  gap: clamp(20px, 4vw, 68px);
+  transform: rotate(-.8deg);
+}
+.weekly-page .weekly-day.layout-12 .weekly-photo-frame {
+  width: fit-content;
+  max-width: 100%;
+  justify-self: end;
+  box-shadow: 0 7px 24px rgba(38, 32, 26, .13);
+}
+.weekly-page .weekly-day.layout-12 .weekly-photo-frame img {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 445px;
+  aspect-ratio: auto;
+  object-fit: contain;
+}
+.weekly-page .weekly-day.layout-12 .weekly-photo-missing {
+  width: min(100%, 330px);
+  aspect-ratio: 3 / 4;
+}
+.weekly-page .weekly-day.layout-12 .weekly-annotation {
+  max-width: 220px;
+  align-self: center;
+  font-size: clamp(20px, 2vw, 30px);
+  line-height: 1.12;
+  transform: rotate(1.2deg);
+}
+.weekly-page .weekly-day.layout-12 .weekly-photo-location {
+  margin-bottom: 22px;
+}
+
+/* Tablet: avoid narrow side-by-side handwriting; keep the print-led feel. */
+@media (min-width: 701px) and (max-width: 1150px) {
+  .weekly-page .weekly-day.layout-10 .weekly-gallery {
+    grid-template-columns: repeat(2, minmax(0, 260px));
+    gap: clamp(16px, 3vw, 42px);
+  }
+  .weekly-page .weekly-day.layout-11 .weekly-photo {
+    width: min(100%, 560px);
+    grid-template-columns: minmax(0, 240px) minmax(105px, 1fr);
+    transform: none;
+  }
+  .weekly-page .weekly-day.layout-12 .weekly-photo {
+    width: min(100%, 620px);
+    grid-template-columns: minmax(0, 360px) minmax(135px, 1fr);
+    transform: none;
+  }
+}
+
+/* Phones: keep the Duet as a pair when space allows; move the
+   handwritten notes below the prints in the other two compositions. */
+@media (max-width: 700px) {
+  .weekly-page .weekly-day.layout-10 .weekly-gallery {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(9px, 3.5vw, 20px);
+    padding: 18px 0 25px;
+  }
+  .weekly-page .weekly-day.layout-10 .weekly-photo:nth-child(n) {
+    grid-column: auto;
+    grid-row: auto;
+    max-width: none;
+    transform: none;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .weekly-page .weekly-day.layout-10 .weekly-photo-frame img {
+    max-height: none;
+  }
+  .weekly-page .weekly-day:is(.layout-11, .layout-12) .weekly-gallery {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    padding: 16px 0 28px;
+  }
+  .weekly-page .weekly-day:is(.layout-11, .layout-12) .weekly-photo:nth-child(n) {
+    grid-column: 1;
+    grid-row: auto;
+    grid-template-columns: minmax(0, 1fr);
+    width: min(100%, 370px);
+    max-width: 370px;
+    justify-self: center;
+    transform: none;
+    gap: 10px;
+  }
+  .weekly-page .weekly-day:is(.layout-11, .layout-12) .weekly-photo-frame {
+    justify-self: center;
+  }
+  .weekly-page .weekly-day:is(.layout-11, .layout-12) .weekly-annotation {
+    max-width: 100%;
+    justify-self: stretch;
+    padding: 0 8px;
+    font-size: 22px;
+    transform: none;
+  }
+  .weekly-page .weekly-day.layout-11 .weekly-photo-frame img { max-height: 300px; }
+  .weekly-page .weekly-day.layout-12 .weekly-photo-frame img { max-height: 420px; }
+  .weekly-page .weekly-day.layout-12 .weekly-photo-location { margin-bottom: 10px; }
 }

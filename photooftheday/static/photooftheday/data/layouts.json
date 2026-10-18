@@ -34,5 +34,17 @@
   "layout-09": {
     "name": "The Showcase",
     "description": "A central hero portrait above two smaller, symmetrical photographs."
+  },
+  "layout-10": {
+    "name": "The Duet",
+    "description": "Two matching portrait photographs displayed symmetrically, without annotations."
+  },
+  "layout-11": {
+    "name": "The Correspondence",
+    "description": "Two photographs stacked vertically, with handwritten notes in the margin."
+  },
+  "layout-12": {
+    "name": "The Portrait",
+    "description": "One generous, uncropped photograph with a handwritten caption alongside."
   }
 }

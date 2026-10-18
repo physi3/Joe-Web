@@ -9,6 +9,7 @@
 
 .weekly-editor-toolbar-label,
 .weekly-edit-toggle,
+.weekly-publish-button,
 .weekly-editor-field-label,
 .weekly-layout-select,
 .weekly-editor-actions button,
@@ -21,6 +22,7 @@
 .weekly-editor-toolbar-label {
   text-transform: uppercase;
   color: var(--weekly-ink-muted);
+  text-align: right;
 }
 
 .weekly-edit-toggle {
@@ -30,12 +32,27 @@
   color: inherit;
   cursor: pointer;
 }
+
 .weekly-edit-toggle:hover,
 .weekly-edit-toggle[aria-pressed="true"] {
   background: #272521;
   color: #f3eee5;
   border-color: #272521;
 }
+
+.weekly-page.is-editing .weekly-publish-button { display: none; }
+
+.weekly-publish-button {
+  padding: 8px 11px;
+  border: 1px solid #272521;
+  background: #272521;
+  color: #f3eee5;
+  cursor: pointer;
+}
+
+.weekly-publish-button:disabled, .weekly-publish-button[disabled] { opacity: .33; cursor: default; }
+
+.weekly-publish-button:hover { filter: brightness(.88); }
 .weekly-edit-toggle:focus-visible,
 .weekly-page button:focus-visible,
 .weekly-layout-select:focus-visible,

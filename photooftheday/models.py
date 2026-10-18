@@ -135,6 +135,7 @@ class WeeklyDispatch(models.Model):
 	week_number = models.PositiveIntegerField()
 	title = models.CharField(max_length=200, blank=True)
 	published = models.BooleanField(default=False)
+	editor = models.ForeignKey(GroupMember, on_delete=models.SET_NULL, null=True, blank=True)
 
 class WeeklyDispatchEntry(models.Model):
 	weekly_dispatch = models.ForeignKey(WeeklyDispatch, related_name="days", on_delete=models.CASCADE)

@@ -39,15 +39,27 @@
     </div>
   </header>
 
-  {% if can_edit_dispatch %}
-  <!-- Only shown to people the view has authorised to edit this dispatch. -->
+  
   <div class="weekly-editor-toolbar">
-    <span class="weekly-editor-toolbar-label">Editorial controls</span>
+    <span class="weekly-editor-toolbar-label">{% if published %} Edited by {{ editor }}{% else %} Waiting to be edited by {% if can_edit_dispatch %}<b>you!</b><br>Publish the dispatch so everyone else can see{% else %}{{ editor }}{% endif %}{% endif %}</span>
+    {% if can_edit_dispatch %}
     <button type="button" class="weekly-edit-toggle" aria-pressed="false" aria-controls="weekly-dispatch">
       Enable editing
     </button>
+    {% if not published %}
+    <form id="sym:publishForm" class="weekly-publish-form" action="{{ publish_url }}" method="post">
+      {% if ready_for_publish%}
+      {% csrf_token %}
+      <button type="submit" class="weekly-publish-button">Publish</button>
+      {% else %}
+      <button type="button" class="weekly-publish-button" disabled>Not ready for publish</button>
+      {% endif %}
+    </form>
+    {% endif %}
+    {% endif %}
   </div>
-  {% endif %}
+  
+  {% if can_edit_dispatch or published %}
 
   {% for entry in days %}
   <section
@@ -152,9 +164,14 @@
       <p class="weekly-day-caption{% if not entry.caption %} is-empty{% endif %}" aria-live="off">{{ entry.caption|default_if_none:'' }}</p>
     </div>
   </section>
+  
   {% empty %}
     <p class="weekly-empty">No days to display yet.</p>
   {% endfor %}
+
+  {% else %}
+    <p class="weekly-unfinished">This week is still being edited. Check back later to see the dispatch.</p>
+  {% endif %}
 
   <footer class="dispatch-footer weekly-footer">
     <div class="day-number">Week {{ week_number }}</div>

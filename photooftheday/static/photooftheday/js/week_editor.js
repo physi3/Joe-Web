@@ -7,6 +7,7 @@
 
   const page = document.getElementById("weekly-dispatch");
   const toggle = page?.querySelector(".weekly-edit-toggle");
+  const publishForm = document.getElementById("sym:publishForm");
   if (!page || !toggle) return;
 
   const layouts = JSON.parse(
@@ -286,6 +287,12 @@
       days.filter(isDirty).forEach(restore);
     }
     setEditing(!editing);
+  });
+
+  publishForm?.addEventListener("submit", (event) => {
+    if (!window.confirm("Are you sure you want to publish the weekly dispatch? This action cannot be undone.")) {
+      event.preventDefault();
+    }
   });
 
   // Warn about accidental navigation while the user has uncommitted changes.

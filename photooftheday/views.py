@@ -1,5 +1,5 @@
-from django.http import HttpResponse, JsonResponse
-from django.shortcuts import render, redirect
+from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
+from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 from django.templatetags.static import static
 from django.utils import timezone
@@ -163,12 +163,19 @@ def week(request, year: int, month: int, day: int):
     creation_week = group.created_at.date() - timedelta(days=group.created_at.date().weekday())
     week_number = (requested_week - creation_week).days // 7
 
+    days_so_far = min(max((timezone.now().date() - requested_week).days, 0), 7)
+
+    week_ready = days_so_far == 7
+
+    print(group.members)
+
     weekly_dispatch = WeeklyDispatch.objects.filter(group=group, week_start=requested_week).first()
     if not weekly_dispatch:
         weekly_dispatch = WeeklyDispatch.objects.create(
             group=group,
             week_start=requested_week,
-            week_number=week_number
+            week_number=week_number,
+            editor=group.members.all()[week_number % group.members.count()] if group.members.exists() else None,
         )
 
         for i in range(7):
@@ -184,9 +191,14 @@ def week(request, year: int, month: int, day: int):
     else:
         print(f"WeeklyDispatch already exists for week starting {requested_week}: {weekly_dispatch}")
 
+    start_day = max(requested_week,group.created_at.date())
+    print(start_day)
     days = []
-    for i in range(7):
-        day_date = requested_week + timedelta(days=i)
+    for i in range(days_so_far):
+        day_date = start_day + timedelta(days=i)
+        
+        if day_date > requested_week + timedelta(days=6):
+            break
         submissions = PhotoSubmission.objects.filter(group=group, date=day_date)
         dispatch_entry = WeeklyDispatchEntry.objects.filter(weekly_dispatch=weekly_dispatch, date=day_date).first()
         if not dispatch_entry:
@@ -210,7 +222,7 @@ def week(request, year: int, month: int, day: int):
         layouts = json.load(f)
 
     photo_count = sum(len([1 for member in day["members"] if member["submission"] is not None]) for day in days)
-    place_count = len(set(member["submission"].cached_address.get("city") for day in days for member in day["members"] if member["submission"] is not None))
+    place_count = len(set(member["submission"].cached_address.get("city") for day in days for member in day["members"] if member["submission"] is not None and member["submission"].cached_address.get("city") != "Unknown"))
 
     current_week_start = timezone.now().date() - timedelta(days=timezone.now().date().weekday())
 
@@ -220,17 +232,44 @@ def week(request, year: int, month: int, day: int):
         "week_start": requested_week,
         "week_end": requested_week + timedelta(days=6),
         "photo_count": photo_count,
-        "day_count": 7,
+        "day_count": len(days),
         "place_count": place_count,
-        "prev_url": f"/photooftheday/week/{(requested_week - timedelta(days=7)).year}/{(requested_week - timedelta(days=7)).month}/{(requested_week - timedelta(days=7)).day}/" if requested_week > creation_week + timedelta(days=7) else None,
-        "next_url": f"/photooftheday/week/{(requested_week + timedelta(days=7)).year}/{(requested_week + timedelta(days=7)).month}/{(requested_week + timedelta(days=7)).day}/" if requested_week < current_week_start - timedelta(days=7)   else None,
+        "prev_url": f"/photooftheday/week/{(requested_week - timedelta(days=7)).year}/{(requested_week - timedelta(days=7)).month}/{(requested_week - timedelta(days=7)).day}/" if requested_week > creation_week else None,
+        "next_url": f"/photooftheday/week/{(requested_week + timedelta(days=7)).year}/{(requested_week + timedelta(days=7)).month}/{(requested_week + timedelta(days=7)).day}/" if requested_week < current_week_start   else None,
         "group": group,
         "days": days,
         "layouts": layouts,
-        "can_edit_dispatch" : True,  # Placeholder for future permission logic
+        "editor" : weekly_dispatch.editor.name if weekly_dispatch.editor else "Unknown",
+        "can_edit_dispatch" : weekly_dispatch.editor and weekly_dispatch.editor.user == request.user,
+        "published" : weekly_dispatch.published,
+        "publish_url": f"/photooftheday/week/publish/{weekly_dispatch.pk}/",
+        "ready_for_publish" : week_ready,
     }
 
     return render(request, "photooftheday/week.html", context)
+
+@login_required(login_url="login")
+def publish_weekly_dispatch(request, dispatch_id):
+    if request.method != "POST":
+        return HttpResponse(status=405)
+
+    try:
+        member = GroupMember.objects.get(user=request.user)
+    except GroupMember.DoesNotExist:
+        return redirect("/")
+
+    dispatch = get_object_or_404(WeeklyDispatch, pk=dispatch_id, group=member.group)
+    if dispatch.editor and dispatch.editor != member:
+        return HttpResponseForbidden()
+
+    if not dispatch.published:
+        dispatch.published = True
+        dispatch.save(update_fields=["published"])
+
+    week_start = dispatch.week_start
+    return redirect(
+        f"/photooftheday/week/{week_start.year}/{week_start.month}/{week_start.day}/"
+    )
 
 def save_weekly_setup(request, dispatch_entry_id):
     if request.method != "POST":
