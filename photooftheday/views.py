@@ -5,6 +5,8 @@ from django.templatetags.static import static
 from django.utils import timezone
 from django.core.files.storage import default_storage
 from django.core.files.base import File
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
 
 from .models import GroupMember, PhotoSubmission, WeeklyDispatch, WeeklyDispatchEntry
 
@@ -267,6 +269,27 @@ def publish_weekly_dispatch(request, dispatch_id):
         dispatch.save(update_fields=["published"])
 
     week_start = dispatch.week_start
+
+    week_number = dispatch.week_number
+    members = dispatch.group.members.all()
+
+    context = {
+        "week_number": week_number,
+        "week_start": week_start,
+        "week_end": week_start + timedelta(days=6),
+        "editor": dispatch.editor.name if dispatch.editor else "Unknown",
+        "group": dispatch.group,
+        "dispatch_url": request.build_absolute_uri(f"/photooftheday/week/{week_start.year}/{week_start.month}/{week_start.day}/"),
+    }
+
+    output = send_mail(
+        subject=f"Photo of the Day: Weekly Dipatch for Week #{week_number}",
+        message=f"The weekly dispatch for week #{week_number} is ready for viewing!",
+        from_email="Photo of the Day <photooftheday@joemarriage.com>",
+        recipient_list=[member.user.email for member in members if member.user.email],
+        html_message=render_to_string("photooftheday/email/week_published.html", context),
+    )
+
     return redirect(
         f"/photooftheday/week/{week_start.year}/{week_start.month}/{week_start.day}/"
     )

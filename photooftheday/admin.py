@@ -21,10 +21,15 @@ class PhotoSubmissionAdmin(admin.ModelAdmin):
 	readonly_fields = ("date", "cached_address",)
 	ordering = ("-date",)
 
+class WeeklyDispatchAdmin(admin.ModelAdmin):
+	list_display = ("week_start", "published", "editor")
+	list_filter = ("published",)
+	search_fields = ("editor__username",)
+	ordering = ("-week_start",)
 
 admin.site.site_header = "Photo of the Day Admin"
 admin.site.register(Group, GroupAdmin)
 admin.site.register(GroupMember, GroupMemberAdmin)
 admin.site.register(PhotoSubmission, PhotoSubmissionAdmin)
-admin.site.register(WeeklyDispatch)
+admin.site.register(WeeklyDispatch, WeeklyDispatchAdmin)
 admin.site.register(WeeklyDispatchEntry)

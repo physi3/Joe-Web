@@ -55,6 +55,8 @@ if (DEBUG):
 SESSION_COOKIE_DOMAIN = MAIN_DOMAIN
 CSRF_COOKIE_DOMAIN = MAIN_DOMAIN
 
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -102,6 +104,18 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'joeweb.wsgi.application'
 
+# Email Configuration
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+
+EMAIL_HOST = "smtp.resend.com"
+EMAIL_PORT = 465
+EMAIL_USE_SSL = True
+
+EMAIL_HOST_USER = "resend"
+EMAIL_HOST_PASSWORD = environ.get("RESEND_API_KEY")
+
+DEFAULT_FROM_EMAIL = "Joe Web <server@joemarriage.com>"
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases

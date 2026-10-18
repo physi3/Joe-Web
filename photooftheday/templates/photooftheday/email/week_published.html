@@ -1,0 +1,94 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<body style="margin:0;padding:0;background:#e9e4d8;color:#1d1d1b;font-family:Arial,sans-serif;">
+
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+         style="background:#e9e4d8;">
+    <tr>
+      <td align="center" style="padding:36px 16px;">
+
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+               style="max-width:560px;background:#f1eee5;">
+
+          <!-- Masthead -->
+          <tr>
+            <td style="padding:28px 28px 18px;text-align:center;border-bottom:1px solid #777064;">
+              <p style="margin:0 0 10px;font-family:monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;">
+                Photo of the Day
+              </p>
+              <h1 style="margin:0;font-family:Georgia,serif;font-weight:normal;font-style:italic;font-size:37px;letter-spacing:-1px;">
+                The Weekly Dispatch
+              </h1>
+              <p style="margin:12px 0 0;font-family:monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#625e56;">
+                Week {{ week_number }} &nbsp;·&nbsp;
+                {{ week_start|date:"j M" }} — {{ week_end|date:"j M Y" }}
+              </p>
+            </td>
+          </tr>
+
+          <!-- Announcement -->
+          <tr>
+            <td style="padding:35px 30px 25px;text-align:center;">
+              <p style="margin:0 0 14px;font-family:monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#625e56;">
+                A new edition is available
+              </p>
+
+              <h2 style="margin:0 0 15px;font-family:Georgia,serif;font-size:26px;font-weight:normal;">
+                This week's dispatch is here.
+              </h2>
+
+              <p style="margin:0 auto;max-width:420px;font-size:14px;line-height:1.8;color:#514c44;">
+                <b>{{ editor }}</b> has published this week's Photo of the Day dispatch.
+                The photographs have been collected, arranged and are now ready to explore.
+              </p>
+            </td>
+          </tr>
+
+          <!-- Three photo preview -->
+          <tr>
+            <td style="padding:0 22px 28px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  {% for photo in preview_photos %}
+                  <td width="33.33%" valign="top" style="padding:0 3px;">
+                    <a href="{{ dispatch_url }}" style="text-decoration:none;">
+                      <img src="{{ photo.url }}"
+                           alt="{{ photo.alt|default:'A photograph from this week' }}"
+                           width="160"
+                           style="display:block;width:100%;height:auto;border:0;background:#e9e4d8;">
+                    </a>
+                  </td>
+                  {% endfor %}
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- CTA -->
+          <tr>
+            <td align="center" style="padding:4px 25px 42px;">
+              <a href="{{ dispatch_url }}"
+                 style="display:inline-block;background:#1d1d1b;color:#f1eee5;padding:16px 28px;font-family:monospace;font-size:11px;letter-spacing:1.3px;text-transform:uppercase;text-decoration:none;">
+                View the dispatch &rarr;
+              </a>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="border-top:1px solid #777064;padding:20px 25px;text-align:center;">
+              <p style="margin:0;font-family:monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:#625e56;">
+                Photo of the Day &nbsp;·&nbsp; A week in photographs
+              </p>
+            </td>
+          </tr>
+
+        </table>
+
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>
