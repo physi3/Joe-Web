@@ -25,6 +25,7 @@ import json
 
 from .utils.geocoding import dms_to_decimal
 
+@login_required(login_url="login")
 def index(request):
     """Redirect to today's photo-of-the-day page."""
     today = timezone.now().date()
@@ -144,10 +145,12 @@ def day(request, year: int, month: int, day: int):
 
     return render(request, "photooftheday/day.html", context)
 
+@login_required(login_url="login")
 def this_week(request):
     start_of_week = timezone.now().date() - timedelta(days=timezone.now().date().weekday())
     return redirect(f"/photooftheday/week/{start_of_week.year}/{start_of_week.month}/{start_of_week.day}/")
 
+@login_required(login_url="login")
 def week(request, year: int, month: int, day: int):
     requested_week = _date(int(year), int(month), int(day))
 
@@ -294,6 +297,7 @@ def publish_weekly_dispatch(request, dispatch_id):
         f"/photooftheday/week/{week_start.year}/{week_start.month}/{week_start.day}/"
     )
 
+@login_required(login_url="login")
 def save_weekly_setup(request, dispatch_entry_id):
     if request.method != "POST":
         return HttpResponse(status=405)  # Method Not Allowed
@@ -317,10 +321,12 @@ def save_weekly_setup(request, dispatch_entry_id):
 
     return JsonResponse({"status": "success", "message": "Layout saved successfully."})
 
+@login_required(login_url="login")
 def calendar_this_month(request):
     today = timezone.now().date()
     return redirect(f"/photooftheday/calendar/{today.year}/{today.month}/")
 
+@login_required(login_url="login")
 def calendar_view(request, year:int, month_int:int):
     month = date(year, month_int, 1)
     today = timezone.now().date()
