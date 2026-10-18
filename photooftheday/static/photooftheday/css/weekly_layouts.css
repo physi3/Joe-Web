@@ -1,8 +1,8 @@
 /* ============================================================
-   WEEKLY DISPATCH — THREE CURATED COMPOSITIONS
+   WEEKLY DISPATCH — NINE CURATED COMPOSITIONS
 
    Applies only inside .weekly-page; does not affect daily pages.
-   Set entry.layout to "layout-01", "layout-02", or "layout-03".
+   Set entry.layout to "layout-01" through "layout-09".
 
    Figure order is the order of entry.members:
      1 = first photograph, 2 = second, 3 = third.
@@ -209,4 +209,466 @@
     text-align: left;
     transform: none;
   }
+}
+
+/* ============================================================
+   04–09 — MORE CURATED COMPOSITIONS
+
+   04 keeps a strict, matched portrait format. 05–09 show the
+   original image proportions without cropping; their maximum display
+   heights keep the weekly dispatch relatively compact.
+   All use the SAME .weekly-gallery > figure.weekly-photo markup.
+
+   The :is() selector groups the new layouts without touching 01–03.
+   These styles intentionally follow the earlier responsive rules so
+   they can override their generic column/transform fallbacks.
+   ============================================================ */
+
+.weekly-page .weekly-day:is(.layout-04, .layout-05, .layout-06, .layout-07, .layout-08, .layout-09) .weekly-photo {
+  --photo-ratio: 3 / 4;
+  grid-template-columns: minmax(0, 1fr);
+  transform: none;
+}
+
+/* 04 — THE GALLERY WALL
+   A precise, quiet hang: three equivalent portrait prints with
+   identical scale, identical top lines, and no writing at all. */
+.weekly-page .weekly-day.layout-04 .weekly-gallery {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: start;
+  gap: clamp(16px, 2vw, 32px);
+  padding: 26px clamp(4px, 1.5vw, 24px) 30px;
+}
+.weekly-page .weekly-day.layout-04 .weekly-photo-frame {
+  box-shadow: 0 5px 18px rgba(38, 32, 26, .09);
+}
+.weekly-day.layout-04 .weekly-annotation { display: none; }
+
+/* 05 — THE FEATURE COLUMN
+   One large natural-proportion print on the left, with two smaller
+   prints stacked alongside. Notes accompany all three photos. */
+.weekly-page .weekly-day.layout-05 .weekly-gallery {
+  /* Size the composition around the prints, not the full gallery width. */
+  grid-template-columns: minmax(0, 350px) minmax(0, 230px);
+  justify-content: center;
+  grid-template-rows: repeat(2, auto);
+  align-items: center;
+  column-gap: clamp(24px, 3.7vw, 60px);
+  row-gap: clamp(14px, 2vw, 28px);
+  padding: 23px clamp(6px, 2.5vw, 36px) 34px;
+}
+.weekly-page .weekly-day.layout-05 .weekly-photo:nth-child(1) {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  max-width: 380px;
+  justify-self: center;
+  transform: rotate(-1.1deg);
+}
+.weekly-page .weekly-day.layout-05 .weekly-photo:nth-child(2) {
+  grid-column: 2;
+  grid-row: 1;
+  max-width: 210px;
+  justify-self: center;
+  transform: rotate(1.6deg);
+}
+.weekly-page .weekly-day.layout-05 .weekly-photo:nth-child(3) {
+  grid-column: 2;
+  grid-row: 2;
+  max-width: 210px;
+  justify-self: center;
+  transform: rotate(-1.4deg);
+}
+/* Smaller handwritten notes suit the supporting column. */
+.weekly-day.layout-05 .weekly-photo:nth-child(n+2) .weekly-annotation {
+  font-size: clamp(14px, 1.15vw, 18px);
+  padding: 0 5px;
+}
+.weekly-day.layout-05 .weekly-photo:nth-child(n+2) .weekly-photo-location { margin-bottom: 6px; }
+.weekly-day.layout-05 .weekly-photo:nth-child(1) .weekly-annotation {
+  padding: 3px 8px;
+  max-width: 360px;
+}
+
+/* 06 — THE TOTEM
+   A large central photograph is surrounded by two smaller images.
+   All photographs retain their locations and captions. */
+.weekly-page .weekly-day.layout-06 .weekly-gallery {
+  grid-template-columns: minmax(0, 185px) minmax(0, 255px) minmax(0, 185px);
+  justify-content: center;
+  grid-template-rows: 1fr 1fr;
+  align-items: center;
+  column-gap: clamp(12px, 2vw, 30px);
+  row-gap: 0;
+  padding: 28px 0 40px;
+}
+.weekly-page .weekly-day.layout-06 .weekly-photo:nth-child(1) {
+  grid-column: 1;
+  grid-row: 1;
+  width: min(100%, 195px);
+  justify-self: end;
+  align-self: end;
+  transform: translateY(-12px) rotate(-4deg) scale(1.5);
+}
+.weekly-page .weekly-day.layout-06 .weekly-photo:nth-child(2) {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  width: 100%;
+  max-width: 300px;
+  justify-self: center;
+  transform: rotate(1.1deg);
+}
+.weekly-page .weekly-day.layout-06 .weekly-photo:nth-child(3) {
+  grid-column: 3;
+  grid-row: 2;
+  width: min(100%, 195px);
+  justify-self: start;
+  align-self: start;
+  transform: translateY(4px) rotate(3.2deg) scale(1.5);
+}
+/* Side photographs have quieter, more compact marginalia. */
+.weekly-day.layout-06 .weekly-photo:not(:nth-child(2)) .weekly-annotation {
+  font-size: clamp(10px, 1.1vw, 12px);
+  line-height: 1.02;
+}
+.weekly-day.layout-06 .weekly-photo:not(:nth-child(2)) .weekly-photo-location { margin-bottom: 5px; }
+.weekly-day.layout-06 .weekly-photo:nth-child(2) .weekly-annotation {
+  text-align: center;
+  padding: 3px 6px;
+}
+
+/* 07 — THE DIPTYCH PLUS ONE
+   Two large matching portraits dominate. A third, appreciably
+   smaller image is aligned to their baseline, like a late addition. */
+.weekly-page .weekly-day.layout-07 .weekly-gallery {
+  grid-template-columns: minmax(0, 255px) minmax(0, 255px) minmax(0, 190px);
+  justify-content: center;
+  align-items: end;
+  gap: clamp(14px, 2.5vw, 40px);
+  padding: 26px clamp(4px, 1.3vw, 24px) 34px;
+}
+.weekly-page .weekly-day.layout-07 .weekly-photo:nth-child(1) {
+  transform: rotate(-1deg);
+}
+.weekly-page .weekly-day.layout-07 .weekly-photo:nth-child(2) {
+  transform: rotate(1deg);
+}
+.weekly-page .weekly-day.layout-07 .weekly-photo:nth-child(3) {
+  width: 100%;
+  max-width: 185px;
+  justify-self: start;
+  transform: translateY(-8px) rotate(2.8deg);
+}
+.weekly-day.layout-07 .weekly-photo:nth-child(n+2) .weekly-annotation {
+  font-size: clamp(13px, 1.05vw, 17px);
+  padding: 0 3px;
+}
+.weekly-day.layout-07 .weekly-photo:nth-child(n+2) .weekly-photo-location { margin-bottom: 6px; }
+.weekly-day.layout-07 .weekly-photo:first-child .weekly-annotation {
+  padding: 0 6px;
+  max-width: 340px;
+}
+
+/* 08 — THE FILM STRIP
+   Three uncropped pictures across a compact horizontal film strip.
+   Captions become cream-coloured frame notes under the images. */
+.weekly-page .weekly-day.layout-08 .weekly-gallery {
+  grid-template-columns: repeat(3, minmax(0, 220px));
+  justify-content: center;
+  justify-items: stretch;
+  align-items: center;
+  gap: clamp(10px, 1.4vw, 24px);
+  padding: 30px clamp(20px, 2.2vw, 32px);
+  width: 100%;
+  max-width: 800px;
+  box-sizing: border-box;
+  background: #302e2a;
+  position: relative;
+  margin: 18px auto;
+}
+.weekly-page .weekly-day.layout-08 .weekly-gallery::before,
+.weekly-page .weekly-day.layout-08 .weekly-gallery::after {
+  content: "";
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  height: 13px;
+  background: radial-gradient(ellipse 5px 4px at center, #e9e4d8 78%, transparent 83%) left center / 23px 13px repeat-x;
+  pointer-events: none;
+}
+.weekly-page .weekly-day.layout-08 .weekly-gallery::before { top: 7px; }
+.weekly-page .weekly-day.layout-08 .weekly-gallery::after { bottom: 7px; }
+.weekly-page .weekly-day.layout-08 .weekly-photo {
+  width: 100%;
+  max-width: 220px;
+  justify-self: center;
+  padding: 0;
+  background: transparent;
+}
+.weekly-page .weekly-day.layout-08 .weekly-photo-frame {
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.weekly-day.layout-08 .weekly-annotation {
+  color: #eee5d5;
+  font-size: clamp(13px, 1.1vw, 17px);
+  line-height: 1.04;
+  text-align: center;
+  align-self: start;
+  padding: 3px 1px 0;
+}
+.weekly-day.layout-08 .weekly-photo-location { margin-bottom: 5px; }
+.weekly-day.layout-08 .pin { stroke: #e0c59b; }
+
+/* 09 — THE SHOWCASE
+   A naturally proportioned lead photo between two smaller prints.
+   The lead note is generous; the supporting notes are restrained. */
+.weekly-page .weekly-day.layout-09 .weekly-gallery {
+  /* A compact, centered cluster. Fractional 1fr tracks caused the
+     massive empty gutters visible when a portrait has a height cap. */
+  grid-template-columns: minmax(0, 205px) minmax(0, 255px) minmax(0, 205px);
+  justify-content: center;
+  justify-items: center;
+  align-items: center;
+  gap: clamp(10px, 1.5vw, 22px);
+  padding: 16px 4px 22px;
+}
+.weekly-page .weekly-day.layout-09 .weekly-photo:nth-child(1) {
+  grid-column: 2;
+  grid-row: 1;
+  width: 100%;
+  max-width: 255px;
+  justify-self: center;
+  transform: rotate(-.8deg);
+}
+.weekly-page .weekly-day.layout-09 .weekly-photo:nth-child(2) {
+  grid-column: 1;
+  grid-row: 1;
+  width: 100%;
+  max-width: 205px;
+  justify-self: center;
+  transform: translateY(10px) rotate(-2.4deg) scale(1.1);
+}
+.weekly-page .weekly-day.layout-09 .weekly-photo:nth-child(3) {
+  grid-column: 3;
+  grid-row: 1;
+  width: 100%;
+  max-width: 205px;
+  justify-self: center;
+  transform: translateY(-9px) rotate(2.1deg) scale(1.1);
+}
+.weekly-day.layout-09 .weekly-photo:nth-child(1) .weekly-annotation {
+  text-align: center;
+  padding: 4px 5px 0;
+}
+.weekly-day.layout-09 .weekly-photo:nth-child(n+2) .weekly-annotation {
+  text-align: center;
+  font-size: clamp(13px, 1.1vw, 16px);
+  line-height: 1.05;
+  padding: 3px 1px 0;
+}
+.weekly-day.layout-09 .weekly-photo:nth-child(n+2) .weekly-photo-location { margin-bottom: 5px; }
+
+/* ------------------------------------------------------------
+   TABLET — keep the new portraits legible rather than squeezing
+   annotations beside them. Preserve the layout's visual idea.
+   ------------------------------------------------------------ */
+@media (min-width: 801px) and (max-width: 1150px) {
+  .weekly-page .weekly-day.layout-04 .weekly-gallery {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .weekly-page .weekly-day.layout-05 .weekly-gallery {
+    grid-template-columns: minmax(0, 350px) minmax(0, 230px);
+    gap: 14px;
+  }
+  .weekly-page .weekly-day.layout-05 .weekly-photo:nth-child(1) {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    transform: none;
+  }
+  .weekly-page .weekly-day.layout-05 .weekly-photo:nth-child(2) {
+    grid-column: 2;
+    grid-row: 1;
+    transform: none;
+  }
+  .weekly-page .weekly-day.layout-05 .weekly-photo:nth-child(3) {
+    grid-column: 2;
+    grid-row: 2;
+    transform: none;
+  }
+  .weekly-page .weekly-day.layout-06 .weekly-gallery {
+    grid-template-columns: minmax(0, 185px) minmax(0, 255px) minmax(0, 185px);
+    gap: 10px;
+  }
+  .weekly-page .weekly-day.layout-06 .weekly-photo:nth-child(1) {
+    grid-column: 1;
+    grid-row: 1;
+    transform: none;
+  }
+  .weekly-page .weekly-day.layout-06 .weekly-photo:nth-child(2) {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    transform: none;
+  }
+  .weekly-page .weekly-day.layout-06 .weekly-photo:nth-child(3) {
+    grid-column: 3;
+    grid-row: 2;
+    transform: none;
+  }
+  .weekly-page .weekly-day.layout-07 .weekly-gallery {
+    grid-template-columns: minmax(0, 255px) minmax(0, 255px) minmax(0, 190px);
+    gap: 12px;
+  }
+  .weekly-page .weekly-day.layout-07 .weekly-photo:nth-child(n) { transform: none; }
+  .weekly-page .weekly-day.layout-08 .weekly-gallery {
+    grid-template-columns: repeat(3, minmax(0, 220px));
+    gap: 12px;
+  }
+  .weekly-page .weekly-day.layout-09 .weekly-gallery {
+    grid-template-columns: minmax(0, 205px) minmax(0, 255px) minmax(0, 205px);
+    gap: 12px;
+  }
+  .weekly-page .weekly-day.layout-09 .weekly-photo:nth-child(1) { grid-column: 2; grid-row: 1; }
+  .weekly-page .weekly-day.layout-09 .weekly-photo:nth-child(2) { grid-column: 1; grid-row: 1; }
+  .weekly-page .weekly-day.layout-09 .weekly-photo:nth-child(3) { grid-column: 3; grid-row: 1; }
+}
+
+/* ------------------------------------------------------------
+   MOBILE — all new layouts remain portrait-first; the complicated
+   arrangements collapse without squeezing a photo into a thumbnail.
+   ------------------------------------------------------------ */
+@media (max-width: 800px) {
+  .weekly-page .weekly-day:is(.layout-04, .layout-05, .layout-06, .layout-07, .layout-08, .layout-09) .weekly-gallery {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: none;
+    justify-items: center;
+    row-gap: 20px;
+    padding: 18px 0 24px;
+  }
+  .weekly-page .weekly-day:is(.layout-04, .layout-05, .layout-06, .layout-07, .layout-08, .layout-09) .weekly-photo:nth-child(n) {
+    grid-column: 1;
+    grid-row: auto;
+    width: min(100%, 330px);
+    max-width: 330px;
+    justify-self: center;
+    transform: none;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .weekly-page .weekly-day.layout-04 .weekly-gallery { row-gap: 14px; }
+  .weekly-page .weekly-day.layout-05 .weekly-photo:nth-child(n+2) { width: min(80%, 235px); }
+  .weekly-page .weekly-day.layout-06 .weekly-photo:nth-child(1),
+  .weekly-page .weekly-day.layout-06 .weekly-photo:nth-child(3) { width: min(75%, 210px); }
+  .weekly-page .weekly-day.layout-07 .weekly-photo:nth-child(3) { width: min(70%, 190px); }
+  /* Keep both compact compositions horizontal, even on phones. */
+  .weekly-page .weekly-day.layout-08 .weekly-gallery {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    max-width: none;
+    gap: 7px;
+    padding: 21px 16px;
+    margin: 12px 0;
+  }
+  .weekly-page .weekly-day.layout-08 .weekly-gallery::before,
+  .weekly-page .weekly-day.layout-08 .weekly-gallery::after {
+    background-size: 17px 13px;
+  }
+  .weekly-page .weekly-day.layout-08 .weekly-photo:nth-child(n) {
+    grid-column: auto;
+    grid-row: 1;
+    width: 100%;
+    max-width: none;
+  }
+  .weekly-page .weekly-day.layout-09 .weekly-gallery {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr) minmax(0, 1fr);
+    gap: 9px;
+    padding: 14px 0 18px;
+  }
+  .weekly-page .weekly-day.layout-09 .weekly-photo:nth-child(1) {
+    grid-column: 2;
+    grid-row: 1;
+    width: 100%;
+    max-width: 215px;
+  }
+  .weekly-page .weekly-day.layout-09 .weekly-photo:nth-child(2) {
+    grid-column: 1;
+    grid-row: 1;
+    width: 100%;
+    max-width: 185px;
+  }
+  .weekly-page .weekly-day.layout-09 .weekly-photo:nth-child(3) {
+    grid-column: 3;
+    grid-row: 1;
+    width: 100%;
+    max-width: 185px;
+  }
+  .weekly-page .weekly-day.layout-09 .weekly-photo:nth-child(1) .weekly-annotation {
+    font-size: 16px;
+  }
+}
+
+/* ============================================================
+   NATURAL PHOTO PROPORTIONS — 05–09
+
+   These compositions should present an actual portrait, panorama,
+   square, or landscape as shot, without stretching or cropping.
+   - width/height: auto preserves each image's intrinsic ratio.
+   - max-height keeps portrait iPhone photographs from making an
+     entire seven-day dispatch excessively long.
+   - Missing-submission placeholders intentionally stay 3:4.
+   04 retains its equal 3:4 prints as an intentional visual choice.
+   ============================================================ */
+.weekly-page .weekly-day:is(.layout-05, .layout-06, .layout-07, .layout-08, .layout-09) .weekly-photo-frame:not(.weekly-photo-missing) {
+  width: fit-content;
+  max-width: 100%;
+  justify-self: center;
+}
+.weekly-page .weekly-day:is(.layout-05, .layout-06, .layout-07, .layout-08, .layout-09) .weekly-photo-frame img {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: var(--print-max-height, 290px);
+  aspect-ratio: auto;
+  object-fit: contain;
+}
+
+/* The first print is the main image in 05 and 07; the middle in 06. */
+.weekly-page .weekly-day.layout-05 .weekly-photo:nth-child(1) { --print-max-height: 330px; }
+.weekly-page .weekly-day.layout-05 .weekly-photo:nth-child(n+2) { --print-max-height: 150px; }
+.weekly-page .weekly-day.layout-06 .weekly-photo:nth-child(2) { --print-max-height: 310px; }
+.weekly-page .weekly-day.layout-06 .weekly-photo:not(:nth-child(2)) { --print-max-height: 165px; }
+.weekly-page .weekly-day.layout-07 .weekly-photo:nth-child(-n+2) { --print-max-height: 280px; }
+.weekly-page .weekly-day.layout-07 .weekly-photo:nth-child(3) { --print-max-height: 165px; }
+.weekly-page .weekly-day.layout-08 .weekly-photo { --print-max-height: 230px; }
+.weekly-page .weekly-day.layout-09 .weekly-photo:nth-child(1) { --print-max-height: 355px; }
+.weekly-page .weekly-day.layout-09 .weekly-photo:nth-child(n+2) { --print-max-height: 225px; }
+
+/* The film strip has three captioned frames; their top edges line up
+   even when the photographs are different shapes. */
+.weekly-page .weekly-day.layout-08 .weekly-gallery { align-items: start; }
+.weekly-page .weekly-day.layout-08 .weekly-photo { align-self: start; }
+
+@media (max-width: 800px) {
+  /* On narrow screens, allow natural photos to be generous but bounded. */
+  .weekly-page .weekly-day.layout-05 .weekly-photo:nth-child(1),
+  .weekly-page .weekly-day.layout-06 .weekly-photo:nth-child(2),
+  .weekly-page .weekly-day.layout-07 .weekly-photo:nth-child(-n+2) {
+    --print-max-height: 350px;
+  }
+  .weekly-page .weekly-day.layout-08 .weekly-photo { --print-max-height: 180px; }
+  .weekly-page .weekly-day.layout-09 .weekly-photo:nth-child(1) { --print-max-height: 220px; }
+  .weekly-page .weekly-day.layout-09 .weekly-photo:nth-child(n+2) { --print-max-height: 145px; }
+  .weekly-page .weekly-day.layout-08 .weekly-annotation {
+    font-size: clamp(11px, 2.1vw, 14px);
+  }
+  /* A narrow three-frame strip doesn't have room for prose. Keep
+     locations on phones; show full captions on desktop. */
+  .weekly-page .weekly-day.layout-08 .weekly-photo-caption { display: none; }
+  .weekly-page .weekly-day.layout-08 .weekly-photo-location { margin-bottom: 0; }
+}
+
+@media (max-width: 430px) {
+  /* Similarly, the two tiny flank prints in 09 only have space for
+     locations on phones; the lead photograph retains its caption. */
+  .weekly-page .weekly-day.layout-09 .weekly-photo:nth-child(n+2) .weekly-photo-caption { display: none; }
+  .weekly-page .weekly-day.layout-09 .weekly-photo:nth-child(n+2) .weekly-photo-location { margin-bottom: 0; }
 }

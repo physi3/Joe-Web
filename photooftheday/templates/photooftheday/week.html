@@ -7,10 +7,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{% static 'photooftheday/css/week.css' %}">
 <link rel="stylesheet" href="{% static 'photooftheday/css/weekly_layouts.css' %}">
+<link rel="stylesheet" href="{% static 'photooftheday/css/week_editor.css' %}">
 {% endblock %}
 
 {% block photo_content %}
-<div class="weekly-page">
+<div class="weekly-page" id="weekly-dispatch">
 
   <!-- WEEKLY EDITION HEADER -->
   <header class="weekly-heading">
@@ -38,11 +39,24 @@
     </div>
   </header>
 
-  <!-- PHASE ONE: pass ONE day in `days` to perfect the fixed composition.
-       In Phase Two, the layout class on each row can vary. -->
-  {% for entry in days %}
-  <section class="weekly-day layout-01" aria-labelledby="weekly-day-{{ entry.date|date:'Ymd' }}">
+  {% if can_edit_dispatch %}
+  <!-- Only shown to people the view has authorised to edit this dispatch. -->
+  <div class="weekly-editor-toolbar">
+    <span class="weekly-editor-toolbar-label">Editorial controls</span>
+    <button type="button" class="weekly-edit-toggle" aria-pressed="false" aria-controls="weekly-dispatch">
+      Enable editing
+    </button>
+  </div>
+  {% endif %}
 
+  {% for entry in days %}
+  <section
+    class="weekly-day {{ entry.layout|default:'layout-01' }}"
+    data-entry-id="{{ entry.id|default:'' }}"
+    data-save-url="{{ entry.save_url|default:'' }}"
+    data-layout="{{ entry.layout|default:'layout-01' }}"
+    aria-labelledby="weekly-day-{{ entry.date|date:'Ymd' }}"
+  >
     <div class="weekly-day-sidebar">
       <div class="weekly-day-date">
         {% if entry.url %}<a href="{{ entry.url }}" id="weekly-day-{{ entry.date|date:'Ymd' }}">{{ entry.date|date:"l" }}</a>
@@ -50,25 +64,52 @@
         <span>{{ entry.date|date:"j F Y" }}</span>
       </div>
 
-      <ul class="weekly-contributors" aria-label="Contributors">
+      <ul class="weekly-contributors" aria-label="Contributor order for {{ entry.date|date:'l j F' }}">
         {% for item in entry.members %}
-        <li class="weekly-contributor">
+        <li class="weekly-contributor" data-member-id="{{ item.member.pk }}">
+          {% if can_edit_dispatch %}
+          <span class="weekly-drag-handle" aria-hidden="true" title="Drag to reorder">⠿</span>
+          {% endif %}
           <span class="weekly-dot" style="--dot-color: {{ item.member.colour }}" aria-hidden="true"></span>
-          <div>
+          <div class="weekly-contributor-details">
             <div class="weekly-contributor-name">{{ item.member.name }}{% if item.submission and item.submission.cached_address %} — {{ item.submission.cached_address.city }}, {{ item.submission.cached_address.country }}{% endif %}</div>
             <div class="weekly-contributor-time">
               {% if item.submission %}{{ item.submission.time|time:"g:i A"|default:"Time unknown" }}{% else %}No submission{% endif %}
             </div>
           </div>
+          {% if can_edit_dispatch %}
+          <div class="weekly-order-buttons">
+            <button type="button" class="weekly-move-up" aria-label="Move {{ item.member.name }} up" title="Move up">↑</button>
+            <button type="button" class="weekly-move-down" aria-label="Move {{ item.member.name }} down" title="Move down">↓</button>
+          </div>
+          {% endif %}
         </li>
         {% endfor %}
       </ul>
+
+      {% if can_edit_dispatch %}
+      <div class="weekly-editor-controls">
+        <label class="weekly-editor-field-label" for="weekly-layout-{{ entry.date|date:'Ymd' }}">Composition</label>
+        <select id="weekly-layout-{{ entry.date|date:'Ymd' }}" class="weekly-layout-select">
+          {% for layout_key, layout in layouts.items %}
+          <option value="{{ layout_key }}" {% if entry.layout == layout_key %}selected{% endif %}>{{ layout.name }}</option>
+          {% endfor %}
+        </select>
+        <p class="weekly-layout-description" aria-live="polite"></p>
+        <div class="weekly-editor-actions">
+          <button type="button" class="weekly-reset-day" disabled>Undo</button>
+          <button type="button" class="weekly-save-day" disabled>Save day</button>
+        </div>
+        <p class="weekly-save-status" role="status" aria-live="polite"></p>
+        {% csrf_token %}
+      </div>
+      {% endif %}
     </div>
 
     <div class="weekly-gallery">
       {% for item in entry.members %}
       {% with submission=item.submission member=item.member %}
-      <figure class="weekly-photo">
+      <figure class="weekly-photo" data-member-id="{{ member.pk }}">
         {% if submission and submission.image %}
           <div class="photo-frame weekly-photo-frame">
             <img src="{{ submission.image.url }}" alt="{{ submission.caption|default:member.name }}" loading="lazy" decoding="async">
@@ -109,4 +150,11 @@
     <div class="archive-label">Photo / Day Archive</div>
   </footer>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+{% if can_edit_dispatch %}
+{{ layouts|json_script:"weekly-layouts-data" }}
+<script src="{% static 'photooftheday/js/week_editor.js' %}" defer></script>
+{% endif %}
 {% endblock %}

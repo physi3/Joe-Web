@@ -9,6 +9,7 @@ urlpatterns = [
     path("calendar/", views.calendar_this_month, name="calendar_this_month"),
     path("week/", views.this_week, name="this_week"),
     path("week/<int:year>/<int:month>/<int:day>/", views.week, name="this_week"),
+    path("week/save/<int:dispatch_entry_id>/", views.save_weekly_setup, name="save_week_layout"),
     path("<int:year>/<int:month>/<int:day>/", views.day, name="day"),
     path("<int:year>/<int:month>/<int:day>/upload/", views.upload, name="upload"), # type: ignore
 ]

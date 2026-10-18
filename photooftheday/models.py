@@ -141,4 +141,4 @@ class WeeklyDispatchEntry(models.Model):
 	date = models.DateField()
 
 	member_order = models.JSONField(default=list)  # List of member IDs in the order they should be displayed
-	layout = models.PositiveSmallIntegerField(default=1)
+	layout = models.CharField(max_length=30, default="layout-01")

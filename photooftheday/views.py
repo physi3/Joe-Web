@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
@@ -17,6 +17,7 @@ from datetime import datetime
 from PIL import Image, ExifTags
 import calendar
 from datetime import date, timedelta
+import json
 
 
 from .utils.geocoding import dms_to_decimal
@@ -177,6 +178,7 @@ def week(request, year: int, month: int, day: int):
                 date=day_date,
                 member_order=[member.pk for member in members],
             )
+            entry.save()
             
     else:
         print(f"WeeklyDispatch already exists for week starting {requested_week}: {weekly_dispatch}")
@@ -194,26 +196,92 @@ def week(request, year: int, month: int, day: int):
             )
         day_members = [GroupMember.objects.get(id=memberpk) for memberpk in dispatch_entry.member_order]
         days.append({
+            "id" : dispatch_entry.pk,
             "url": f"/photooftheday/{day_date.year}/{day_date.month}/{day_date.day}/",
             "date":day_date,
             "members": [{"member": member, "submission": submissions.filter(user=member.user).first()} for member in day_members],
+            "layout" : dispatch_entry.layout,
+            "save_url" : f"/photooftheday/week/save/{dispatch_entry.pk}/", # Placeholder for future save URL if needed
         })
+
+
+    layouts = {
+        "layout-01": {
+            "name": "The Triptych",
+            "description": "Three photographs of equal importance, with handwritten annotations alongside."
+        },
+        "layout-02": {
+            "name": "The Lead Story",
+            "description": "One lead photograph, with two smaller supporting images."
+        },
+        "layout-03": {
+            "name": "The Contact Sheet",
+            "description": "A staggered contact sheet with a wide central photograph."
+        },
+        "layout-04": {
+            "name": "The Gallery Wall",
+            "description": "Three perfectly aligned portraits, without annotations."
+        },
+        "layout-05": {
+            "name": "The Feature Column",
+            "description": "A large portrait beside two vertically stacked supporting photos."
+        },
+        "layout-06": {
+            "name": "The Totem",
+            "description": "A tall central photograph framed by two staggered portraits."
+        },
+        "layout-07": {
+            "name": "The Diptych Plus One",
+            "description": "Two prominent portraits accompanied by a smaller third photograph."
+        },
+        "layout-08": {
+            "name": "The Film Strip",
+            "description": "Three vertically stacked portraits presented as a photographic film strip."
+        },
+        "layout-09": {
+            "name": "The Showcase",
+            "description": "A central hero portrait above two smaller, symmetrical photographs."
+        },
+    }
+
+    photo_count = sum(len([1 for member in day["members"] if member["submission"] is not None]) for day in days)
+    place_count = len(set(member["submission"].cached_address.get("city") for day in days for member in day["members"] if member["submission"] is not None))
+
+    current_week_start = timezone.now().date() - timedelta(days=timezone.now().date().weekday())
 
     context = {
         "active_page": "week",
         "week_number": week_number,
         "week_start": requested_week,
         "week_end": requested_week + timedelta(days=6),
-        "photo_count": 21,
+        "photo_count": photo_count,
         "day_count": 7,
-        "place_count": 3,
-        "prev_url": None,
-        "next_url": None,
+        "place_count": place_count,
+        "prev_url": f"/photooftheday/week/{(requested_week - timedelta(days=7)).year}/{(requested_week - timedelta(days=7)).month}/{(requested_week - timedelta(days=7)).day}/" if requested_week > creation_week + timedelta(days=7) else None,
+        "next_url": f"/photooftheday/week/{(requested_week + timedelta(days=7)).year}/{(requested_week + timedelta(days=7)).month}/{(requested_week + timedelta(days=7)).day}/" if requested_week < current_week_start - timedelta(days=7)   else None,
         "group": group,
         "days": days,
+        "layouts": layouts,
+        "can_edit_dispatch" : True,  # Placeholder for future permission logic
     }
 
     return render(request, "photooftheday/week.html", context)
+
+def save_weekly_setup(request, dispatch_entry_id):
+    if request.method != "POST":
+        return HttpResponse(status=405)  # Method Not Allowed
+
+    weekly_dispatch_entry = WeeklyDispatchEntry.objects.filter(pk=dispatch_entry_id).first()
+    if not weekly_dispatch_entry:
+        return HttpResponse(status=404)  # Not Found
+
+    body = json.loads(request.body)
+
+    weekly_dispatch_entry.layout = body.get("layout", weekly_dispatch_entry.layout)
+    weekly_dispatch_entry.member_order = body.get("member_order", weekly_dispatch_entry.member_order)
+    weekly_dispatch_entry.save()
+
+    return JsonResponse({"status": "success", "message": "Layout saved successfully."})
 
 def calendar_this_month(request):
     today = timezone.now().date()
