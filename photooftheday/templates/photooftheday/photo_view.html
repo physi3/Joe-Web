@@ -36,6 +36,7 @@
         <a href="/photooftheday/" {% if active_page == "day" %}class="active"{% endif %}>Day</a>
         <a href="/photooftheday/week/" {% if active_page == "week" %}class="active"{% endif %}>Week</a>
         <a href="/photooftheday/calendar/" {% if active_page == "calendar" %}class="active"{% endif %}>Calendar</a>
+        <a href="{% url 'photo_map' %}" {% if active_page == "map" %}class="active" aria-current="page"{% endif %}>Map</a>
         </div>
     </nav>
 

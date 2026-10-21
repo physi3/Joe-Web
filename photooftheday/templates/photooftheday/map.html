@@ -1,0 +1,75 @@
+{% extends "photooftheday/photo_view.html" %}
+{% load static %}
+
+{% block title %}Map | Photo / Day{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
+<link rel="stylesheet" href="{% static 'photooftheday/css/map.css' %}?v=3">
+{% endblock %}
+
+{% block photo_content %}
+<section class="map-page" id="photo-map-page" aria-labelledby="map-title">
+  <header class="map-heading">
+    <div>
+      <h1 id="map-title">MAP</h1>
+      <p>Explore photos by location. Discover where moments<br class="map-desktop-break"> from the project have been taken, near and far.</p>
+    </div>
+    <div class="map-views" role="group" aria-label="Map view">
+      <button type="button" data-map-view="all" aria-pressed="true">All photos</button>
+      <button type="button" data-map-view="weekly" aria-pressed="false">Weekly Dispatches</button>
+    </div>
+  </header>
+
+  <div class="map-filter-topline">
+    <p id="map-summary" role="status" aria-live="polite">Opening the atlas…</p>
+    <button type="button" id="map-filter-toggle" aria-expanded="false" aria-controls="map-filters">Filters <span aria-hidden="true">+</span></button>
+  </div>
+  <form id="map-filters" class="map-filters" aria-label="Filter photographs">
+    <fieldset class="map-photographers">
+      <legend class="map-sr-only">By photographer</legend>
+      <div id="map-photographers" role="group" aria-label="Photographers"></div>
+    </fieldset>
+    <div class="map-date-filters" id="map-date-filters">
+      <label>Year <select id="map-year" name="year"><option value="">All time</option></select></label>
+      <label>Month <select id="map-month" name="month"><option value="">All months</option>
+        <option value="01">January</option><option value="02">February</option><option value="03">March</option>
+        <option value="04">April</option><option value="05">May</option><option value="06">June</option>
+        <option value="07">July</option><option value="08">August</option><option value="09">September</option>
+        <option value="10">October</option><option value="11">November</option><option value="12">December</option>
+      </select></label>
+    </div>
+    <div class="map-week-filter" id="map-week-filter" hidden>
+      <label>Dispatch <select id="map-week" name="week"><option value="">Select a week</option></select></label>
+      <a id="map-dispatch-link" hidden>View dispatch →</a>
+    </div>
+    <label class="map-search-label"><span class="map-sr-only">Search photographed locations</span>
+      <input type="search" id="map-search" placeholder="Find a photographed place…" maxlength="150" autocomplete="off">
+    </label>
+    <button type="reset" class="map-reset">Reset</button>
+  </form>
+
+  <div class="map-stage" id="map-stage">
+    <div id="photo-map" class="photo-map" aria-label="Photograph locations. Use arrow keys to pan, plus and minus to zoom."></div>
+    <div class="map-message" id="map-message" role="status">
+      <p id="map-message-text">Loading photographs…</p>
+      <button id="map-retry" type="button" hidden>Try again</button>
+    </div>
+    <aside id="map-sheet" class="map-sheet" aria-label="Selected photograph" hidden></aside>
+  </div>
+  <footer class="map-footnote">
+    <span>Connected from any distance.</span>
+    <button id="map-fit" type="button">Show all visible photos ↗</button>
+  </footer>
+  <p class="map-journey-note" id="map-journey-note" hidden>Lines connect consecutive daily photographs for each contributor; they don’t show the route travelled.</p>
+  <noscript><p>Enable JavaScript to explore photographs on the map. You can also browse the <a href="/photooftheday/calendar/">calendar archive</a>.</p></noscript>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+{{ map_config|json_script:"photo-map-config" }}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js" defer></script>
+<script src="{% static 'photooftheday/js/map.js' %}?v=3" defer></script>
+{% endblock %}
