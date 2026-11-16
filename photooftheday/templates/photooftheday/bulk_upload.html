@@ -1,0 +1,182 @@
+{% extends "photooftheday/base.html" %}
+
+{% block title %}Bulk upload | Photo / Day{% endblock %}
+
+{% block content %}
+<div class="page">
+  <main class="container">
+    <section class="upload-page bulk-upload-page">
+      <header class="upload-heading">
+        <p class="upload-kicker">Photo of the day</p>
+        <h1>Bulk upload</h1>
+        <p class="upload-date">Choose a group of photographs, then check their dates and locations</p>
+        <a class="upload-button upload-back-link" href="{% url 'calendar_this_month' %}">← Back to calendar</a>
+      </header>
+
+      {% if error %}<div class="form-errors" role="alert">{{ error }}</div>{% endif %}
+
+      {% if not bulk_items %}
+        <form class="upload-card" method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="inspect">
+          <label class="upload-dropzone" for="bulk-images">
+            <span class="upload-dropzone-title">Choose photographs</span>
+            <span class="upload-dropzone-copy">Up to 50 JPG, PNG, or HEIC files with optional camera metadata</span>
+            <span class="upload-file-name" id="bulk-file-name">No images selected</span>
+          </label>
+          <input id="bulk-images" class="upload-file-input" type="file" name="images" accept="image/*" multiple required>
+          <div class="upload-actions">
+            <button type="submit" class="btn-primary">Upload</button>
+          </div>
+        </form>
+      {% else %}
+        <form id="bulk-upload-form" class="bulk-form" method="post">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="save">
+          <input type="hidden" name="bulk_token" value="{{ bulk_token }}">
+          <input type="hidden" id="bulk-items" name="bulk_items" value="{{ bulk_items_json|escape }}">
+
+          <div class="bulk-summary">
+            <div>
+              <p class="upload-kicker">Review before saving</p>
+              <h2><span id="bulk-count">{{ bulk_items|length }}</span> photographs selected</h2>
+            </div>
+            <a class="upload-button" href="{% url 'bulk_upload' %}">Choose different photos</a>
+          </div>
+
+          <div class="bulk-cards" id="bulk-cards">
+            {% for item in bulk_items %}
+              <article class="bulk-photo-card{% if item.blocking %} is-blocked{% endif %}" data-path="{{ item.path }}" data-index="{{ forloop.counter0 }}">
+                <div class="bulk-photo-preview">
+                  {% if item.preview_url %}<img src="{{ item.preview_url }}" alt="Preview of {{ item.filename }}">{% else %}<span>Preview unavailable</span>{% endif %}
+                </div>
+                <div class="bulk-photo-details">
+                  <div class="bulk-card-heading">
+                    <div>
+                      <p class="bulk-photo-filename">{{ item.filename }}</p>
+                      <p class="bulk-photo-location" data-location>{{ item.location_label }}</p>
+                    </div>
+                    <button type="button" class="bulk-remove" data-remove aria-label="Remove {{ item.filename }}">Remove</button>
+                  </div>
+
+                  <div class="bulk-status{% if item.blocking %} is-error{% elif item.existing %} is-warning{% endif %}" data-status>
+                    <span class="bulk-status-dot"></span>{{ item.status_label }}
+                    {% if item.warnings %}<span class="bulk-warning">{{ item.warnings|join:", " }}</span>{% endif %}
+                  </div>
+
+                  <div class="bulk-fields">
+                    <label class="field-label" for="bulk-date-{{ forloop.counter0 }}">Capture date</label>
+                    <input class="text-input" id="bulk-date-{{ forloop.counter0 }}" data-field="date" type="date" value="{{ item.date }}">
+
+                    <label class="field-label" for="bulk-time-{{ forloop.counter0 }}">Time <span class="field-optional">(optional)</span></label>
+                    <input class="text-input" id="bulk-time-{{ forloop.counter0 }}" data-field="time" type="time" value="{{ item.time }}">
+
+                    <label class="field-label" for="bulk-lat-{{ forloop.counter0 }}">Latitude <span class="field-optional">(optional)</span></label>
+                    <input class="text-input" id="bulk-lat-{{ forloop.counter0 }}" data-field="latitude" inputmode="decimal" value="{{ item.latitude }}">
+
+                    <label class="field-label" for="bulk-lon-{{ forloop.counter0 }}">Longitude <span class="field-optional">(optional)</span></label>
+                    <input class="text-input" id="bulk-lon-{{ forloop.counter0 }}" data-field="longitude" inputmode="decimal" value="{{ item.longitude }}">
+
+                    <label class="field-label" for="bulk-caption-{{ forloop.counter0 }}">Caption <span class="field-optional">(optional)</span></label>
+                    <input class="text-input" id="bulk-caption-{{ forloop.counter0 }}" data-field="caption" value="{{ item.caption }}">
+                  </div>
+                </div>
+              </article>
+            {% endfor %}
+          </div>
+
+          <div class="bulk-footer">
+            <div class="bulk-footer-copy">
+              <p id="bulk-overwrite-warning" class="bulk-overwrite-warning"{% if not has_existing_conflicts %} hidden{% endif %}>Warning: one or more photos will replace an existing photo for the same date.</p>
+              <p class="bulk-help">Dates must be unique within this upload. Location is optional; coordinates are looked up when the photo is saved.</p>
+            </div>
+            <button id="bulk-submit" type="submit" class="btn-primary">Upload selected photos</button>
+          </div>
+        </form>
+      {% endif %}
+    </section>
+  </main>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+  {% if not bulk_items %}
+    <script>
+      document.getElementById("bulk-images").addEventListener("change", function () {
+        const count = this.files.length;
+        document.getElementById("bulk-file-name").textContent = count
+          ? `${count} image${count === 1 ? "" : "s"} selected`
+          : "No images selected";
+      });
+    </script>
+  {% else %}
+    {{ bulk_items_json|json_script:"bulk-items-data" }}
+    <script>
+      (() => {
+        const form = document.getElementById("bulk-upload-form");
+        const itemsInput = document.getElementById("bulk-items");
+        const cards = [...document.querySelectorAll(".bulk-photo-card")];
+        const removedPaths = new Set();
+        const initialItemsPayload = JSON.parse(document.getElementById("bulk-items-data").textContent);
+        const initialItems = typeof initialItemsPayload === "string"
+          ? JSON.parse(initialItemsPayload)
+          : initialItemsPayload;
+        const existingDates = new Set(initialItems.filter(item => item.existing).map(item => item.date));
+
+        function items() {
+          try { return JSON.parse(itemsInput.value); } catch (error) { return []; }
+        }
+
+        function sync() {
+          const current = items();
+          const currentByPath = new Map(current.map(item => [item.path, item]));
+          const active = cards.filter(card => !removedPaths.has(card.dataset.path)).map(card => {
+            const item = currentByPath.get(card.dataset.path);
+            if (!item) return null;
+            card.querySelectorAll("[data-field]").forEach(input => { item[input.dataset.field] = input.value.trim(); });
+            return item;
+          }).filter(Boolean);
+          itemsInput.value = JSON.stringify(active);
+
+          const dateCounts = {};
+          active.forEach(item => { if (item.date) dateCounts[item.date] = (dateCounts[item.date] || 0) + 1; });
+          let blocked = false;
+          cards.forEach(card => {
+            if (card.hidden) return;
+            const item = active.find(activeItem => activeItem.path === card.dataset.path);
+            if (!item) return;
+            const duplicate = item.date && dateCounts[item.date] > 1;
+            const existing = item.date && existingDates.has(item.date);
+            const missingDate = !item.date;
+            const invalid = !item.path;
+            const invalidLocation = (item.latitude && !item.longitude) || (!item.latitude && item.longitude);
+            const isBlocked = invalid || duplicate || missingDate || invalidLocation;
+            const status = card.querySelector("[data-status]");
+            const labels = invalid ? "Could not read this image" : duplicate ? "Date conflict in this batch" : existing ? "Existing photo will be replaced" : missingDate ? "Capture date required" : invalidLocation ? "Enter both latitude and longitude" : "Ready";
+            status.classList.toggle("is-error", isBlocked);
+            status.classList.toggle("is-warning", existing && !isBlocked);
+            status.innerHTML = `<span class="bulk-status-dot"></span>${labels}`;
+            card.classList.toggle("is-blocked", isBlocked);
+            blocked = blocked || isBlocked;
+          });
+          document.getElementById("bulk-overwrite-warning").hidden = !active.some(item => item.date && existingDates.has(item.date));
+          document.getElementById("bulk-count").textContent = active.length;
+          const submit = document.getElementById("bulk-submit");
+          submit.disabled = !active.length || blocked;
+          submit.title = blocked ? "Resolve the highlighted cards before uploading" : "Upload selected photos";
+        }
+
+        cards.forEach(card => {
+          card.querySelector("[data-remove]").addEventListener("click", () => {
+            removedPaths.add(card.dataset.path);
+            card.setAttribute("hidden", "");
+            sync();
+          });
+          card.querySelectorAll("[data-field]").forEach(input => input.addEventListener("input", sync));
+        });
+        form.addEventListener("submit", sync);
+        sync();
+      })();
+    </script>
+  {% endif %}
+{% endblock %}

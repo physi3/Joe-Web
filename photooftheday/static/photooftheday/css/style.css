@@ -700,6 +700,244 @@ button {
     margin-bottom: 14px;
 }
 
+.bulk-upload-page {
+    width: min(100%, 1180px);
+}
+
+.bulk-summary,
+.bulk-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    margin-bottom: 18px;
+}
+
+.bulk-summary h2 {
+    margin: 5px 0 0;
+    font-family: "Playfair Display", serif;
+    font-size: clamp(25px, 4vw, 40px);
+    font-style: italic;
+    font-weight: 500;
+}
+
+.bulk-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 16px;
+    min-width: 0;
+}
+
+.bulk-photo-card {
+    display: grid;
+    grid-template-columns: 145px 1fr;
+    gap: 15px;
+    padding: 12px;
+    border: 1px solid #777064;
+    background: rgba(241, 238, 229, .7);
+    width: 100%;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.bulk-photo-card.is-blocked {
+    border-color: #a45d43;
+    box-shadow: inset 4px 0 #a45d43;
+}
+
+.bulk-photo-card[hidden] {
+    display: none !important;
+}
+
+.bulk-photo-preview {
+    display: flex;
+    min-height: 160px;
+    align-items: center;
+    justify-content: center;
+    background: #1d1d1b;
+    color: #f1eee5;
+    font-family: "DM Mono", monospace;
+    font-size: 10px;
+    text-align: center;
+}
+
+.bulk-photo-preview img {
+    width: 100%;
+    height: 100%;
+    min-height: 160px;
+    object-fit: contain;
+}
+
+.bulk-photo-details,
+.bulk-card-heading > div {
+    min-width: 0;
+    max-width: 100%;
+}
+
+.bulk-card-heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.bulk-photo-filename,
+.bulk-photo-location {
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+.bulk-photo-filename {
+    font-family: "DM Mono", monospace;
+    font-size: 11px;
+    line-height: 1.4;
+}
+
+.bulk-photo-location {
+    margin-top: 4px;
+    color: #5f5a50;
+    font-size: 12px;
+    line-height: 1.35;
+}
+
+.bulk-remove {
+    flex: 0 0 auto;
+    padding: 3px 0;
+    border: 0;
+    color: #8b4935;
+    background: transparent;
+    font-family: "DM Mono", monospace;
+    font-size: 10px;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.bulk-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 13px 0 10px;
+    color: #466b4d;
+    font-family: "DM Mono", monospace;
+    font-size: 10px;
+    line-height: 1.4;
+}
+
+.bulk-status.is-error { color: #9b4e37; }
+
+.bulk-status.is-warning,
+.bulk-overwrite-warning {
+    color: #8a6330;
+}
+
+.bulk-status-dot {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+.bulk-warning {
+    color: #6b665d;
+}
+
+.bulk-fields {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 0 8px;
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
+}
+
+.bulk-fields .field-label:last-of-type,
+.bulk-fields .field-label:last-of-type + input {
+    grid-column: 1 / -1;
+}
+
+.bulk-fields .text-input {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+    padding: 7px 8px;
+    border: 1px solid #aaa092;
+    background: #f1eee5;
+    font-size: 12px;
+}
+
+.upload-secondary-action {
+    margin-top: 14px;
+    text-align: center;
+}
+
+.field-optional {
+    color: #777064;
+    font-size: 9px;
+    font-weight: 400;
+}
+
+.bulk-footer {
+    align-items: flex-end;
+    margin-top: 20px;
+    margin-bottom: 0;
+}
+
+.bulk-footer-copy {
+    min-width: 0;
+}
+
+.bulk-overwrite-warning {
+    margin: 0 0 6px;
+    font-family: "DM Mono", monospace;
+    font-size: 10px;
+    line-height: 1.5;
+}
+
+.bulk-help {
+    max-width: 620px;
+    margin: 0;
+    color: #5f5a50;
+    font-family: "DM Mono", monospace;
+    font-size: 10px;
+    line-height: 1.5;
+}
+
+.btn-primary:disabled {
+    opacity: .45;
+    cursor: not-allowed;
+}
+
+@media (max-width: 700px) {
+    .bulk-summary,
+    .bulk-footer {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .bulk-summary .upload-button,
+    .bulk-footer .btn-primary {
+        width: 100%;
+        text-align: center;
+    }
+
+    .bulk-photo-card {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .bulk-photo-preview,
+    .bulk-photo-preview img {
+        min-height: 190px;
+    }
+
+    .bulk-fields {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
 
 /* =========================================================
     MOBILE

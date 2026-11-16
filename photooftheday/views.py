@@ -7,6 +7,8 @@ from django.core.files.storage import default_storage
 from django.core.files.base import File
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
+from django.core import signing
+from django.db import IntegrityError, transaction
 
 from .models import GroupMember, PhotoSubmission, WeeklyDispatch, WeeklyDispatchEntry
 
@@ -23,7 +25,12 @@ from datetime import date, timedelta
 import json
 
 
-from .utils.geocoding import dms_to_decimal
+from .utils.geocoding import dms_to_decimal, readable_from_decimal
+from .utils.photo_metadata import read_photo_metadata
+
+
+BULK_TOKEN_MAX_AGE = 60 * 60
+BULK_MAX_FILES = 50
 
 @login_required(login_url="login")
 def index(request):
@@ -520,3 +527,205 @@ def upload(request, year: int, month: int, day: int):
         except Exception as e:
             print(f"Error saving submission: {e}")
             return render(request, "photooftheday/upload.html", {"error": "Failed to save submission.", "day": requested_day, "existing": existing})
+
+
+def _bulk_location_label(location, latitude, longitude):
+    if location:
+        parts = [location.get("name"), location.get("city"), location.get("country")]
+        return ", ".join(part for part in parts if part) or "Location found"
+    if latitude != "" and longitude != "":
+        return f"{latitude}, {longitude}"
+    return "No location found"
+
+
+def _bulk_prepare_items(items, existing_dates=None):
+    """Add display-only conflict/status data to bulk item dictionaries."""
+    existing_dates = existing_dates or set()
+    counts = {}
+    for item in items:
+        if item.get("date"):
+            counts[item["date"]] = counts.get(item["date"], 0) + 1
+
+    for item in items:
+        statuses = list(item.get("statuses", []))
+        item["existing"] = item.get("date") in existing_dates if item.get("date") else False
+        if item.get("date") and counts.get(item["date"], 0) > 1:
+            if "duplicate" not in statuses:
+                statuses.append("duplicate")
+        if item["existing"] and "existing" not in statuses:
+            statuses.append("existing")
+        if not item.get("date") and "missing_date" not in statuses:
+            statuses.append("missing_date")
+        item["statuses"] = statuses
+        item["location_label"] = _bulk_location_label(
+            item.get("location"), item.get("latitude", ""), item.get("longitude", "")
+        )
+        item["blocking"] = any(status in {"missing_date", "duplicate", "invalid"} for status in statuses)
+        item["status_label"] = (
+            "Date conflict in this batch" if "duplicate" in statuses else
+            "Existing photo will be replaced" if "existing" in statuses else
+            "Could not read this image" if "invalid" in statuses else
+            "Capture date required" if "missing_date" in statuses else
+            "Ready"
+        )
+    return items
+
+
+def _bulk_context(request, group, items=None, token="", error=""):
+    existing_dates = set(
+        PhotoSubmission.objects.filter(user=request.user).values_list("date", flat=True)
+    )
+    prepared = _bulk_prepare_items(items or [], {day.isoformat() for day in existing_dates})
+    return {
+        "carto_api_key": settings.CARTO_API_KEY,
+        "group": group,
+        "bulk_items": prepared,
+        "bulk_items_json": json.dumps([
+            {key: value for key, value in item.items() if key not in {"location_label", "blocking", "status_label", "statuses"}}
+            for item in prepared
+        ]),
+        "bulk_token": token,
+        "error": error,
+        "has_existing_conflicts": any(item.get("existing") for item in prepared),
+    }
+
+
+@login_required(login_url="login")
+def bulk_upload(request):
+    try:
+        group = GroupMember.objects.get(user=request.user).group
+    except GroupMember.DoesNotExist:
+        return redirect("/")
+
+    if request.method == "GET":
+        return render(request, "photooftheday/bulk_upload.html", _bulk_context(request, group))
+
+    action = request.POST.get("action", "inspect")
+    if action == "inspect":
+        files = request.FILES.getlist("images")
+        if not files:
+            return render(request, "photooftheday/bulk_upload.html", _bulk_context(request, group, error="Choose at least one image."))
+        if len(files) > BULK_MAX_FILES:
+            return render(request, "photooftheday/bulk_upload.html", _bulk_context(request, group, error=f"Choose no more than {BULK_MAX_FILES} images at a time."))
+
+        items = []
+        paths = []
+        for uploaded in files:
+            filename = os.path.basename(uploaded.name or "image")
+            temp_path = f"photooftheday/bulk-temp/{request.user.pk}/{uuid4().hex}_{filename}"
+            item = {
+                "path": "",
+                "filename": filename,
+                "preview_url": "",
+                "date": "",
+                "time": "",
+                "latitude": "",
+                "longitude": "",
+                "location": None,
+                "caption": "",
+                "warnings": [],
+                "statuses": [],
+            }
+            try:
+                saved_path = default_storage.save(temp_path, uploaded)
+                with default_storage.open(saved_path, "rb") as source:
+                    image = Image.open(source)
+                    image.verify()
+                with default_storage.open(saved_path, "rb") as source:
+                    metadata = read_photo_metadata(Image.open(source))
+                item.update(metadata)
+                item["path"] = saved_path
+                item["preview_url"] = default_storage.url(saved_path)
+                paths.append(saved_path)
+            except Exception:
+                item["statuses"] = ["invalid"]
+                item["warnings"] = ["This file could not be read as an image"]
+                try:
+                    default_storage.delete(saved_path)
+                except Exception:
+                    pass
+            items.append(item)
+
+        token = signing.dumps({"user_id": request.user.pk, "paths": paths})
+        return render(request, "photooftheday/bulk_upload.html", _bulk_context(request, group, items, token))
+
+    if action != "save":
+        return render(request, "photooftheday/bulk_upload.html", _bulk_context(request, group, error="Invalid upload request."))
+
+    try:
+        signed = signing.loads(request.POST.get("bulk_token", ""), max_age=BULK_TOKEN_MAX_AGE)
+        if signed.get("user_id") != request.user.pk:
+            raise signing.BadSignature
+        allowed_paths = set(signed.get("paths", []))
+        submitted = json.loads(request.POST.get("bulk_items", "[]"))
+        if not isinstance(submitted, list) or not submitted:
+            raise ValueError("Choose at least one image to upload.")
+    except (signing.BadSignature, signing.SignatureExpired, ValueError, TypeError, json.JSONDecodeError):
+        return render(request, "photooftheday/bulk_upload.html", _bulk_context(request, group, error="This upload session has expired. Please choose the images again."))
+
+    errors = []
+    valid_items = []
+    seen_dates = set()
+    for item in submitted:
+        path = item.get("path") if isinstance(item, dict) else None
+        if path not in allowed_paths:
+            errors.append("One of the selected files is no longer available.")
+            continue
+        try:
+            capture_date = _date.fromisoformat(str(item.get("date", "")))
+        except ValueError:
+            errors.append(f"A valid date is required for {item.get('filename', 'an image')}.")
+            continue
+        if capture_date.isoformat() in seen_dates:
+            errors.append(f"More than one selected image uses {capture_date.strftime('%d %B %Y').lstrip('0')}.")
+            continue
+        seen_dates.add(capture_date.isoformat())
+        existing = PhotoSubmission.objects.filter(user=request.user, date=capture_date).first()
+
+        time_value = item.get("time") or None
+        if time_value:
+            try:
+                datetime.strptime(time_value, "%H:%M")
+            except ValueError:
+                errors.append(f"The time for {item.get('filename', 'an image')} is invalid.")
+                continue
+
+        latitude = longitude = None
+        try:
+            if item.get("latitude") not in (None, "") or item.get("longitude") not in (None, ""):
+                latitude = Decimal(str(item.get("latitude")))
+                longitude = Decimal(str(item.get("longitude")))
+                if not (-90 <= latitude <= 90 and -180 <= longitude <= 180):
+                    raise ValueError
+        except (ValueError, TypeError, ArithmeticError):
+            errors.append(f"The location for {item.get('filename', 'an image')} is invalid.")
+            continue
+
+        valid_items.append((item, capture_date, time_value, latitude, longitude, existing))
+
+    if errors:
+        prepared = _bulk_prepare_items(submitted, {
+            day.isoformat() for day in PhotoSubmission.objects.filter(user=request.user).values_list("date", flat=True)
+        })
+        return render(request, "photooftheday/bulk_upload.html", _bulk_context(request, group, prepared, request.POST.get("bulk_token", ""), " ".join(errors)))
+
+    try:
+        with transaction.atomic():
+            for item, capture_date, time_value, latitude, longitude, existing in valid_items:
+                with default_storage.open(item["path"], "rb") as source:
+                    obj = existing or PhotoSubmission(group=group, user=request.user, date=capture_date)
+                    obj.image.save(item.get("filename") or os.path.basename(item["path"]), File(source), save=False)
+                    obj.caption = str(item.get("caption", ""))[:5000]
+                    obj.time = time_value
+                    obj.latitude = latitude
+                    obj.longitude = longitude
+                    obj.save()
+    except (IntegrityError, OSError, ValueError):
+        return render(request, "photooftheday/bulk_upload.html", _bulk_context(request, group, submitted, request.POST.get("bulk_token", ""), "The batch could not be saved. No photos were uploaded."))
+
+    for item in submitted:
+        try:
+            default_storage.delete(item["path"])
+        except Exception:
+            pass
+    return redirect("calendar_this_month")

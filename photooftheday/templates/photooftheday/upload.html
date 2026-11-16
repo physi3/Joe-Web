@@ -41,6 +41,9 @@
             <button type="submit" class="btn-primary">Upload image</button>
           </div>
         </form>
+        <div class="upload-secondary-action">
+          <a class="upload-button" href="{% url 'bulk_upload' %}">Upload multiple photos</a>
+        </div>
 
       {% else %}
         <div class="upload-card upload-edit-card">
